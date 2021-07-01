@@ -1,3 +1,4 @@
+import { ApiProperty } from '@nestjs/swagger';
 import { Despesas } from 'src/despesas/entity/despesas.entity';
 import { Receitas } from 'src/receitas/entity/receitas.entity';
 import { Transferencias } from 'src/transferencias/entity/transferencias.entity';
@@ -12,6 +13,7 @@ import {
 @Entity({ schema: 'public', name: 'carteiras' })
 export class Carteiras {
   @PrimaryGeneratedColumn()
+  @ApiProperty()
   id: number;
 
   @Column('text', { nullable: false })

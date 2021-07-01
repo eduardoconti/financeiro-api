@@ -55,4 +55,13 @@ export class UsersService {
       throw new BadRequestException(error, ERROR_MESSAGES.USER_CREATE_ERROR);
     }
   }
+
+  async deletUser( id: string ): Promise<{ deleted: boolean; message?: string }> {
+    try {
+      await this.userRepository.delete( {id} );
+      return { deleted: true };
+    } catch (error) {
+      throw new BadRequestException(error);
+    }
+  }
 }

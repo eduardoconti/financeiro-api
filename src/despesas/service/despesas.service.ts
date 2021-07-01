@@ -7,7 +7,7 @@ import {
 import { Repository } from 'typeorm';
 import { Despesas } from '../entity/despesas.entity';
 import { DespesasDTO } from '../dto/despesas.dto';
-import { ERROR_MESSAGES } from '../constants';
+import { ERROR_MESSAGES } from 'src/shared/constants/messages';
 
 @Injectable()
 export class DespesaService {
@@ -62,7 +62,7 @@ export class DespesaService {
         .andWhere(this.CriaWhereMes(mes))
         .andWhere(this.CriaWherePago(pago))
         .getMany();
-
+      
       return despesas;
     } catch (error) {
       throw new BadRequestException(error);
@@ -210,8 +210,9 @@ export class DespesaService {
     }
   }
 
-  async alteraDespesa(id: number, despesa: DespesasDTO): Promise<Despesas> {
+  async alteraDespesa(id: number, despesa: DespesasDTO, userId:string): Promise<Despesas> {
     try {
+      await this.getOne(id, userId)
       await this.despesaRepository.update({ id }, despesa);
       return this.getOne(id);
     } catch (error) {

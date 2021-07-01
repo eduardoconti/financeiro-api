@@ -1,4 +1,5 @@
-import { Injectable, Inject, BadRequestException } from '@nestjs/common';
+import { Injectable, Inject, BadRequestException, UnauthorizedException } from '@nestjs/common';
+import { ERROR_MESSAGES } from 'src/shared/constants/messages';
 import { Repository } from 'typeorm';
 import { TransferenciasDTO } from '../dto/transferencias.dto';
 import { Transferencias } from '../entity/transferencias.entity';
@@ -7,7 +8,7 @@ const select = [
   'transferencias.id',
   'transferencias.valor',
   'transferencias.pago',
-  'transferencias.dataTransferencia',
+  'transferencias.transferencia',
   'carteiraOrigem',
   'carteiraDestino',
   'user',
@@ -16,7 +17,7 @@ const select = [
 function CriaWhereMes(mes: number) {
   return typeof mes === 'undefined' || mes == 0
     ? 'TRUE'
-    : "date_part('month',transferencias.dataTransferencia)=" + String(mes);
+    : "date_part('month',transferencias.transferencia)=" + String(mes);
 }
 
 function CriaWherePago(pago: boolean) {
@@ -26,7 +27,7 @@ function CriaWherePago(pago: boolean) {
 function CriaWhereAno(ano: number) {
   return typeof ano == 'undefined' || ano == 0
     ? 'TRUE'
-    : "date_part('month',transferencias.dataTransferencia)=" + String(ano);
+    : "date_part('year',transferencias.transferencia)=" + String(ano);
 }
 
 @Injectable()
@@ -37,22 +38,26 @@ export class TransferenciaService {
   ) {}
 
   async retornaTodas(
-    ano: number,
-    mes: number,
-    pago: boolean,
+    ano?: number,
+    mes?: number,
+    pago?: boolean,
+    userId?: string
   ): Promise<Transferencias[]> {
     mes = mes ?? 0;
     ano = ano ?? 0;
     try {
+      console.log(ano,mes,pago,userId)
       let transferencias = await this.transferenciaRepository
         .createQueryBuilder('transferencias')
         .select(select)
         .innerJoin('transferencias.carteiraOrigem', 'carteiraOrigem')
         .innerJoin('transferencias.carteiraDestino', 'carteiraDestino')
-        .orderBy('carteiraOrigem.descricao', 'ASC')
-        .where(CriaWhereAno(ano))
+        .innerJoin('transferencias.user', 'user')
+        .where('user.id= :userId', { userId: userId })
+        .andWhere(CriaWhereAno(ano))
         .andWhere(CriaWhereMes(mes))
         .andWhere(CriaWherePago(pago))
+        .orderBy('carteiraOrigem.descricao', 'ASC')
         .getMany();
       return transferencias;
     } catch (error) {
@@ -60,15 +65,23 @@ export class TransferenciaService {
     }
   }
 
-  async getOne(id: number): Promise<Transferencias> {
+  async getOne(id: number, userId?: string): Promise<Transferencias> {
     try {
-      return await this.transferenciaRepository.findOneOrFail(
+      let transferencia = await this.transferenciaRepository.findOneOrFail(
         { id },
         { relations: ['carteiraOrigem', 'carteiraDestino', 'user'] },
       );
+
+      if (userId && transferencia.user.id !== userId) {
+        throw new UnauthorizedException(
+          ERROR_MESSAGES.USER_TOKEN_NOT_EQUALS_TO_PARAM_URL,
+        );
+      }
+      return transferencia
+
     } catch (error) {
       throw new BadRequestException(error);
-    }
+    } 
   }
 
   async insereTransferencia(
@@ -86,10 +99,12 @@ export class TransferenciaService {
   }
 
   async alteraTransferencia(
-    transferencia: TransferenciasDTO,
     id: number,
+    transferencia: TransferenciasDTO,
+    userId: string,
   ): Promise<Transferencias> {
     try {
+      await this.getOne(id, userId);
       await this.transferenciaRepository.update({ id }, transferencia);
       return this.getOne(id);
     } catch (error) {
@@ -97,9 +112,9 @@ export class TransferenciaService {
     }
   }
 
-  async alteraFlagPago(transferencia) {
+  async alteraFlagPago(id:number, transferencia, userId:string) {
     try {
-      const { id } = transferencia;
+      await this.getOne(id, userId);
       await this.transferenciaRepository.update({ id }, transferencia);
       return this.getOne(id);
     } catch (error) {
@@ -109,8 +124,10 @@ export class TransferenciaService {
 
   async deletaTransferencia(
     id: number,
+    userId: string
   ): Promise<{ deleted: boolean; message?: string }> {
     try {
+      await this.getOne(id, userId);
       await this.transferenciaRepository.delete({ id });
       return { deleted: true };
     } catch (error) {
@@ -122,6 +139,7 @@ export class TransferenciaService {
     ano?: number,
     mes?: number,
     pago?: boolean,
+    userId?:string,
   ) {
     try {
       let transferencias = await this.transferenciaRepository
@@ -132,7 +150,9 @@ export class TransferenciaService {
           'SUM(transferencias.valor) valor',
         ])
         .innerJoin('transferencias.carteiraOrigem', 'carteiraOrigem')
-        .where(CriaWhereAno(ano))
+        .innerJoin('transferencias.user', 'user')
+        .where('user.id= :userId', { userId: userId })
+        .andWhere(CriaWhereAno(ano))
         .andWhere(CriaWhereMes(mes))
         .andWhere(CriaWherePago(pago))
         .groupBy('carteiraOrigem.id')
@@ -149,6 +169,7 @@ export class TransferenciaService {
     ano?: number,
     mes?: number,
     pago?: boolean,
+    userId?: string
   ) {
     try {
       let transferencias = await this.transferenciaRepository
@@ -159,6 +180,8 @@ export class TransferenciaService {
           'SUM(transferencias.valor) valor',
         ])
         .innerJoin('transferencias.carteiraDestino', 'carteiraDestino')
+        .innerJoin('transferencias.user', 'user')
+        .where('user.id= :userId', { userId: userId })
         .where(CriaWhereAno(ano))
         .andWhere(CriaWhereMes(mes))
         .andWhere(CriaWherePago(pago))

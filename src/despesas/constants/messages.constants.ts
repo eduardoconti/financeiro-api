@@ -1,8 +1,7 @@
 export const ERROR_MESSAGES = {
   DESPESA_CREATE_ERROR: 'Não foi possível criar a despesa',
   DESPESA_SELECT_FIND_BY_ID_OR_ALL_ERROR:
-    'Ocorreu um erro ao consultar despesas.',
-  USER_TOKEN_NOT_EQUALS_TO_PARAM_URL: 'Usuário logado não possui permissão',
+    'Ocorreu um erro ao consultar despesas.'
 };
 
 export const SUCCESS_MESSAGES = {

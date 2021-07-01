@@ -35,16 +35,18 @@ export class CategoriasController {
 
   @Delete('/:id')
   async deletaCategoria(
+    @User() user: UserPayloadInterface,
     @Param('id') id: number,
   ): Promise<{ deleted: boolean }> {
-    return this.categoriaService.deletaCategoria(id);
+    return this.categoriaService.deletaCategoria(id, user.userId);
   }
 
   @Put('/:id')
   async alteraDespesa(
+    @User() user: UserPayloadInterface,
     @Param('id') id: number,
     @Body() despesa: CategoriasDTO,
   ): Promise<Categorias> {
-    return this.categoriaService.alteraCategoria(id, despesa);
+    return this.categoriaService.alteraCategoria(id, despesa, user.userId);
   }
 }

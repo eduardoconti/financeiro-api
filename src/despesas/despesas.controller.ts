@@ -9,7 +9,6 @@ import {
   Patch,
   Query,
   UseGuards,
-  Request,
   ParseIntPipe,
 } from '@nestjs/common';
 import { DespesaService } from './service/despesas.service';
@@ -150,10 +149,11 @@ export class DespesasController {
 
   @Put('/:id')
   async alteraDespesa(
+    @User() user: UserPayloadInterface,
     @Param('id') id: number,
     @Body() despesa: DespesasDTO,
   ): Promise<Despesas> {
-    return this.despesaService.alteraDespesa(id, despesa);
+    return this.despesaService.alteraDespesa(id, despesa, user.userId);
   }
 
   @Delete('/:id')

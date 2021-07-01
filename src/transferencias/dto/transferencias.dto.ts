@@ -32,7 +32,7 @@ export class TransferenciasDTO {
   @ApiPropertyOptional({ default: new Date() })
   @IsOptional()
   @IsDateString({}, { message: CONSTRAINTS_MESSAGES.IS_DATE })
-  dataTransferencia: Date;
+  transferencia: Date;
 
   @ApiPropertyOptional({ default: false })
   @IsOptional()

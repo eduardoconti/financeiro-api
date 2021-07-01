@@ -2,6 +2,7 @@ import {
   ClassSerializerInterceptor,
   Controller,
   Get,
+  Param,
   Post,
   UseGuards,
   UseInterceptors,
@@ -15,7 +16,7 @@ import { SignDto } from 'src/auth/dto/sign-in.dto';
 import { UserPayloadInterface } from 'src/auth/interfaces/user-payload.interface';
 import { LocalAuthGuard } from 'src/auth/guard/local-auth.guard';
 import { AuthService } from 'src/auth/service/auth.service';
-
+import * as bcrypt from 'bcrypt';
 @Controller()
 export class AppController {
   constructor(
@@ -44,5 +45,12 @@ export class AppController {
   @Get('uuid')
   getUuid(): string {
     return uuidv4();
+  }
+
+  @Get('hash/:senha')
+  async hash(
+    @Param('senha') senha:string
+  ): Promise<string> {
+    return await bcrypt.hash(senha, 15);
   }
 }

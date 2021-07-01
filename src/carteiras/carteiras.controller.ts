@@ -34,15 +34,18 @@ export class CarteirasController {
   }
 
   @Delete('/:id')
-  async deletaCarteira(@Param('id') id: number): Promise<{ deleted: boolean }> {
-    return this.carteiraService.deletaCarteira(id);
+  async deletaCarteira(
+    @User() user: UserPayloadInterface,
+    @Param('id') id: number): Promise<{ deleted: boolean }> {
+    return this.carteiraService.deletaCarteira(id, user.userId);
   }
 
   @Put('/:id')
   async alteraDespesa(
+    @User() user: UserPayloadInterface,
     @Param('id') id: number,
     @Body() despesa: CarteirasDTO,
   ): Promise<Carteiras> {
-    return this.carteiraService.alteraCarteira(id, despesa);
+    return this.carteiraService.alteraCarteira(id, despesa, user.userId);
   }
 }

@@ -1,13 +1,15 @@
+import { ApiProperty } from '@nestjs/swagger';
 import { Users } from 'src/users/entity/users.entity';
 import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
 import { Carteiras } from '../../carteiras/entity/carteiras.entity';
 @Entity({ schema: 'public', name: 'transferencias' })
 export class Transferencias {
   @PrimaryGeneratedColumn()
+  @ApiProperty()
   id: number;
 
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
-  dataTransferencia: Date;
+  transferencia: Date;
 
   @Column('boolean', { default: false })
   pago: boolean;

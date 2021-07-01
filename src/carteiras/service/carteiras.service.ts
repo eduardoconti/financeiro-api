@@ -1,5 +1,5 @@
-import { Injectable, Inject, BadRequestException } from '@nestjs/common';
-import { User } from 'src/shared/decorator/user.decorator';
+import { Injectable, Inject, BadRequestException, UnauthorizedException } from '@nestjs/common';
+import { ERROR_MESSAGES } from 'src/shared/constants/messages';
 import { Repository } from 'typeorm';
 import { CarteirasDTO } from '../dto/carteiras.dto';
 import { Carteiras } from '../entity/carteiras.entity';
@@ -11,9 +11,16 @@ export class CarteirasService {
     private carteiraRepository: Repository<Carteiras>,
   ) {}
 
-  async getOne(id: number): Promise<Carteiras> {
+  async getOne(id: number, userId?:string): Promise<Carteiras> {
     try {
-      return await this.carteiraRepository.findOneOrFail({ id });
+      
+      let carteira = await this.carteiraRepository.findOneOrFail({ id}, {relations:['user'] });
+      if (userId && carteira.user.id !== userId) {
+        throw new UnauthorizedException(
+          ERROR_MESSAGES.USER_TOKEN_NOT_EQUALS_TO_PARAM_URL,
+        ); 
+      }
+      return carteira
     } catch (error) {
       throw new BadRequestException(error);
     }
@@ -43,8 +50,10 @@ export class CarteirasService {
 
   async deletaCarteira(
     id: number,
+    userId: string
   ): Promise<{ deleted: boolean; message?: string }> {
     try {
+      await this.getOne(id, userId)
       await this.carteiraRepository.delete({ id });
       return { deleted: true };
     } catch (error) {
@@ -52,8 +61,9 @@ export class CarteirasService {
     }
   }
 
-  async alteraCarteira(id: number, carteira: CarteirasDTO): Promise<Carteiras> {
+  async alteraCarteira(id: number, carteira: CarteirasDTO, userId: string): Promise<Carteiras> {
     try {
+      await  this.getOne(id, userId)
       await this.carteiraRepository.update({ id }, carteira);
       return this.getOne(id);
     } catch (error) {
