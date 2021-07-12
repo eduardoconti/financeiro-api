@@ -141,7 +141,7 @@ export class DespesaService {
         .andWhere(this.CriaWherePago(pago))
         .getRawOne();
 
-      return parseFloat(sum.toFixed(2));
+      return sum ? parseFloat(sum.toFixed(2)) : 0 ;
     } catch (error) {
       throw new BadRequestException(error);
     }

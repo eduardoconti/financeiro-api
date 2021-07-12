@@ -35,7 +35,7 @@ export class ReceitaService {
   constructor(
     @Inject('RECEITAS')
     private receitaRepository: Repository<Receitas>,
-  ) {}
+  ) { }
 
   async retornaTodasReceitas(
     ano?: number,
@@ -88,8 +88,9 @@ export class ReceitaService {
         .groupBy('carteira.id')
         .orderBy('valor', 'DESC')
         .getRawMany();
-      return receitas.map( (receita)=>{
-        return {...receita, valor: parseFloat(receita.valor.toFixed(2))}
+      return receitas.map((receita) => {
+        let valor = receita.valor ? parseFloat(receita.valor.toFixed(2)) : 0
+        return { ...receita, valor: valor }
       });
     } catch (error) {
       throw new BadRequestException(error);
@@ -107,7 +108,7 @@ export class ReceitaService {
         .andWhere(CriaWhereMes(mes))
         .andWhere(CriaWherePago(pago))
         .getRawOne();
-      return parseFloat(sum.toFixed(2));
+      return sum ? parseFloat(sum.toFixed(2)) : 0;
     } catch (error) {
       throw new BadRequestException(error);
     }
@@ -127,8 +128,9 @@ export class ReceitaService {
         .andWhere(CriaWherePago(pago))
         .groupBy("date_part('month',receitas.pagamento)")
         .getRawMany();
-      return receitas.map( (receita)=>{
-        return {...receita, valor: parseFloat(receita.valor.toFixed(2))}
+      return receitas.map((receita) => {
+        let valor = receita.valor ? parseFloat(receita.valor.toFixed(2)) : 0
+        return { ...receita, valor: valor }
       });;
     } catch (error) {
       throw new BadRequestException(error);
@@ -139,7 +141,7 @@ export class ReceitaService {
    * @param id
    * @returns Receitas
    */
-  async getOne(id: number, userId?:string): Promise<Receitas> {
+  async getOne(id: number, userId?: string): Promise<Receitas> {
     try {
       const receita = await this.receitaRepository.findOneOrFail(
         { id },
