@@ -25,9 +25,11 @@ export class Users {
   nome: string;
 
   @Column('integer', { default: 1 })
+  @Exclude()
   status: number;
 
   @Column('integer', { default: 1 })
+  @Exclude()
   perfil: number;
 
   @OneToMany(() => Despesas, (despesas) => despesas.user)

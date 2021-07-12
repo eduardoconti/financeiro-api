@@ -3,39 +3,24 @@ import { isObject, isString } from 'util';
 import { HttpInternalMessages } from '../enums';
 import { ResponseDataDto } from './response-data.dto';
 
-export class SuccessResponseDataDto<D> extends ResponseDataDto {
-  private data: D[];
+export class SuccessResponseData<D> extends ResponseDataDto {
+  private data: D;
 
   constructor(
-    message: string,
-    data?: any,
+    data: any,
     internalMessage: string = HttpInternalMessages.OK,
     statusCode: HttpStatus = HttpStatus.OK,
+    message?: string,
   ) {
     super(statusCode, internalMessage, message);
-    this.data = SuccessResponseDataDto.createData<D>(data);
+    this.data = SuccessResponseData.createData<D>(data);
   }
 
-  /**
-   * @returns D[]
-   */
-  public getData = (): D[] => {
-    return this.data;
-  };
-
-  public static createData<D>(objectOrData: D): D[] {
+  private static createData<D>(objectOrData: D): D {
     if (!objectOrData) {
-      return [];
+      return ;
     }
 
-    if (isString(objectOrData)) {
-      return [objectOrData];
-    }
-
-    if (isObject(objectOrData) && Array.isArray(objectOrData)) {
-      return objectOrData;
-    }
-
-    return [objectOrData];
+    return objectOrData;
   }
 }

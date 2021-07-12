@@ -10,8 +10,8 @@ const select = [
   'receitas.valor',
   'receitas.pago',
   'receitas.pagamento',
-  'carteira',
-  'user',
+  'carteira'
+
 ];
 
 function CriaWhereMes(mes: number) {
@@ -88,7 +88,9 @@ export class ReceitaService {
         .groupBy('carteira.id')
         .orderBy('valor', 'DESC')
         .getRawMany();
-      return receitas;
+      return receitas.map( (receita)=>{
+        return {...receita, valor: parseFloat(receita.valor.toFixed(2))}
+      });
     } catch (error) {
       throw new BadRequestException(error);
     }
@@ -105,7 +107,7 @@ export class ReceitaService {
         .andWhere(CriaWhereMes(mes))
         .andWhere(CriaWherePago(pago))
         .getRawOne();
-      return sum;
+      return parseFloat(sum.toFixed(2));
     } catch (error) {
       throw new BadRequestException(error);
     }
@@ -125,7 +127,9 @@ export class ReceitaService {
         .andWhere(CriaWherePago(pago))
         .groupBy("date_part('month',receitas.pagamento)")
         .getRawMany();
-      return receitas;
+      return receitas.map( (receita)=>{
+        return {...receita, valor: parseFloat(receita.valor.toFixed(2))}
+      });;
     } catch (error) {
       throw new BadRequestException(error);
     }

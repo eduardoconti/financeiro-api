@@ -7,24 +7,4 @@ export class ResponseDataDto {
     protected message?: string,
   ) {}
 
-  /**
-   * @returns HttpStatus
-   */
-  public getStatusCode = (): HttpStatus => {
-    return this.statusCode;
-  };
-
-  /**
-   * @returns string
-   */
-  public getMessage = (): string => {
-    return this.message;
-  };
-
-  /**
-   * @returns string
-   */
-  public getInternalMessage = (): string => {
-    return this.internalMessage;
-  };
 }

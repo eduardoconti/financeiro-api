@@ -47,8 +47,7 @@ export class DespesaService {
         'despesas.pago',
         'despesas.vencimento',
         'categoria',
-        'carteira',
-        'user',
+        'carteira'
       ];
       let despesas = await this.despesaRepository
         .createQueryBuilder('despesas')
@@ -126,8 +125,8 @@ export class DespesaService {
   }
 
   async retornaTotalDespesas(
-    ano?: number,
-    mes?: number,
+    ano: number = 0,
+    mes: number = 0,
     pago?: boolean,
     userId?: string,
   ): Promise<number> {
@@ -142,7 +141,7 @@ export class DespesaService {
         .andWhere(this.CriaWherePago(pago))
         .getRawOne();
 
-      return sum;
+      return parseFloat(sum.toFixed(2));
     } catch (error) {
       throw new BadRequestException(error);
     }
@@ -175,9 +174,9 @@ export class DespesaService {
 
   /**
    *
-   * @param id:ring
+   * @param id string
+   * @param userId string
    * @returns Despesas
-   * @param userId
    * @throw UnauthorizedException
    * @throw BadRequestException
    */
