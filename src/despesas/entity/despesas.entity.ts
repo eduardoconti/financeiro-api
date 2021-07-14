@@ -2,6 +2,7 @@ import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
 import { Categorias } from '../../categorias/entity/categorias.entity';
 import { Carteiras } from '../../carteiras/entity/carteiras.entity';
 import { Users } from 'src/users/entity/users.entity';
+import { Exclude } from 'class-transformer';
 
 @Entity({ schema: 'public', name: 'despesas' })
 export class Despesas {
@@ -32,5 +33,6 @@ export class Despesas {
   categoria: Categorias;
 
   @ManyToOne(() => Users, (users) => users.id, { nullable: false })
+  @Exclude()
   user: Users;
 }

@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Exclude } from 'class-transformer';
 import { Users } from 'src/users/entity/users.entity';
 import {
   Entity,
@@ -24,5 +25,6 @@ export class Categorias {
   categoria: Despesas[];
 
   @ManyToOne(() => Users, (users) => users.id, { nullable: false })
+  @Exclude()
   user: Users;
 }

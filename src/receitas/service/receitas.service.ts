@@ -11,7 +11,6 @@ const select = [
   'receitas.pago',
   'receitas.pagamento',
   'carteira'
-
 ];
 
 function CriaWhereMes(mes: number) {

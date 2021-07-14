@@ -29,11 +29,11 @@ export class AppController {
     return this.appService.getHello();
   }
 
-  @Get('calc')
-  getCalc() {
-    var exec = require('child_process').exec;
-    exec('calc');
-  }
+  // @Get('calc')
+  // getCalc() {
+  //   var exec = require('child_process').exec;
+  //   exec('calc');
+  // }
 
   @UseGuards(LocalAuthGuard)
   @Post('auth/login')

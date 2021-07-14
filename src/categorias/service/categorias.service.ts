@@ -52,6 +52,7 @@ export class CategoriasService {
     userId:string
   ): Promise<{ deleted: boolean; message?: string }> {
     try {
+      await this.getOne(id, userId)
       await this.categoriaRepository.delete({ id });
       return { deleted: true };
     } catch (error) {
@@ -65,8 +66,9 @@ export class CategoriasService {
     userId:string
   ): Promise<Categorias> {
     try {
+      await this.getOne(id, userId);
       await this.categoriaRepository.update({ id }, categoria);
-      return this.getOne(id);
+      return await this.getOne(id)
     } catch (error) {
       throw new BadRequestException(error);
     }

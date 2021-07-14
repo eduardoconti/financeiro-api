@@ -1,7 +1,8 @@
 import { ExceptionFilter, Catch, ArgumentsHost, HttpException } from '@nestjs/common';
-import { Request, Response } from 'express';
+import { Response } from 'express';
 import * as Sentry from '@sentry/node';
-
+import { ResponseDataDto } from "../dto/response-data.dto"
+import { HttpInternalMessages } from '../enums/http-internal-messages'
 @Catch(HttpException)
 export class HttpExceptionFilter implements ExceptionFilter {
 
@@ -25,17 +26,14 @@ export class HttpExceptionFilter implements ExceptionFilter {
 
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
-    const request = ctx.getRequest<Request>();
     const status = exception.getStatus();
-    const errorResponse = exception.getResponse()
+    const errorResponse = exception.getResponse() as any
 
     this.sendErrorSentry(errorResponse);
-    
+    const internalMessage = errorResponse.error ? errorResponse.error : HttpInternalMessages.INTERNAL_SERVER_ERROR
+    const message = errorResponse.message ? errorResponse.message : HttpInternalMessages.INTERNAL_SERVER_ERROR
     response
       .status(status)
-      .json({
-        statusCode: status,
-        data: errorResponse
-      });
+      .json(new ResponseDataDto(status, internalMessage, message ));
   }
 }

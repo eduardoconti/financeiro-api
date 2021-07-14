@@ -8,7 +8,9 @@ import { Repository } from 'typeorm';
 import { Despesas } from '../entity/despesas.entity';
 import { DespesasDTO } from '../dto/despesas.dto';
 import { ERROR_MESSAGES } from 'src/shared/constants/messages';
-
+import { ExpensePatchFlagPayedDto } from '../dto/patch-flag-payed.dto';
+import { ExpenseDeletedResponse } from '../interface/deleted-response.interface';
+import { EXPENSE_ERROR_MESSAGES } from '../constants/messages.constants'
 @Injectable()
 export class DespesaService {
   constructor(
@@ -64,7 +66,7 @@ export class DespesaService {
       
       return despesas;
     } catch (error) {
-      throw new BadRequestException(error);
+      throw new BadRequestException(error, EXPENSE_ERROR_MESSAGES.EXPENSE_SELECT_FIND_BY_ID_OR_ALL_ERROR);
     }
   }
 
@@ -90,7 +92,7 @@ export class DespesaService {
 
       return despesas;
     } catch (error) {
-      throw new BadRequestException(error);
+      throw new BadRequestException(error, EXPENSE_ERROR_MESSAGES.EXPENSE_SELECT_GROUP_MONTH_ERROR);
     }
   }
 
@@ -120,7 +122,7 @@ export class DespesaService {
 
       return despesas;
     } catch (error) {
-      throw new BadRequestException(error);
+      throw new BadRequestException(error, EXPENSE_ERROR_MESSAGES.EXPENSE_SELECT_GROUP_CATEGORY_ERROR);
     }
   }
 
@@ -143,7 +145,7 @@ export class DespesaService {
 
       return sum ? parseFloat(sum.toFixed(2)) : 0 ;
     } catch (error) {
-      throw new BadRequestException(error);
+      throw new BadRequestException(error, EXPENSE_ERROR_MESSAGES.EXPENSE_SELECT_FIND_BY_ID_OR_ALL_ERROR);
     }
   }
 
@@ -168,7 +170,7 @@ export class DespesaService {
 
       return despesas;
     } catch (error) {
-      throw new BadRequestException(error);
+      throw new BadRequestException(error, EXPENSE_ERROR_MESSAGES.EXPENSE_SELECT_GROUP_MONTH_ERROR);
     }
   }
 
@@ -195,7 +197,7 @@ export class DespesaService {
 
       return despesa;
     } catch (error) {
-      throw new BadRequestException(error);
+      throw new BadRequestException(error,EXPENSE_ERROR_MESSAGES.EXPENSE_SELECT_FIND_BY_ID_OR_ALL_ERROR);
     }
   }
 
@@ -205,7 +207,7 @@ export class DespesaService {
       await this.despesaRepository.save(newDespesas);
       return newDespesas;
     } catch (error) {
-      throw new BadRequestException(error);
+      throw new BadRequestException(error,EXPENSE_ERROR_MESSAGES.EXPENSE_CREATE_ERROR);
     }
   }
 
@@ -213,42 +215,45 @@ export class DespesaService {
     try {
       await this.getOne(id, userId)
       await this.despesaRepository.update({ id }, despesa);
-      return this.getOne(id);
+      return await this.getOne(id);
     } catch (error) {
-      throw new BadRequestException(error);
+      throw new BadRequestException(error,EXPENSE_ERROR_MESSAGES.EXPENSE_UPDATE_ERROR);
     }
   }
   /**
    *
    * @param id
-   * @param despesa
+   * @param patchData
    * @param userId
    * @returns Despesas
    */
   async alteraFlagPago(
     id: number,
-    despesa: DespesasDTO,
+    patchData: ExpensePatchFlagPayedDto,
     userId: string,
   ): Promise<Despesas> {
     try {
-      await this.getOne(id, userId);
-      await this.despesaRepository.update({ id }, despesa);
-      return await this.getOne(id);
+      let res = await this.getOne(id, userId);
+      if( res.pago !== patchData.pago){       
+        await this.despesaRepository.update({ id }, patchData);
+        res.pago = patchData.pago
+      }
+      return res;
     } catch (error) {
-      throw new BadRequestException(error);
+      throw new BadRequestException(error,EXPENSE_ERROR_MESSAGES.EXPENSE_UPDATE_ERROR);
     }
   }
 
   async deletaDespesa(
     id: number,
     userId: string,
-  ): Promise<{ deleted: boolean; message?: string }> {
+  ): Promise<ExpenseDeletedResponse> {
     try {
       await this.getOne(id, userId);
       await this.despesaRepository.delete({ id });
-      return { deleted: true };
+      return { deleted: true } as ExpenseDeletedResponse;
     } catch (error) {
-      throw new BadRequestException(error);
+      throw new BadRequestException(error,EXPENSE_ERROR_MESSAGES.EXPENSE_DELETE_ERROR);
     }
   }
 }

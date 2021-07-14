@@ -7,9 +7,9 @@ export class SuccessResponseData<D> extends ResponseDataDto {
 
   constructor(
     data: any,
-    internalMessage: string = HttpInternalMessages.OK,
     statusCode: HttpStatus = HttpStatus.OK,
     message?: string,
+    internalMessage: string = HttpInternalMessages.OK,
   ) {
     super(statusCode, internalMessage, message);
     this.data = SuccessResponseData.createData<D>(data);
