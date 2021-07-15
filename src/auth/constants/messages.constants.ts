@@ -5,7 +5,5 @@ export const ERROR_MESSAGES = {
 
 export const SUCCESS_MESSAGES = {
   GET_SUCCESS: 'Resposta retornada com sucesso.',
-  USER_CREATE_SUCCESS: 'Usuário criado com sucesso!',
-  USER_UPDATE_SUCCESS: 'Usuário atualizado com sucesso!',
-  CHANGE_PASSWORD_SUCCESS: 'Senha atualizada com sucesso',
+  AUTHENTICATION_SUCCESS: 'Usuário Autenticado!',
 };

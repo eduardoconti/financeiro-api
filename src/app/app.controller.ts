@@ -6,6 +6,7 @@ import {
   Post,
   UseGuards,
   UseInterceptors,
+  HttpStatus
 } from '@nestjs/common';
 
 import { AppService } from './app.service';
@@ -17,6 +18,8 @@ import { UserPayloadInterface } from 'src/auth/interfaces/user-payload.interface
 import { LocalAuthGuard } from 'src/auth/guard/local-auth.guard';
 import { AuthService } from 'src/auth/service/auth.service';
 import * as bcrypt from 'bcrypt';
+import { SuccessResponseData } from 'src/shared/dto/success-response-data.dto';
+
 @Controller()
 export class AppController {
   constructor(
@@ -29,17 +32,11 @@ export class AppController {
     return this.appService.getHello();
   }
 
-  // @Get('calc')
-  // getCalc() {
-  //   var exec = require('child_process').exec;
-  //   exec('calc');
-  // }
-
   @UseGuards(LocalAuthGuard)
   @Post('auth/login')
   @UseInterceptors(ClassSerializerInterceptor)
-  async login(@User() user: UserPayloadInterface): Promise<SignDto> {
-    return this.authService.login(user);
+  async login(@User() user: UserPayloadInterface): Promise<SuccessResponseData<SignDto>> {
+    return new SuccessResponseData( await this.authService.login(user), HttpStatus.OK, "Usuário autenticado!");
   }
 
   @Get('uuid')

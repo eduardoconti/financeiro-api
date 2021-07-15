@@ -4,7 +4,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-
+import { ERROR_MESSAGES } from '../constants/messages.constants';
 @Injectable()
 export class LocalAuthGuard extends AuthGuard('local') {
   canActivate(context: ExecutionContext) {
@@ -16,7 +16,7 @@ export class LocalAuthGuard extends AuthGuard('local') {
   handleRequest(err, userDatabase, info) {
     // You can throw an exception based on either "info" or "err" arguments
     if (err || !userDatabase) {
-      throw err || new UnauthorizedException();
+      throw err || new UnauthorizedException(ERROR_MESSAGES.AUTHENTICATION_FAILED);
     }
     return userDatabase;
   }

@@ -32,6 +32,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
     this.sendErrorSentry(errorResponse);
     const internalMessage = errorResponse.error ? errorResponse.error : HttpInternalMessages.INTERNAL_SERVER_ERROR
     const message = errorResponse.message ? errorResponse.message : HttpInternalMessages.INTERNAL_SERVER_ERROR
+    console.log(new ResponseDataDto(status, internalMessage, message ))
     response
       .status(status)
       .json(new ResponseDataDto(status, internalMessage, message ));
