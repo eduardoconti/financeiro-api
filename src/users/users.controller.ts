@@ -23,27 +23,25 @@ export class UsersController {
   constructor(private readonly userService: UsersService) {}
   @Get()
   @UseGuards(MasterUserGuard)
-  async returnAllUsers():Promise<Users[]> {
+  async returnAllUsers(): Promise<Users[]> {
     return await this.userService.returnAllUsers();
   }
 
   @Post()
   @UseGuards(MasterUserGuard)
-  async createUser(@Body() user: UserDto):Promise<Users> {
+  async createUser(@Body() user: UserDto): Promise<Users> {
     return await this.userService.createUser(user);
   }
 
   @UseGuards(MasterUserGuard)
   @Get('/login/:login')
-  async returnUserByEmail(@Param('login') login: string):Promise<Users> {
+  async returnUserByEmail(@Param('login') login: string): Promise<Users> {
     return await this.userService.returnUserByLogin(login);
   }
 
   @Delete('/:id')
   @UseGuards(MasterUserGuard)
-  async deletUser(
-    @Param('id') id: string
-  ): Promise<{ deleted: boolean }> {
+  async deletUser(@Param('id') id: string): Promise<{ deleted: boolean }> {
     return this.userService.deletUser(id);
   }
 }

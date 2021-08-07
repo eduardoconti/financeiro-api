@@ -1,11 +1,13 @@
 export const YIELD_ERROR_MESSAGES = {
   YIELD_CREATE_ERROR: 'Não foi possível criar a receita!',
-  YIELD_SELECT_FIND_BY_ID_OR_ALL_ERROR: 'Ocorreu um erro ao consultar receitas!',
-  YIELD_SELECT_GROUP_MONTH_ERROR: 'Ocorreu um erro ao consultar receitas agrupadas por mes!',
-  YIELD_SELECT_GROUP_CATEGORY_ERROR: 'Ocorreu um erro ao consultar receitas agrupadas por categoria!',
+  YIELD_SELECT_FIND_BY_ID_OR_ALL_ERROR:
+    'Ocorreu um erro ao consultar receitas!',
+  YIELD_SELECT_GROUP_MONTH_ERROR:
+    'Ocorreu um erro ao consultar receitas agrupadas por mes!',
+  YIELD_SELECT_GROUP_CATEGORY_ERROR:
+    'Ocorreu um erro ao consultar receitas agrupadas por categoria!',
   YIELD_UPDATE_ERROR: 'Ocorreu um erro ao alterar a receita!',
   YIELD_DELETE_ERROR: 'Ocorreu um erro ao deletar a receita!',
-
 };
 
 export const YIELD_SUCCESS_MESSAGES = {

@@ -1,4 +1,9 @@
-import { Injectable, Inject, BadRequestException, UnauthorizedException } from '@nestjs/common';
+import {
+  Injectable,
+  Inject,
+  BadRequestException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { ERROR_MESSAGES } from 'src/shared/constants/messages';
 import { Repository } from 'typeorm';
 import { TransferenciasDTO } from '../dto/transferencias.dto';
@@ -41,12 +46,12 @@ export class TransferenciaService {
     ano?: number,
     mes?: number,
     pago?: boolean,
-    userId?: string
+    userId?: string,
   ): Promise<Transferencias[]> {
     mes = mes ?? 0;
     ano = ano ?? 0;
     try {
-      console.log(ano,mes,pago,userId)
+      console.log(ano, mes, pago, userId);
       let transferencias = await this.transferenciaRepository
         .createQueryBuilder('transferencias')
         .select(select)
@@ -77,11 +82,10 @@ export class TransferenciaService {
           ERROR_MESSAGES.USER_TOKEN_NOT_EQUALS_TO_PARAM_URL,
         );
       }
-      return transferencia
-
+      return transferencia;
     } catch (error) {
       throw new BadRequestException(error);
-    } 
+    }
   }
 
   async insereTransferencia(
@@ -112,7 +116,7 @@ export class TransferenciaService {
     }
   }
 
-  async alteraFlagPago(id:number, transferencia, userId:string) {
+  async alteraFlagPago(id: number, transferencia, userId: string) {
     try {
       await this.getOne(id, userId);
       await this.transferenciaRepository.update({ id }, transferencia);
@@ -124,7 +128,7 @@ export class TransferenciaService {
 
   async deletaTransferencia(
     id: number,
-    userId: string
+    userId: string,
   ): Promise<{ deleted: boolean; message?: string }> {
     try {
       await this.getOne(id, userId);
@@ -139,7 +143,7 @@ export class TransferenciaService {
     ano?: number,
     mes?: number,
     pago?: boolean,
-    userId?:string,
+    userId?: string,
   ) {
     try {
       let transferencias = await this.transferenciaRepository
@@ -169,7 +173,7 @@ export class TransferenciaService {
     ano?: number,
     mes?: number,
     pago?: boolean,
-    userId?: string
+    userId?: string,
   ) {
     try {
       let transferencias = await this.transferenciaRepository

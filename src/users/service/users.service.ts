@@ -56,9 +56,9 @@ export class UsersService {
     }
   }
 
-  async deletUser( id: string ): Promise<{ deleted: boolean; message?: string }> {
+  async deletUser(id: string): Promise<{ deleted: boolean; message?: string }> {
     try {
-      await this.userRepository.delete( {id} );
+      await this.userRepository.delete({ id });
       return { deleted: true };
     } catch (error) {
       throw new BadRequestException(error);

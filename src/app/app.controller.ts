@@ -6,7 +6,7 @@ import {
   Post,
   UseGuards,
   UseInterceptors,
-  HttpStatus
+  HttpStatus,
 } from '@nestjs/common';
 
 import { AppService } from './app.service';
@@ -35,8 +35,14 @@ export class AppController {
   @UseGuards(LocalAuthGuard)
   @Post('auth/login')
   @UseInterceptors(ClassSerializerInterceptor)
-  async login(@User() user: UserPayloadInterface): Promise<SuccessResponseData<SignDto>> {
-    return new SuccessResponseData( await this.authService.login(user), HttpStatus.OK, "Usuário autenticado!");
+  async login(
+    @User() user: UserPayloadInterface,
+  ): Promise<SuccessResponseData<SignDto>> {
+    return new SuccessResponseData(
+      await this.authService.login(user),
+      HttpStatus.OK,
+      'Usuário autenticado!',
+    );
   }
 
   @Get('uuid')
@@ -45,9 +51,7 @@ export class AppController {
   }
 
   @Get('hash/:senha')
-  async hash(
-    @Param('senha') senha:string
-  ): Promise<string> {
+  async hash(@Param('senha') senha: string): Promise<string> {
     return await bcrypt.hash(senha, 15);
   }
 }

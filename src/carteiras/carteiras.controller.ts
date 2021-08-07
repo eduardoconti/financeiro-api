@@ -36,7 +36,8 @@ export class CarteirasController {
   @Delete('/:id')
   async deletaCarteira(
     @User() user: UserPayloadInterface,
-    @Param('id') id: number): Promise<{ deleted: boolean }> {
+    @Param('id') id: number,
+  ): Promise<{ deleted: boolean }> {
     return this.carteiraService.deletaCarteira(id, user.userId);
   }
 

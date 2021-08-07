@@ -10,7 +10,7 @@ import { DespesasDTO } from '../dto/despesas.dto';
 import { ERROR_MESSAGES } from 'src/shared/constants/messages';
 import { ExpensePatchFlagPayedDto } from '../dto/patch-flag-payed.dto';
 import { ExpenseDeletedResponse } from '../interface/deleted-response.interface';
-import { EXPENSE_ERROR_MESSAGES } from '../constants/messages.constants'
+import { EXPENSE_ERROR_MESSAGES } from '../constants/messages.constants';
 @Injectable()
 export class DespesaService {
   constructor(
@@ -49,7 +49,7 @@ export class DespesaService {
         'despesas.pago',
         'despesas.vencimento',
         'categoria',
-        'carteira'
+        'carteira',
       ];
       let despesas = await this.despesaRepository
         .createQueryBuilder('despesas')
@@ -57,16 +57,19 @@ export class DespesaService {
         .innerJoin('despesas.categoria', 'categoria')
         .innerJoin('despesas.carteira', 'carteira')
         .innerJoin('despesas.user', 'user')
-        .orderBy('despesas.descricao', 'ASC')
+        .orderBy('despesas.valor', 'DESC')
         .where('user.id= :userId', { userId: userId })
         .andWhere(this.CriaWhereAno(ano))
         .andWhere(this.CriaWhereMes(mes))
         .andWhere(this.CriaWherePago(pago))
         .getMany();
-      
+
       return despesas;
     } catch (error) {
-      throw new BadRequestException(error, EXPENSE_ERROR_MESSAGES.EXPENSE_SELECT_FIND_BY_ID_OR_ALL_ERROR);
+      throw new BadRequestException(
+        error,
+        EXPENSE_ERROR_MESSAGES.EXPENSE_SELECT_FIND_BY_ID_OR_ALL_ERROR,
+      );
     }
   }
 
@@ -92,7 +95,10 @@ export class DespesaService {
 
       return despesas;
     } catch (error) {
-      throw new BadRequestException(error, EXPENSE_ERROR_MESSAGES.EXPENSE_SELECT_GROUP_MONTH_ERROR);
+      throw new BadRequestException(
+        error,
+        EXPENSE_ERROR_MESSAGES.EXPENSE_SELECT_GROUP_MONTH_ERROR,
+      );
     }
   }
 
@@ -122,7 +128,10 @@ export class DespesaService {
 
       return despesas;
     } catch (error) {
-      throw new BadRequestException(error, EXPENSE_ERROR_MESSAGES.EXPENSE_SELECT_GROUP_CATEGORY_ERROR);
+      throw new BadRequestException(
+        error,
+        EXPENSE_ERROR_MESSAGES.EXPENSE_SELECT_GROUP_CATEGORY_ERROR,
+      );
     }
   }
 
@@ -143,9 +152,12 @@ export class DespesaService {
         .andWhere(this.CriaWherePago(pago))
         .getRawOne();
 
-      return sum ? parseFloat(sum.toFixed(2)) : 0 ;
+      return sum ? parseFloat(sum.toFixed(2)) : 0;
     } catch (error) {
-      throw new BadRequestException(error, EXPENSE_ERROR_MESSAGES.EXPENSE_SELECT_FIND_BY_ID_OR_ALL_ERROR);
+      throw new BadRequestException(
+        error,
+        EXPENSE_ERROR_MESSAGES.EXPENSE_SELECT_FIND_BY_ID_OR_ALL_ERROR,
+      );
     }
   }
 
@@ -170,7 +182,10 @@ export class DespesaService {
 
       return despesas;
     } catch (error) {
-      throw new BadRequestException(error, EXPENSE_ERROR_MESSAGES.EXPENSE_SELECT_GROUP_MONTH_ERROR);
+      throw new BadRequestException(
+        error,
+        EXPENSE_ERROR_MESSAGES.EXPENSE_SELECT_GROUP_MONTH_ERROR,
+      );
     }
   }
 
@@ -197,7 +212,10 @@ export class DespesaService {
 
       return despesa;
     } catch (error) {
-      throw new BadRequestException(error,EXPENSE_ERROR_MESSAGES.EXPENSE_SELECT_FIND_BY_ID_OR_ALL_ERROR);
+      throw new BadRequestException(
+        error,
+        EXPENSE_ERROR_MESSAGES.EXPENSE_SELECT_FIND_BY_ID_OR_ALL_ERROR,
+      );
     }
   }
 
@@ -207,17 +225,27 @@ export class DespesaService {
       await this.despesaRepository.save(newDespesas);
       return newDespesas;
     } catch (error) {
-      throw new BadRequestException(error,EXPENSE_ERROR_MESSAGES.EXPENSE_CREATE_ERROR);
+      throw new BadRequestException(
+        error,
+        EXPENSE_ERROR_MESSAGES.EXPENSE_CREATE_ERROR,
+      );
     }
   }
 
-  async alteraDespesa(id: number, despesa: DespesasDTO, userId:string): Promise<Despesas> {
+  async alteraDespesa(
+    id: number,
+    despesa: DespesasDTO,
+    userId: string,
+  ): Promise<Despesas> {
     try {
-      await this.getOne(id, userId)
+      await this.getOne(id, userId);
       await this.despesaRepository.update({ id }, despesa);
       return await this.getOne(id);
     } catch (error) {
-      throw new BadRequestException(error,EXPENSE_ERROR_MESSAGES.EXPENSE_UPDATE_ERROR);
+      throw new BadRequestException(
+        error,
+        EXPENSE_ERROR_MESSAGES.EXPENSE_UPDATE_ERROR,
+      );
     }
   }
   /**
@@ -234,13 +262,16 @@ export class DespesaService {
   ): Promise<Despesas> {
     try {
       let res = await this.getOne(id, userId);
-      if( res.pago !== patchData.pago){       
+      if (res.pago !== patchData.pago) {
         await this.despesaRepository.update({ id }, patchData);
-        res.pago = patchData.pago
+        res.pago = patchData.pago;
       }
       return res;
     } catch (error) {
-      throw new BadRequestException(error,EXPENSE_ERROR_MESSAGES.EXPENSE_UPDATE_ERROR);
+      throw new BadRequestException(
+        error,
+        EXPENSE_ERROR_MESSAGES.EXPENSE_UPDATE_ERROR,
+      );
     }
   }
 
@@ -253,7 +284,10 @@ export class DespesaService {
       await this.despesaRepository.delete({ id });
       return { deleted: true } as ExpenseDeletedResponse;
     } catch (error) {
-      throw new BadRequestException(error,EXPENSE_ERROR_MESSAGES.EXPENSE_DELETE_ERROR);
+      throw new BadRequestException(
+        error,
+        EXPENSE_ERROR_MESSAGES.EXPENSE_DELETE_ERROR,
+      );
     }
   }
 }

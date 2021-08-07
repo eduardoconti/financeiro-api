@@ -16,7 +16,6 @@ export class SuccessResponseData<D> extends ResponseDataDto {
   }
 
   private static createData<D>(objectOrData: D): D {
-
     return objectOrData;
   }
 }

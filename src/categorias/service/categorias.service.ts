@@ -1,4 +1,9 @@
-import { Injectable, Inject, BadRequestException, UnauthorizedException } from '@nestjs/common';
+import {
+  Injectable,
+  Inject,
+  BadRequestException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { ERROR_MESSAGES } from 'src/shared/constants/messages';
 import { Repository } from 'typeorm';
 import { CategoriasDTO } from '../dto/categorias.dto';
@@ -13,13 +18,16 @@ export class CategoriasService {
 
   async getOne(id: number, userId?: string): Promise<Categorias> {
     try {
-      let categoria = await this.categoriaRepository.findOneOrFail({ id },{relations:['user']});
+      let categoria = await this.categoriaRepository.findOneOrFail(
+        { id },
+        { relations: ['user'] },
+      );
       if (userId && categoria.user.id !== userId) {
         throw new UnauthorizedException(
           ERROR_MESSAGES.USER_TOKEN_NOT_EQUALS_TO_PARAM_URL,
-        ); 
+        );
       }
-      return categoria
+      return categoria;
     } catch (error) {
       throw new BadRequestException(error);
     }
@@ -49,10 +57,10 @@ export class CategoriasService {
 
   async deletaCategoria(
     id: number,
-    userId:string
+    userId: string,
   ): Promise<{ deleted: boolean; message?: string }> {
     try {
-      await this.getOne(id, userId)
+      await this.getOne(id, userId);
       await this.categoriaRepository.delete({ id });
       return { deleted: true };
     } catch (error) {
@@ -63,12 +71,12 @@ export class CategoriasService {
   async alteraCategoria(
     id: number,
     categoria: CategoriasDTO,
-    userId:string
+    userId: string,
   ): Promise<Categorias> {
     try {
       await this.getOne(id, userId);
       await this.categoriaRepository.update({ id }, categoria);
-      return await this.getOne(id)
+      return await this.getOne(id);
     } catch (error) {
       throw new BadRequestException(error);
     }

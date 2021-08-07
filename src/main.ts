@@ -5,6 +5,7 @@ import * as helmet from 'helmet';
 import { HttpExceptionFilter } from './shared/exceptions/http-exception.filter';
 import { ValidationPipe } from './shared/pipes/validation.pipe';
 import { ClassSerializerInterceptor } from '@nestjs/common';
+import * as Sentry from '@sentry/node';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, { cors: true });
@@ -22,6 +23,12 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, options);
 
   SwaggerModule.setup('docs', app, document);
+
+  Sentry.init({
+    dsn: process.env.SENTRY_DSN,
+    tracesSampleRate: 1.0,
+  });
+
   await app.listen(parseInt(process.env.PORT));
 }
 bootstrap();

@@ -1,4 +1,4 @@
-import { Connection, Repository } from 'typeorm';
+import { Connection } from 'typeorm';
 import { Despesas } from './entity/despesas.entity';
 
 export const despesasProviders = [

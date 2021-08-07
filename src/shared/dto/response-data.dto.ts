@@ -6,5 +6,4 @@ export class ResponseDataDto {
     protected internalMessage?: string,
     protected message?: string,
   ) {}
-
 }

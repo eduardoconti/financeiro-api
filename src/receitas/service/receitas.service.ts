@@ -1,4 +1,9 @@
-import { Injectable, Inject, BadRequestException, UnauthorizedException } from '@nestjs/common';
+import {
+  Injectable,
+  Inject,
+  BadRequestException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { Receitas } from '../entity/receitas.entity';
 import { ReceitasDTO } from '../dto/receitas.dto';
@@ -10,7 +15,7 @@ const select = [
   'receitas.valor',
   'receitas.pago',
   'receitas.pagamento',
-  'carteira'
+  'carteira',
 ];
 
 function CriaWhereMes(mes: number) {
@@ -34,13 +39,13 @@ export class ReceitaService {
   constructor(
     @Inject('RECEITAS')
     private receitaRepository: Repository<Receitas>,
-  ) { }
+  ) {}
 
   async retornaTodasReceitas(
     ano?: number,
     mes?: number,
     pago?: boolean,
-    userId?: string
+    userId?: string,
   ): Promise<Receitas[]> {
     mes = mes ?? 0;
     ano = ano ?? 0;
@@ -68,7 +73,7 @@ export class ReceitaService {
     ano?: number,
     mes?: number,
     pago?: boolean,
-    userId?: string
+    userId?: string,
   ) {
     try {
       let receitas = await this.receitaRepository
@@ -88,15 +93,20 @@ export class ReceitaService {
         .orderBy('valor', 'DESC')
         .getRawMany();
       return receitas.map((receita) => {
-        let valor = receita.valor ? parseFloat(receita.valor.toFixed(2)) : 0
-        return { ...receita, valor: valor }
+        let valor = receita.valor ? parseFloat(receita.valor.toFixed(2)) : 0;
+        return { ...receita, valor: valor };
       });
     } catch (error) {
       throw new BadRequestException(error);
     }
   }
 
-  async retornaTotalReceitas(ano?: number, mes?: number, pago?: boolean, userId?: string) {
+  async retornaTotalReceitas(
+    ano?: number,
+    mes?: number,
+    pago?: boolean,
+    userId?: string,
+  ) {
     try {
       let { sum } = await this.receitaRepository
         .createQueryBuilder('receitas')
@@ -113,7 +123,11 @@ export class ReceitaService {
     }
   }
 
-  async retornaDespesasAgrupadasPorMes(ano?: number, pago?: boolean, userId?: string) {
+  async retornaDespesasAgrupadasPorMes(
+    ano?: number,
+    pago?: boolean,
+    userId?: string,
+  ) {
     try {
       let receitas = await this.receitaRepository
         .createQueryBuilder('receitas')
@@ -128,9 +142,9 @@ export class ReceitaService {
         .groupBy("date_part('month',receitas.pagamento)")
         .getRawMany();
       return receitas.map((receita) => {
-        let valor = receita.valor ? parseFloat(receita.valor.toFixed(2)) : 0
-        return { ...receita, valor: valor }
-      });;
+        let valor = receita.valor ? parseFloat(receita.valor.toFixed(2)) : 0;
+        return { ...receita, valor: valor };
+      });
     } catch (error) {
       throw new BadRequestException(error);
     }
@@ -153,7 +167,7 @@ export class ReceitaService {
         );
       }
 
-      return receita
+      return receita;
     } catch (error) {
       throw new BadRequestException(error);
     }
@@ -170,7 +184,11 @@ export class ReceitaService {
     return newReceitas;
   }
 
-  async alteraReceita(receitaDto: ReceitasDTO, id: number, userId: string): Promise<Receitas> {
+  async alteraReceita(
+    receitaDto: ReceitasDTO,
+    id: number,
+    userId: string,
+  ): Promise<Receitas> {
     try {
       const receita = await this.getOne(id, userId);
       await this.receitaRepository.update({ id }, receitaDto);
@@ -180,11 +198,15 @@ export class ReceitaService {
     }
   }
 
-  async alteraFlagPago(receitaDto, id: number, userId: string): Promise<Receitas> {
+  async alteraFlagPago(
+    receitaDto,
+    id: number,
+    userId: string,
+  ): Promise<Receitas> {
     try {
       const receita = await this.getOne(id, userId);
       await this.receitaRepository.update({ id }, receitaDto);
-      return receita
+      return receita;
     } catch (error) {
       throw new BadRequestException(error);
     }
@@ -192,7 +214,7 @@ export class ReceitaService {
 
   async deletaReceita(
     id: number,
-    userId: string
+    userId: string,
   ): Promise<{ deleted: boolean; message?: string }> {
     try {
       await this.getOne(id, userId);
