@@ -1,3 +1,4 @@
+import { Exclude } from 'class-transformer';
 import { Users } from 'src/users/entity/users.entity';
 import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
 import { Carteiras } from '../../carteiras/entity/carteiras.entity';
@@ -22,5 +23,6 @@ export class Receitas {
   carteira: Carteiras;
 
   @ManyToOne(() => Users, (users) => users.id, { nullable: false })
+  @Exclude()
   user: Users;
 }

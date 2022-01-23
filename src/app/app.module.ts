@@ -1,14 +1,18 @@
+
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
-import { DespesasModule } from '../despesas/despesas.module';
-import { ReceitasModule } from '../receitas/receitas.module';
-import { CategoriasModule } from '../categorias/categorias.module';
-import { CarteirasModule } from '../carteiras/carteiras.module';
-import { TransferenciasModule } from '../transferencias/transferencias.module';
+import { DespesasModule } from '@despesas/despesas.module';
+import { ReceitasModule } from '@receitas/receitas.module';
+import { CategoriasModule } from '@categorias/categorias.module';
+import { CarteirasModule } from '@carteiras/carteiras.module';
+import { TransferenciasModule } from 'src/transferencias/transferencias.module';
+import { AuthModule } from '@auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
-import { UsersModule } from 'src/users/users.module';
-import { AuthModule } from 'src/auth/auth.module';
+import { AppController } from './app.controller';
+import { AppService } from './service';
+import { UsersModule } from '@users/users.module';
+import { GraphicModule } from '@graphic/graphic.module';
+import { TYPES } from '@config/dependency-injection';
+
 
 @Module({
   imports: [
@@ -19,9 +23,12 @@ import { AuthModule } from 'src/auth/auth.module';
     TransferenciasModule,
     UsersModule,
     AuthModule,
-    ConfigModule.forRoot(),
+    GraphicModule,
+    ConfigModule.forRoot({
+      envFilePath: [`.env`],
+    }),
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [{ provide: TYPES.AppService, useClass: AppService }],
 })
-export class AppModule {}
+export class AppModule { }

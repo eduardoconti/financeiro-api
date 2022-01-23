@@ -25,7 +25,7 @@ import { SuccessResponseData } from 'src/shared/dto/success-response-data.dto';
 @ApiTags('transferencias')
 @UseGuards(JwtAuthGuard)
 export class TransferenciasController {
-  constructor(private readonly transferenciaService: TransferenciaService) {}
+  constructor(private readonly transferenciaService: TransferenciaService) { }
   @Get()
   async retornaTodasTransferencias(
     @User() user: UserPayloadInterface,
@@ -104,7 +104,7 @@ export class TransferenciasController {
     @Param('id') id: number,
     @Body() transferencia: { id: number; pago: boolean },
   ): Promise<SuccessResponseData<{ id: number; pago: boolean }>> {
-    let data = this.transferenciaService.alteraFlagPago(
+    let data = await this.transferenciaService.alteraFlagPago(
       id,
       transferencia,
       user.userId,
@@ -118,7 +118,7 @@ export class TransferenciasController {
     @Param('id') id: number,
     @Body() transferencia: TransferenciasDTO,
   ): Promise<SuccessResponseData<Transferencias>> {
-    let data = this.transferenciaService.alteraTransferencia(
+    let data = await this.transferenciaService.alteraTransferencia(
       id,
       transferencia,
       user.userId,
@@ -131,7 +131,7 @@ export class TransferenciasController {
     @User() user: UserPayloadInterface,
     @Param('id') id: number,
   ): Promise<SuccessResponseData<{ deleted: boolean }>> {
-    let data = this.transferenciaService.deletaTransferencia(id, user.userId);
+    let data = await this.transferenciaService.deletaTransferencia(id, user.userId);
     return new SuccessResponseData<{ deleted: boolean }>(data);
   }
 
@@ -140,7 +140,7 @@ export class TransferenciasController {
   async insereTransferencia(
     @Body() transferencia: TransferenciasDTO,
   ): Promise<SuccessResponseData<Transferencias>> {
-    let data = this.transferenciaService.insereTransferencia(transferencia);
+    let data = await this.transferenciaService.insereTransferencia(transferencia);
     return new SuccessResponseData<Transferencias>(data);
   }
 }

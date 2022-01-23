@@ -51,7 +51,7 @@ export class TransferenciaService {
     mes = mes ?? 0;
     ano = ano ?? 0;
     try {
-      console.log(ano, mes, pago, userId);
+
       let transferencias = await this.transferenciaRepository
         .createQueryBuilder('transferencias')
         .select(select)

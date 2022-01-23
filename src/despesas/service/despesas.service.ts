@@ -1,10 +1,13 @@
+
+import { ExpensesGroupMonthDTO } from './../dto/expenses-group-month-response.dto';
 import {
   Injectable,
   Inject,
   BadRequestException,
   UnauthorizedException,
+  InternalServerErrorException,
 } from '@nestjs/common';
-import { Repository } from 'typeorm';
+import { Between, Repository } from 'typeorm';
 import { Despesas } from '../entity/despesas.entity';
 import { DespesasDTO } from '../dto/despesas.dto';
 import { ERROR_MESSAGES } from 'src/shared/constants/messages';
@@ -16,7 +19,7 @@ export class DespesaService {
   constructor(
     @Inject('DESPESAS')
     private despesaRepository: Repository<Despesas>,
-  ) {}
+  ) { }
 
   private CriaWhereMes(mes: number) {
     return !mes || mes == 0
@@ -38,7 +41,7 @@ export class DespesaService {
     mes?: number,
     pago?: boolean,
     userId?: string,
-  ) {
+  ): Promise<Despesas[]> {
     mes = mes ?? 0;
     ano = ano ?? 0;
     try {
@@ -109,12 +112,14 @@ export class DespesaService {
     userId?: string,
   ) {
     try {
+
       let despesas = await this.despesaRepository
         .createQueryBuilder('despesas')
         .select([
           'SUM(despesas.valor) valor',
           'carteira.descricao descricao',
           'carteira.id id',
+
         ])
         .innerJoin('despesas.carteira', 'carteira')
         .innerJoin('despesas.user', 'user')
@@ -165,24 +170,63 @@ export class DespesaService {
     ano?: number,
     pago?: boolean,
     userId?: string,
-  ) {
+  ): Promise<{ [k: string]: ExpensesGroupMonthDTO<Despesas> }> {
     try {
-      let despesas = await this.despesaRepository
-        .createQueryBuilder('despesas')
-        .select([
-          'SUM(despesas.valor) valor',
-          "date_part('month',despesas.vencimento) mes",
-        ])
-        .innerJoin('despesas.user', 'user')
-        .where('user.id= :userId', { userId: userId })
-        .andWhere(this.CriaWhereAno(ano))
-        .andWhere(this.CriaWherePago(pago))
-        .groupBy("date_part('month',despesas.vencimento)")
-        .getRawMany();
 
-      return despesas;
+      const dateWhere = (ano: number) => Between(new Date(ano, 0, 1), new Date(ano, 11, 31));
+      var where: { [k: string]: any } = {};
+
+      if (ano) {
+        //where.vencimento = dateWhere(ano)
+      }
+      if (userId) {
+        where.user = {
+          id: userId
+        }
+      }
+      if (pago != null) {
+        where.pago = pago
+      }
+      let despesas = await this.despesaRepository.find({
+        relations: ['categoria', 'user', 'carteira'],
+        where: where,
+        order: { vencimento: 'ASC' },
+      })
+
+      let monthExpenses: { [key: string]: ExpensesGroupMonthDTO<Despesas> } = {};
+
+      despesas.forEach(element => {
+
+        let key = String((element.vencimento).getFullYear()) + String("0" + (element.vencimento).getMonth()).slice(-2);
+
+        if (key in monthExpenses) {
+          monthExpenses[key].quantity++;
+          monthExpenses[key].total += element.valor;
+          if (element.pago) {
+            monthExpenses[key].totalPayed += element.valor;
+          } else {
+            monthExpenses[key].totalOpen += element.valor * 100;
+          }
+          monthExpenses[key].data.push(element);
+        } else {
+
+          monthExpenses[key] = new ExpensesGroupMonthDTO<Despesas>(
+            element.vencimento.getMonth(),
+            element.valor,
+            (element.pago ? element.valor : 0),
+            (element.pago ? 0 : element.valor),
+            1,
+            [element]);
+        }
+
+      });
+
+      return monthExpenses;
+
+
     } catch (error) {
-      throw new BadRequestException(
+
+      throw new InternalServerErrorException(
         error,
         EXPENSE_ERROR_MESSAGES.EXPENSE_SELECT_GROUP_MONTH_ERROR,
       );

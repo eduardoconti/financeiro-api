@@ -1,3 +1,4 @@
+import { IsArray, IsNumber, IsString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { Exclude } from 'class-transformer';
 import { Users } from 'src/users/entity/users.entity';
@@ -14,14 +15,17 @@ import { Despesas } from '../../despesas/entity/despesas.entity';
 export class Categorias {
   @PrimaryGeneratedColumn()
   @ApiProperty()
+  @IsNumber()
   id: number;
 
   @Column('text', { nullable: false })
+  @IsString()
   descricao: string;
 
   @OneToMany(() => Despesas, (despesas) => despesas.categoria, {
     nullable: false,
   })
+  @IsArray()
   categoria: Despesas[];
 
   @ManyToOne(() => Users, (users) => users.id, { nullable: false })

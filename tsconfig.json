@@ -10,6 +10,20 @@
     "sourceMap": true,
     "outDir": "./dist",
     "baseUrl": "./",
-    "incremental": true
+    "incremental": true,
+    //"strict": true,
+    "paths": {
+      "@app/*": ["src/app/*"],
+      "@users/*": ["src/users/*"],
+      "@auth/*": ["src/auth/*"],
+      "@carteiras/*": ["src/carteiras/*"],
+      "@categorias/*": ["src/categorias/*"],
+      "@config/*": ["src/config/*"],
+      "@db/*": ["src/db/*"],
+      "@despesas/*": ["src/despesas/*"],
+      "@graphic/*": ["src/graphic/*"],
+      "@receitas/*": ["src/receitas/*"],
+      "@shared/*": ["src/shared/*"],
+    }
   }
 }

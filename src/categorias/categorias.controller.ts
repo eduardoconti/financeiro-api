@@ -7,20 +7,27 @@ import {
   Param,
   Put,
   UseGuards,
+  Inject,
 } from '@nestjs/common';
 import { Categorias } from './entity/categorias.entity';
 import { CategoriasDTO } from './dto/categorias.dto';
 import { ApiTags } from '@nestjs/swagger';
-import { CategoriasService } from './service/categorias.service';
 import { JwtAuthGuard } from 'src/auth/guard/jwt-auth.guard';
 import { UserLoggedGuard } from 'src/users/guard/user-logged-auth.guard';
 import { UserPayloadInterface } from 'src/auth/interfaces/user-payload.interface';
 import { User } from 'src/shared/decorator/user.decorator';
+import { ICategoriaService } from './service/categoria.service.interface';
+import { TYPES } from '@config/dependency-injection';
+import { CategoriaDeleteResponseDTO } from './dto';
+import { CategoriasService } from './service';
+
 @Controller('categorias')
 @ApiTags('categorias')
 @UseGuards(JwtAuthGuard)
 export class CategoriasController {
-  constructor(private readonly categoriaService: CategoriasService) {}
+  constructor(
+    @Inject(TYPES.CategoriaService)
+    private readonly categoriaService: CategoriasService) { }
 
   @Get()
   async getAll(@User() user: UserPayloadInterface): Promise<Categorias[]> {
@@ -34,19 +41,19 @@ export class CategoriasController {
   }
 
   @Delete('/:id')
+  @UseGuards(UserLoggedGuard)
   async deletaCategoria(
-    @User() user: UserPayloadInterface,
     @Param('id') id: number,
-  ): Promise<{ deleted: boolean }> {
-    return this.categoriaService.deletaCategoria(id, user.userId);
+  ): Promise<CategoriaDeleteResponseDTO> {
+    return this.categoriaService.deletaCategoria(id);
   }
 
   @Put('/:id')
+  @UseGuards(UserLoggedGuard)
   async alteraDespesa(
-    @User() user: UserPayloadInterface,
     @Param('id') id: number,
     @Body() despesa: CategoriasDTO,
   ): Promise<Categorias> {
-    return this.categoriaService.alteraCategoria(id, despesa, user.userId);
+    return this.categoriaService.alteraCategoria(id, despesa);
   }
 }

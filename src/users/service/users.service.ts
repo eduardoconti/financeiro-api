@@ -8,16 +8,20 @@ import { Repository } from 'typeorm';
 import { Users } from '../entity/users.entity';
 import { UserDto } from '../dto/users.dto';
 import { v4 as uuidv4 } from 'uuid';
-import { PasswordManagerService } from './password-mannager.service';
 import { ERROR_MESSAGES } from '../constants/messages.constants';
+import { IPasswordManagerService } from './password-mannager.service.interface';
+import { UserDeleteResponseDTO } from '@users/dto';
+import { IUserService } from './users.service.interface';
+import { TYPES } from '@config/dependency-injection';
 
 @Injectable()
-export class UsersService {
+export class UsersService implements IUserService {
   constructor(
-    @Inject('USERS')
+    @Inject(TYPES.UserRepository)
     private userRepository: Repository<Users>,
-    private passwordManager: PasswordManagerService,
-  ) {}
+    @Inject(TYPES.PasswordManagerService)
+    private passwordManager: IPasswordManagerService,
+  ) { }
 
   async returnAllUsers(): Promise<Users[]> {
     try {
@@ -56,10 +60,10 @@ export class UsersService {
     }
   }
 
-  async deletUser(id: string): Promise<{ deleted: boolean; message?: string }> {
+  async deletUser(id: string): Promise<UserDeleteResponseDTO> {
     try {
       await this.userRepository.delete({ id });
-      return { deleted: true };
+      return new UserDeleteResponseDTO(true);
     } catch (error) {
       throw new BadRequestException(error);
     }

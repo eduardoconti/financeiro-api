@@ -1,32 +1,29 @@
+import { CarteirasDeleteResponseDTO } from '@carteiras/dto';
 import {
   Injectable,
   Inject,
   BadRequestException,
-  UnauthorizedException,
 } from '@nestjs/common';
-import { ERROR_MESSAGES } from 'src/shared/constants/messages';
+
 import { Repository } from 'typeorm';
 import { CarteirasDTO } from '../dto/carteiras.dto';
 import { Carteiras } from '../entity/carteiras.entity';
+import { ICarteirasService } from './carteiras.service.interface';
 
 @Injectable()
-export class CarteirasService {
+export class CarteirasService implements ICarteirasService {
   constructor(
     @Inject('CARTEIRAS')
     private carteiraRepository: Repository<Carteiras>,
-  ) {}
+  ) { }
 
-  async getOne(id: number, userId?: string): Promise<Carteiras> {
+  async getOne(id: number): Promise<Carteiras> {
     try {
       let carteira = await this.carteiraRepository.findOneOrFail(
         { id },
         { relations: ['user'] },
       );
-      if (userId && carteira.user.id !== userId) {
-        throw new UnauthorizedException(
-          ERROR_MESSAGES.USER_TOKEN_NOT_EQUALS_TO_PARAM_URL,
-        );
-      }
+
       return carteira;
     } catch (error) {
       throw new BadRequestException(error);
@@ -56,13 +53,12 @@ export class CarteirasService {
   }
 
   async deletaCarteira(
-    id: number,
-    userId: string,
-  ): Promise<{ deleted: boolean; message?: string }> {
+    id: number
+  ): Promise<CarteirasDeleteResponseDTO> {
     try {
-      await this.getOne(id, userId);
+      await this.getOne(id);
       await this.carteiraRepository.delete({ id });
-      return { deleted: true };
+      return new CarteirasDeleteResponseDTO(true);
     } catch (error) {
       throw new BadRequestException(error);
     }
@@ -70,13 +66,12 @@ export class CarteirasService {
 
   async alteraCarteira(
     id: number,
-    carteira: CarteirasDTO,
-    userId: string,
+    carteira: CarteirasDTO
   ): Promise<Carteiras> {
     try {
-      await this.getOne(id, userId);
+      await this.getOne(id);
       await this.carteiraRepository.update({ id }, carteira);
-      return this.getOne(id);
+      return await this.getOne(id);
     } catch (error) {
       throw new BadRequestException(error);
     }

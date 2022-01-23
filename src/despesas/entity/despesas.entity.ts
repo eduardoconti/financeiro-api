@@ -2,7 +2,7 @@ import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
 import { Categorias } from '../../categorias/entity/categorias.entity';
 import { Carteiras } from '../../carteiras/entity/carteiras.entity';
 import { Users } from 'src/users/entity/users.entity';
-import { Exclude } from 'class-transformer';
+import { Exclude, Transform, Type } from 'class-transformer';
 
 @Entity({ schema: 'public', name: 'despesas' })
 export class Despesas {
@@ -13,6 +13,7 @@ export class Despesas {
   descricao: string;
 
   @Column('float', { default: 0 })
+  @Transform(({ value }) => Math.round(value * 100) / 100)
   valor: number;
 
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })

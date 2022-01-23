@@ -1,32 +1,30 @@
+import { CategoriaDeleteResponseDTO } from '@categorias/dto';
+import { TYPES } from '@config/dependency-injection';
 import {
   Injectable,
   Inject,
   BadRequestException,
-  UnauthorizedException,
 } from '@nestjs/common';
-import { ERROR_MESSAGES } from 'src/shared/constants/messages';
+
 import { Repository } from 'typeorm';
 import { CategoriasDTO } from '../dto/categorias.dto';
 import { Categorias } from '../entity/categorias.entity';
+import { ICategoriaService } from './categoria.service.interface';
 
 @Injectable()
-export class CategoriasService {
+export class CategoriasService implements ICategoriaService {
   constructor(
-    @Inject('CATEGORIAS')
-    private categoriaRepository: Repository<Categorias>,
-  ) {}
+    @Inject(TYPES.CategoriaRepository)
+    private readonly categoriaRepository: Repository<Categorias>,
+  ) { }
 
-  async getOne(id: number, userId?: string): Promise<Categorias> {
+  async getOne(id: number): Promise<Categorias> {
     try {
       let categoria = await this.categoriaRepository.findOneOrFail(
         { id },
         { relations: ['user'] },
       );
-      if (userId && categoria.user.id !== userId) {
-        throw new UnauthorizedException(
-          ERROR_MESSAGES.USER_TOKEN_NOT_EQUALS_TO_PARAM_URL,
-        );
-      }
+
       return categoria;
     } catch (error) {
       throw new BadRequestException(error);
@@ -57,12 +55,11 @@ export class CategoriasService {
 
   async deletaCategoria(
     id: number,
-    userId: string,
-  ): Promise<{ deleted: boolean; message?: string }> {
+  ): Promise<CategoriaDeleteResponseDTO> {
     try {
-      await this.getOne(id, userId);
+      await this.getOne(id);
       await this.categoriaRepository.delete({ id });
-      return { deleted: true };
+      return new CategoriaDeleteResponseDTO(true);
     } catch (error) {
       throw new BadRequestException(error);
     }
@@ -71,10 +68,9 @@ export class CategoriasService {
   async alteraCategoria(
     id: number,
     categoria: CategoriasDTO,
-    userId: string,
   ): Promise<Categorias> {
     try {
-      await this.getOne(id, userId);
+      await this.getOne(id);
       await this.categoriaRepository.update({ id }, categoria);
       return await this.getOne(id);
     } catch (error) {

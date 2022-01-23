@@ -1,3 +1,6 @@
+import { JwtAuthGuard } from '@auth/guard';
+import { UserPayloadInterface } from '@auth/interfaces';
+import { TYPES } from '@config/dependency-injection';
 import {
   Controller,
   Get,
@@ -7,22 +10,26 @@ import {
   Delete,
   Put,
   UseGuards,
+  Inject,
 } from '@nestjs/common';
-import { Carteiras } from './entity/carteiras.entity';
-import { CarteirasDTO } from './dto/carteiras.dto';
+
 import { ApiTags } from '@nestjs/swagger';
-import { CarteirasService } from './service/carteiras.service';
-import { JwtAuthGuard } from 'src/auth/guard/jwt-auth.guard';
-import { User } from 'src/shared/decorator/user.decorator';
-import { UserPayloadInterface } from 'src/auth/interfaces/user-payload.interface';
-import { UserLoggedGuard } from 'src/users/guard/user-logged-auth.guard';
+import { User } from '@shared/decorator';
+import { UserLoggedGuard } from '@users/guard';
+import { CarteirasDTO } from './dto';
+import { Carteiras } from './entity';
+import { ICarteirasService } from './service';
+
 @Controller('carteiras')
 @ApiTags('carteiras')
 @UseGuards(JwtAuthGuard)
 export class CarteirasController {
-  constructor(private readonly carteiraService: CarteirasService) {}
+  constructor(
+    @Inject(TYPES.CarteiraService)
+    private readonly carteiraService: ICarteirasService) { }
 
   @Get()
+  @UseGuards(UserLoggedGuard)
   async getAll(@User() user: UserPayloadInterface): Promise<Carteiras[]> {
     return await this.carteiraService.retornaTodasCarteiras(user.userId);
   }
@@ -34,19 +41,20 @@ export class CarteirasController {
   }
 
   @Delete('/:id')
+  @UseGuards(UserLoggedGuard)
   async deletaCarteira(
     @User() user: UserPayloadInterface,
     @Param('id') id: number,
   ): Promise<{ deleted: boolean }> {
-    return this.carteiraService.deletaCarteira(id, user.userId);
+    return this.carteiraService.deletaCarteira(id);
   }
 
   @Put('/:id')
+  @UseGuards(UserLoggedGuard)
   async alteraDespesa(
-    @User() user: UserPayloadInterface,
     @Param('id') id: number,
     @Body() despesa: CarteirasDTO,
   ): Promise<Carteiras> {
-    return this.carteiraService.alteraCarteira(id, despesa, user.userId);
+    return this.carteiraService.alteraCarteira(id, despesa);
   }
 }

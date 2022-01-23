@@ -9,6 +9,7 @@ import { DespesasMiddleware } from './middleware/despesas.middleware';
   imports: [DatabaseModule],
   controllers: [DespesasController],
   providers: [...despesasProviders, DespesaService],
+  exports: [DespesaService]
 })
 export class DespesasModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {

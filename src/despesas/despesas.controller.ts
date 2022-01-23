@@ -11,24 +11,24 @@ import {
   UseGuards,
   ParseIntPipe,
 } from '@nestjs/common';
-import { DespesaService } from './service/despesas.service';
-import { Despesas } from './entity/despesas.entity';
-import { DespesasDTO } from './dto/despesas.dto';
+
 import { ApiQuery, ApiTags } from '@nestjs/swagger';
-import { UserLoggedGuard } from 'src/users/guard/user-logged-auth.guard';
-import { User } from 'src/shared/decorator/user.decorator';
-import { UserPayloadInterface } from 'src/auth/interfaces/user-payload.interface';
-import { JwtAuthGuard } from 'src/auth/guard/jwt-auth.guard';
-import { SuccessResponseData } from 'src/shared/dto/success-response-data.dto';
 import { HttpStatus } from '@nestjs/common';
-import { ExpensePatchFlagPayedDto } from './dto/patch-flag-payed.dto';
-import { ExpenseDeletedResponse } from './interface/deleted-response.interface';
-import { SUCCESS_MESSAGES } from './constants/messages.constants';
+import { JwtAuthGuard } from '@auth/guard';
+import { User } from '@shared/decorator';
+import { UserPayloadInterface } from '@auth/interfaces';
+import { SuccessResponseData } from '@shared/dto';
+import { DespesaService } from './service';
+import { Despesas } from './entity';
+import { SUCCESS_MESSAGES } from './constants';
+import { DespesasDTO, ExpensePatchFlagPayedDto } from './dto';
+import { ExpenseDeletedResponse } from './interface';
+import { UserLoggedGuard } from 'src/users/guard';
 @Controller('despesas')
 @ApiTags('despesas')
 @UseGuards(JwtAuthGuard)
 export class DespesasController {
-  constructor(private readonly despesaService: DespesaService) {}
+  constructor(private readonly despesaService: DespesaService) { }
 
   @Get()
   @ApiQuery({ name: 'ano', required: false, example: new Date().getFullYear() })
@@ -39,7 +39,7 @@ export class DespesasController {
     @Query('ano', ParseIntPipe) ano?: number,
     @Query('mes', ParseIntPipe) mes?: number,
     @Query('pago') pago?: boolean,
-  ): Promise<SuccessResponseData<Despesas>> {
+  ): Promise<SuccessResponseData<Despesas[]>> {
     let data = await this.despesaService.retornaTodasDespesas(
       ano,
       mes,
@@ -47,7 +47,7 @@ export class DespesasController {
       user.userId,
     );
 
-    return new SuccessResponseData<Despesas>(
+    return new SuccessResponseData<Despesas[]>(
       data,
       HttpStatus.OK,
       SUCCESS_MESSAGES.GET_SUCCESS,

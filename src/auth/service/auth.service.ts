@@ -1,20 +1,21 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { SignDto, UserPayloadDto } from '@auth/dto';
+import { UserPayloadInterface } from '@auth/interfaces';
+import { TYPES } from '@config/dependency-injection';
+import { Inject, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { Users } from 'src/users/entity/users.entity';
-import { PasswordManagerService } from 'src/users/service/password-mannager.service';
-import { UsersService } from 'src/users/service/users.service';
-import { ERROR_MESSAGES } from '../constants/messages.constants';
-import { SignDto } from '../dto/sign-in.dto';
-import { UserPayloadDto } from '../dto/user-payload.dto';
-import { UserPayloadInterface } from '../interfaces/user-payload.interface';
+import { Users } from '@users/entity';
+import { IUserService, PasswordManagerService, } from '@users/service';
+import { IAuthService } from './auth.service.interface';
 
 @Injectable()
-export class AuthService {
+export class AuthService implements IAuthService {
   constructor(
-    private usersService: UsersService,
+    @Inject(TYPES.UserService)
+    private usersService: IUserService,
+    @Inject(TYPES.PasswordManagerService)
     private passwordManager: PasswordManagerService,
     private jwtService: JwtService,
-  ) {}
+  ) { }
 
   async validateUser(login: string, pass: string): Promise<Users> {
     const user = await this.usersService.returnUserByLogin(login);
@@ -36,15 +37,15 @@ export class AuthService {
     };
   }
 
-  decodeToken(token: string) {
-    try {
-      const decodedToken = this.jwtService.decode(token);
-      if (!decodedToken) {
-        throw new UnauthorizedException(ERROR_MESSAGES.TOKEN_DECODE_ERROR);
-      }
-      return decodedToken;
-    } catch (error) {
-      throw new UnauthorizedException(ERROR_MESSAGES.TOKEN_DECODE_ERROR);
-    }
-  }
+  // private decodeToken(token: string) {
+  //   try {
+  //     const decodedToken = this.jwtService.decode(token);
+  //     if (!decodedToken) {
+  //       throw new UnauthorizedException(ERROR_MESSAGES.TOKEN_DECODE_ERROR);
+  //     }
+  //     return decodedToken;
+  //   } catch (error) {
+  //     throw new UnauthorizedException(ERROR_MESSAGES.TOKEN_DECODE_ERROR);
+  //   }
+  // }
 }

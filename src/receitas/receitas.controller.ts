@@ -26,7 +26,7 @@ import { UserLoggedGuard } from 'src/users/guard/user-logged-auth.guard';
 @ApiTags('receitas')
 @UseGuards(JwtAuthGuard)
 export class ReceitasController {
-  constructor(private readonly receitaService: ReceitaService) {}
+  constructor(private readonly receitaService: ReceitaService) { }
 
   @Get()
   @ApiQuery({ name: 'ano', required: false, example: new Date().getFullYear() })
@@ -77,7 +77,7 @@ export class ReceitasController {
     @Param('ano', ParseIntPipe) ano: number,
     @Query('pago') pago: boolean,
   ) {
-    let data = await this.receitaService.retornaDespesasAgrupadasPorMes(
+    let data = await this.receitaService.retornaReceitasAgrupadasPorMes(
       ano,
       pago,
       user.userId,

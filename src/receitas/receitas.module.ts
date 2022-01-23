@@ -8,5 +8,6 @@ import { ReceitasController } from './receitas.controller';
   imports: [DatabaseModule],
   controllers: [ReceitasController],
   providers: [...ReceitasProviders, ReceitaService],
+  exports: [ReceitaService]
 })
-export class ReceitasModule {}
+export class ReceitasModule { }

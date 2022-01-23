@@ -1,26 +1,30 @@
 import {
   Body,
-  ClassSerializerInterceptor,
   Controller,
   Get,
   Param,
   Post,
   UseGuards,
-  UseInterceptors,
   Delete,
+  Inject,
 } from '@nestjs/common';
-import { UserDto } from './dto/users.dto';
-import { UsersService } from './service/users.service';
+
 import { ApiTags } from '@nestjs/swagger';
-import { MasterUserGuard } from './guard/master-user.guard';
-import { JwtAuthGuard } from 'src/auth/guard/jwt-auth.guard';
-import { Users } from './entity/users.entity';
+
+import { TYPES } from '@config/dependency-injection';
+import { JwtAuthGuard } from '@auth/guard';
+import { IUserService } from './service';
+import { MasterUserGuard } from './guard';
+import { Users } from './entity';
+import { UserDto } from './dto';
 
 @ApiTags('users')
 @Controller('users')
 @UseGuards(JwtAuthGuard)
 export class UsersController {
-  constructor(private readonly userService: UsersService) {}
+  constructor(
+    @Inject(TYPES.UserService)
+    private readonly userService: IUserService) { }
   @Get()
   @UseGuards(MasterUserGuard)
   async returnAllUsers(): Promise<Users[]> {

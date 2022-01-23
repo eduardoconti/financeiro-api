@@ -23,7 +23,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
     const response = ctx.getResponse<Response>();
     const status = exception.getStatus();
     const errorResponse = exception.getResponse() as any;
-
+    console.log(exception.message)
     this.sendErrorSentry(errorResponse);
     const internalMessage = errorResponse.error
       ? errorResponse.error
@@ -31,7 +31,6 @@ export class HttpExceptionFilter implements ExceptionFilter {
     const message = errorResponse.message
       ? errorResponse.message
       : HttpInternalMessages.INTERNAL_SERVER_ERROR;
-    console.log(new ResponseDataDto(status, internalMessage, message));
     response
       .status(status)
       .json(new ResponseDataDto(status, internalMessage, message));

@@ -5,9 +5,10 @@ import {
 } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { PASSWORD_ERROR_MESSAGES } from 'src/shared/constants/password-messages';
+import { IPasswordManagerService } from './password-mannager.service.interface';
 
 @Injectable()
-export class PasswordManagerService {
+export class PasswordManagerService implements IPasswordManagerService {
   async getHash(password: string): Promise<string> {
     try {
       return bcrypt.hash(password, 15);
