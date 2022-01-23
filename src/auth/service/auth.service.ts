@@ -17,13 +17,13 @@ export class AuthService implements IAuthService {
     private jwtService: JwtService,
   ) { }
 
-  async validateUser(login: string, pass: string): Promise<Users> {
+  async validateUser(login: string, pass: string): Promise<Users | undefined> {
     const user = await this.usersService.returnUserByLogin(login);
 
     if (user && (await this.passwordManager.compareHash(pass, user.password))) {
       return user;
     }
-    return null;
+
   }
 
   async login(user: UserPayloadDto): Promise<SignDto> {

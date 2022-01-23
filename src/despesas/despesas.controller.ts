@@ -10,6 +10,7 @@ import {
   Query,
   UseGuards,
   ParseIntPipe,
+  Inject,
 } from '@nestjs/common';
 
 import { ApiQuery, ApiTags } from '@nestjs/swagger';
@@ -18,17 +19,22 @@ import { JwtAuthGuard } from '@auth/guard';
 import { User } from '@shared/decorator';
 import { UserPayloadInterface } from '@auth/interfaces';
 import { SuccessResponseData } from '@shared/dto';
-import { DespesaService } from './service';
 import { Despesas } from './entity';
 import { SUCCESS_MESSAGES } from './constants';
-import { DespesasDTO, ExpensePatchFlagPayedDto } from './dto';
+import { DespesasDTO, ExpensePatchFlagPayedDTO } from './dto';
 import { ExpenseDeletedResponse } from './interface';
 import { UserLoggedGuard } from 'src/users/guard';
+import { IExpenseService } from './service/expense.service.interface';
+import { TYPES } from '@config/dependency-injection';
+
 @Controller('despesas')
 @ApiTags('despesas')
 @UseGuards(JwtAuthGuard)
 export class DespesasController {
-  constructor(private readonly despesaService: DespesaService) { }
+  constructor(
+    @Inject(TYPES.ExpenseService)
+    private readonly despesaService: IExpenseService,
+  ) {}
 
   @Get()
   @ApiQuery({ name: 'ano', required: false, example: new Date().getFullYear() })
@@ -40,7 +46,7 @@ export class DespesasController {
     @Query('mes', ParseIntPipe) mes?: number,
     @Query('pago') pago?: boolean,
   ): Promise<SuccessResponseData<Despesas[]>> {
-    let data = await this.despesaService.retornaTodasDespesas(
+    const data = await this.despesaService.retornaTodasDespesas(
       ano,
       mes,
       pago,
@@ -60,7 +66,7 @@ export class DespesasController {
     @User() user: UserPayloadInterface,
     @Query('pago') pago?: boolean,
   ): Promise<SuccessResponseData<number>> {
-    let data = await this.despesaService.retornaTotalDespesas(
+    const data = await this.despesaService.retornaTotalDespesas(
       0,
       0,
       pago,
@@ -81,7 +87,7 @@ export class DespesasController {
     @Param('ano', ParseIntPipe) ano: number,
     @Query('pago') pago?: boolean,
   ) {
-    let data = await this.despesaService.retornaDespesasAgrupadasPorMes(
+    const data = await this.despesaService.retornaDespesasAgrupadasPorMes(
       ano,
       pago,
       user.userId,
@@ -102,7 +108,7 @@ export class DespesasController {
     @Param('mes', ParseIntPipe) mes: number,
     @Query('pago') pago: boolean,
   ) {
-    let data = await this.despesaService.retornaTodasDespesas(
+    const data = await this.despesaService.retornaTodasDespesas(
       ano,
       mes,
       pago,
@@ -123,7 +129,7 @@ export class DespesasController {
     @Param('mes', ParseIntPipe) mes: number,
     @Query('pago') pago: boolean,
   ) {
-    let data = await this.despesaService.retornaValorDespesasAgrupadosPorCategoria(
+    const data = await this.despesaService.retornaValorDespesasAgrupadosPorCategoria(
       ano,
       mes,
       pago,
@@ -145,7 +151,7 @@ export class DespesasController {
     @Param('mes', ParseIntPipe) mes: number,
     @Query('pago') pago: boolean,
   ) {
-    let data = await this.despesaService.retornaValorDespesasAgrupadosPorCarteira(
+    const data = await this.despesaService.retornaValorDespesasAgrupadosPorCarteira(
       ano,
       mes,
       pago,
@@ -167,7 +173,7 @@ export class DespesasController {
     @Param('mes', ParseIntPipe) mes: number,
     @Query('pago') pago: boolean,
   ) {
-    let data = await this.despesaService.retornaTotalDespesas(
+    const data = await this.despesaService.retornaTotalDespesas(
       ano,
       mes,
       pago,
@@ -186,7 +192,7 @@ export class DespesasController {
     @User() userToken: UserPayloadInterface,
     @Param('id', ParseIntPipe) id: number,
   ): Promise<SuccessResponseData<Despesas>> {
-    let res = await this.despesaService.getOne(id, userToken.userId);
+    const res = await this.despesaService.getOne(id, userToken.userId);
     return new SuccessResponseData<Despesas>(
       res,
       HttpStatus.OK,
@@ -195,16 +201,12 @@ export class DespesasController {
   }
 
   @Patch('flag/:id')
+  @UseGuards(UserLoggedGuard)
   async alteraFlagPago(
-    @User() user: UserPayloadInterface,
     @Param('id', ParseIntPipe) id: number,
-    @Body() despesa: ExpensePatchFlagPayedDto,
+    @Body() despesa: ExpensePatchFlagPayedDTO,
   ): Promise<SuccessResponseData<Despesas>> {
-    let data = await this.despesaService.alteraFlagPago(
-      id,
-      despesa,
-      user.userId,
-    );
+    const data = await this.despesaService.alteraFlagPago(id, despesa);
     return new SuccessResponseData<Despesas>(
       data,
       HttpStatus.OK,
@@ -213,16 +215,12 @@ export class DespesasController {
   }
 
   @Put('/:id')
+  @UseGuards(UserLoggedGuard)
   async alteraDespesa(
-    @User() user: UserPayloadInterface,
     @Param('id', ParseIntPipe) id: number,
     @Body() despesa: DespesasDTO,
   ): Promise<SuccessResponseData<Despesas>> {
-    let data = await this.despesaService.alteraDespesa(
-      id,
-      despesa,
-      user.userId,
-    );
+    const data = await this.despesaService.alteraDespesa(id, despesa);
     return new SuccessResponseData<Despesas>(
       data,
       HttpStatus.OK,
@@ -231,11 +229,11 @@ export class DespesasController {
   }
 
   @Delete('/:id')
+  @UseGuards(UserLoggedGuard)
   async deletaDespesa(
-    @User() user: UserPayloadInterface,
     @Param('id', ParseIntPipe) id: number,
   ): Promise<SuccessResponseData<ExpenseDeletedResponse>> {
-    let data = await this.despesaService.deletaDespesa(id, user.userId);
+    const data = await this.despesaService.deletaDespesa(id);
     return new SuccessResponseData<ExpenseDeletedResponse>(
       data,
       HttpStatus.OK,
@@ -248,7 +246,7 @@ export class DespesasController {
   async insereDespesa(
     @Body() despesa: DespesasDTO,
   ): Promise<SuccessResponseData<Despesas>> {
-    let data = await this.despesaService.insereDespesa(despesa);
+    const data = await this.despesaService.insereDespesa(despesa);
     return new SuccessResponseData<Despesas>(
       data,
       HttpStatus.CREATED,

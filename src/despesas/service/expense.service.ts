@@ -1,37 +1,37 @@
-
-import { ExpensesGroupMonthDTO } from './../dto/expenses-group-month-response.dto';
+import { ExpensesGroupMonthDTO } from '../dto/expenses-group-month-response.dto';
 import {
   Injectable,
   Inject,
   BadRequestException,
-  UnauthorizedException,
   InternalServerErrorException,
 } from '@nestjs/common';
+
 import { Between, Repository } from 'typeorm';
 import { Despesas } from '../entity/despesas.entity';
-import { DespesasDTO } from '../dto/despesas.dto';
-import { ERROR_MESSAGES } from 'src/shared/constants/messages';
-import { ExpensePatchFlagPayedDto } from '../dto/patch-flag-payed.dto';
-import { ExpenseDeletedResponse } from '../interface/deleted-response.interface';
-import { EXPENSE_ERROR_MESSAGES } from '../constants/messages.constants';
-@Injectable()
-export class DespesaService {
-  constructor(
-    @Inject('DESPESAS')
-    private despesaRepository: Repository<Despesas>,
-  ) { }
 
-  private CriaWhereMes(mes: number) {
+import { IExpenseService } from './expense.service.interface';
+import { TYPES } from '@config/dependency-injection';
+import { EXPENSE_ERROR_MESSAGES } from '@despesas/constants';
+import { DespesasDTO, ExpensePatchFlagPayedDTO } from '@despesas/dto';
+import { ExpenseDeletedResponse } from '@despesas/interface';
+@Injectable()
+export class DespesaService implements IExpenseService {
+  constructor(
+    @Inject(TYPES.ExpenseRepository)
+    private despesaRepository: Repository<Despesas>,
+  ) {}
+
+  private CriaWhereMes(mes?: number) {
     return !mes || mes == 0
       ? 'TRUE'
       : "date_part('month',despesas.vencimento)=" + String(mes);
   }
 
-  private CriaWherePago(pago: boolean) {
+  private CriaWherePago(pago?: boolean) {
     return typeof pago === 'undefined' ? 'TRUE' : 'despesas.pago=' + pago;
   }
 
-  private CriaWhereAno(ano: number) {
+  private CriaWhereAno(ano?: number) {
     return !ano || ano == 0
       ? 'TRUE'
       : "date_part('year',despesas.vencimento)=" + String(ano);
@@ -54,7 +54,7 @@ export class DespesaService {
         'categoria',
         'carteira',
       ];
-      let despesas = await this.despesaRepository
+      const despesas = await this.despesaRepository
         .createQueryBuilder('despesas')
         .select(select)
         .innerJoin('despesas.categoria', 'categoria')
@@ -81,11 +81,15 @@ export class DespesaService {
     mes?: number,
     pago?: boolean,
     userId?: string,
-  ) {
+  ): Promise<any[]> {
     try {
-      let despesas = await this.despesaRepository
+      const despesas = await this.despesaRepository
         .createQueryBuilder('despesas')
-        .select(['SUM(despesas.valor) valor', 'categoria.descricao descricao'])
+        .select([
+          'SUM(despesas.valor) valor',
+          'categoria.descricao descricao',
+          'categoria.id id',
+        ])
         .innerJoin('despesas.categoria', 'categoria')
         .innerJoin('despesas.user', 'user')
         .where('user.id= :userId', { userId: userId })
@@ -110,16 +114,14 @@ export class DespesaService {
     mes?: number,
     pago?: boolean,
     userId?: string,
-  ) {
+  ): Promise<any[]> {
     try {
-
-      let despesas = await this.despesaRepository
+      const despesas = await this.despesaRepository
         .createQueryBuilder('despesas')
         .select([
           'SUM(despesas.valor) valor',
           'carteira.descricao descricao',
           'carteira.id id',
-
         ])
         .innerJoin('despesas.carteira', 'carteira')
         .innerJoin('despesas.user', 'user')
@@ -141,13 +143,13 @@ export class DespesaService {
   }
 
   async retornaTotalDespesas(
-    ano: number = 0,
-    mes: number = 0,
+    ano = 0,
+    mes = 0,
     pago?: boolean,
     userId?: string,
   ): Promise<number> {
     try {
-      let { sum } = await this.despesaRepository
+      const { sum } = await this.despesaRepository
         .createQueryBuilder('despesas')
         .select('SUM(despesas.valor)', 'sum')
         .innerJoin('despesas.user', 'user')
@@ -172,32 +174,35 @@ export class DespesaService {
     userId?: string,
   ): Promise<{ [k: string]: ExpensesGroupMonthDTO<Despesas> }> {
     try {
-
-      const dateWhere = (ano: number) => Between(new Date(ano, 0, 1), new Date(ano, 11, 31));
-      var where: { [k: string]: any } = {};
+      // const dateWhere = (ano: number) =>
+      //   Between(new Date(ano, 0, 1), new Date(ano, 11, 31));
+      const where: { [k: string]: any } = {};
 
       if (ano) {
         //where.vencimento = dateWhere(ano)
       }
       if (userId) {
         where.user = {
-          id: userId
-        }
+          id: userId,
+        };
       }
       if (pago != null) {
-        where.pago = pago
+        where.pago = pago;
       }
-      let despesas = await this.despesaRepository.find({
+      const despesas = await this.despesaRepository.find({
         relations: ['categoria', 'user', 'carteira'],
         where: where,
         order: { vencimento: 'ASC' },
-      })
+      });
 
-      let monthExpenses: { [key: string]: ExpensesGroupMonthDTO<Despesas> } = {};
+      const monthExpenses: {
+        [key: string]: ExpensesGroupMonthDTO<Despesas>;
+      } = {};
 
-      despesas.forEach(element => {
-
-        let key = String((element.vencimento).getFullYear()) + String("0" + (element.vencimento).getMonth()).slice(-2);
+      despesas.forEach((element) => {
+        const key =
+          String(element.vencimento.getFullYear()) +
+          String('0' + element.vencimento.getMonth()).slice(-2);
 
         if (key in monthExpenses) {
           monthExpenses[key].quantity++;
@@ -209,23 +214,19 @@ export class DespesaService {
           }
           monthExpenses[key].data.push(element);
         } else {
-
           monthExpenses[key] = new ExpensesGroupMonthDTO<Despesas>(
             element.vencimento.getMonth(),
             element.valor,
-            (element.pago ? element.valor : 0),
-            (element.pago ? 0 : element.valor),
+            element.pago ? element.valor : 0,
+            element.pago ? 0 : element.valor,
             1,
-            [element]);
+            [element],
+          );
         }
-
       });
 
       return monthExpenses;
-
-
     } catch (error) {
-
       throw new InternalServerErrorException(
         error,
         EXPENSE_ERROR_MESSAGES.EXPENSE_SELECT_GROUP_MONTH_ERROR,
@@ -233,26 +234,12 @@ export class DespesaService {
     }
   }
 
-  /**
-   *
-   * @param id string
-   * @param userId string
-   * @returns Despesas
-   * @throw UnauthorizedException
-   * @throw BadRequestException
-   */
-  async getOne(id: number, userId?: string): Promise<Despesas> {
+  async getOne(id: number): Promise<Despesas> {
     try {
-      let despesa = await this.despesaRepository.findOneOrFail(
+      const despesa = await this.despesaRepository.findOneOrFail(
         { id },
         { relations: ['carteira', 'categoria', 'user'] },
       );
-
-      if (userId && despesa.user.id !== userId) {
-        throw new UnauthorizedException(
-          ERROR_MESSAGES.USER_TOKEN_NOT_EQUALS_TO_PARAM_URL,
-        );
-      }
 
       return despesa;
     } catch (error) {
@@ -276,13 +263,9 @@ export class DespesaService {
     }
   }
 
-  async alteraDespesa(
-    id: number,
-    despesa: DespesasDTO,
-    userId: string,
-  ): Promise<Despesas> {
+  async alteraDespesa(id: number, despesa: DespesasDTO): Promise<Despesas> {
     try {
-      await this.getOne(id, userId);
+      await this.getOne(id);
       await this.despesaRepository.update({ id }, despesa);
       return await this.getOne(id);
     } catch (error) {
@@ -292,20 +275,13 @@ export class DespesaService {
       );
     }
   }
-  /**
-   *
-   * @param id
-   * @param patchData
-   * @param userId
-   * @returns Despesas
-   */
+
   async alteraFlagPago(
     id: number,
-    patchData: ExpensePatchFlagPayedDto,
-    userId: string,
+    patchData: ExpensePatchFlagPayedDTO,
   ): Promise<Despesas> {
     try {
-      let res = await this.getOne(id, userId);
+      const res = await this.getOne(id);
       if (res.pago !== patchData.pago) {
         await this.despesaRepository.update({ id }, patchData);
         res.pago = patchData.pago;
@@ -319,12 +295,9 @@ export class DespesaService {
     }
   }
 
-  async deletaDespesa(
-    id: number,
-    userId: string,
-  ): Promise<ExpenseDeletedResponse> {
+  async deletaDespesa(id: number): Promise<ExpenseDeletedResponse> {
     try {
-      await this.getOne(id, userId);
+      await this.getOne(id);
       await this.despesaRepository.delete({ id });
       return { deleted: true } as ExpenseDeletedResponse;
     } catch (error) {

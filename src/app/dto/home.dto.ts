@@ -1,11 +1,11 @@
 export class Home {
-  constructor(api: string, status: number, version: string) {
+  constructor(api?: string, status?: number, version?: string) {
     this.api = api;
     this.status = status;
     this.version = version;
   }
 
-  api: string;
-  status: number;
-  version: string;
+  api: string | undefined;
+  status: number | undefined;
+  version: string | undefined;
 }

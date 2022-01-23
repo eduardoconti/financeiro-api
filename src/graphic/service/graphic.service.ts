@@ -1,20 +1,22 @@
 import { GeneralGraphicResponseDataDTO } from './../dto/general-graphic/general-graphic-response-data.dto';
 import { GeneralGraphicResponseDTO } from './../dto/general-graphic/general-graphic-response.dto';
 
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { GeneralGraphicDataDTO } from '../dto/general-graphic';
 import { ReceitaService } from '@receitas/service';
-import { DespesaService } from '@despesas/service';
+import { IExpenseService } from '@despesas/service';
+import { TYPES } from '@config/dependency-injection';
 
 
 @Injectable()
 export class GraphicService {
     constructor(
-        private despesasService: DespesaService,
+        @Inject(TYPES.ExpenseService)
+        private despesasService: IExpenseService,
         private receitasService: ReceitaService) { }
     async generalGraphic(userId: string, pago?: boolean): Promise<GeneralGraphicResponseDTO> {
-        let despesas = await this.despesasService.retornaDespesasAgrupadasPorMes(null, pago, userId);
-        let receitas = await this.receitasService.retornaReceitasAgrupadasPorMes(null, pago, userId);
+        let despesas = await this.despesasService.retornaDespesasAgrupadasPorMes(undefined, pago, userId);
+        let receitas = await this.receitasService.retornaReceitasAgrupadasPorMes(undefined, pago, userId);
         let graphicData: GeneralGraphicResponseDTO = new GeneralGraphicResponseDTO()
 
         let totalBallance = 0;
@@ -86,6 +88,8 @@ export class GraphicService {
                 return this.getYear(yearMonth) + '-' + 'Nov'
             case '11':
                 return this.getYear(yearMonth) + '-' + 'Dez'
+            default:
+                return yearMonth
         }
     }
 

@@ -25,5 +25,6 @@
       "@receitas/*": ["src/receitas/*"],
       "@shared/*": ["src/shared/*"],
     }
+
   }
 }
