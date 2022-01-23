@@ -1,11 +1,12 @@
+import { ClassSerializerInterceptor } from '@nestjs/common';
 import { NestFactory, Reflector } from '@nestjs/core';
-import { AppModule } from './app/app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import * as Sentry from '@sentry/node';
 import * as helmet from 'helmet';
+
+import { AppModule } from './app/app.module';
 import { HttpExceptionFilter } from './shared/exceptions/http-exception.filter';
 import { ValidationPipe } from './shared/pipes/validation.pipe';
-import { ClassSerializerInterceptor } from '@nestjs/common';
-import * as Sentry from '@sentry/node';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, { cors: true });

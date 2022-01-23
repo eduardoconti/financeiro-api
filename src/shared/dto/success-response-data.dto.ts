@@ -1,4 +1,5 @@
 import { HttpStatus } from '@nestjs/common';
+
 import { HttpInternalMessages } from '../enums';
 import { ResponseDataDto } from './response-data.dto';
 
@@ -14,5 +15,4 @@ export class SuccessResponseData<D> extends ResponseDataDto {
     super(statusCode, internalMessage, message);
     this.data = data;
   }
-
 }

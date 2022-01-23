@@ -1,7 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { ReceitaService } from './receitas.service';
-import { Receitas } from '../entity/receitas.entity';
 import { getRepositoryToken } from '@nestjs/typeorm';
+
+import { Receitas } from '../entity/receitas.entity';
+import { ReceitaService } from './receitas.service';
 describe('ReceitasService', () => {
   let service: ReceitaService;
   const mockRepository = {};

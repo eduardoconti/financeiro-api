@@ -1,18 +1,24 @@
-
 import { Module } from '@nestjs/common';
-import { DespesasModule } from '@despesas/despesas.module';
-import { ReceitasModule } from '@receitas/receitas.module';
-import { CategoriasModule } from '@categorias/categorias.module';
-import { CarteirasModule } from '@carteiras/carteiras.module';
-import { TransferenciasModule } from 'src/transferencias/transferencias.module';
-import { AuthModule } from '@auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
-import { AppController } from './app.controller';
-import { AppService } from './service';
+import { ReceitasModule } from '@receitas/receitas.module';
+import { TransferenciasModule } from 'src/transferencias/transferencias.module';
+
+import { AuthModule } from '@auth/auth.module';
+
+import { CategoriasModule } from '@categorias/categorias.module';
+
+import { CarteirasModule } from '@carteiras/carteiras.module';
+
 import { UsersModule } from '@users/users.module';
-import { GraphicModule } from '@graphic/graphic.module';
+
 import { TYPES } from '@config/dependency-injection';
 
+import { DespesasModule } from '@despesas/despesas.module';
+
+import { GraphicModule } from '@graphic/graphic.module';
+
+import { AppController } from './app.controller';
+import { AppService } from './service';
 
 @Module({
   imports: [
@@ -31,4 +37,4 @@ import { TYPES } from '@config/dependency-injection';
   controllers: [AppController],
   providers: [{ provide: TYPES.AppService, useClass: AppService }],
 })
-export class AppModule { }
+export class AppModule {}

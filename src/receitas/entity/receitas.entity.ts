@@ -1,6 +1,7 @@
 import { Exclude } from 'class-transformer';
 import { Users } from 'src/users/entity/users.entity';
 import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
+
 import { Carteiras } from '../../carteiras/entity/carteiras.entity';
 @Entity({ schema: 'public', name: 'receitas' })
 export class Receitas {

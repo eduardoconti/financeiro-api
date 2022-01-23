@@ -12,21 +12,22 @@ import {
   HttpStatus,
   ParseIntPipe,
 } from '@nestjs/common';
-import { ReceitaService } from './service/receitas.service';
-import { Receitas } from './entity/receitas.entity';
-import { ReceitasDTO } from './dto/receitas.dto';
 import { ApiQuery, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/auth/guard/jwt-auth.guard';
-import { User } from 'src/shared/decorator/user.decorator';
 import { UserPayloadInterface } from 'src/auth/interfaces/user-payload.interface';
+import { User } from 'src/shared/decorator/user.decorator';
 import { SuccessResponseData } from 'src/shared/dto/success-response-data.dto';
-import { YIELD_SUCCESS_MESSAGES } from './constants/messages.constants';
 import { UserLoggedGuard } from 'src/users/guard/user-logged-auth.guard';
+
+import { YIELD_SUCCESS_MESSAGES } from './constants/messages.constants';
+import { ReceitasDTO } from './dto/receitas.dto';
+import { Receitas } from './entity/receitas.entity';
+import { ReceitaService } from './service/receitas.service';
 @Controller('receitas')
 @ApiTags('receitas')
 @UseGuards(JwtAuthGuard)
 export class ReceitasController {
-  constructor(private readonly receitaService: ReceitaService) { }
+  constructor(private readonly receitaService: ReceitaService) {}
 
   @Get()
   @ApiQuery({ name: 'ano', required: false, example: new Date().getFullYear() })
@@ -38,7 +39,7 @@ export class ReceitasController {
     @Query('mes', ParseIntPipe) mes?: number,
     @Query('pago') pago?: boolean,
   ): Promise<SuccessResponseData<Receitas[]>> {
-    let data = await this.receitaService.retornaTodasReceitas(
+    const data = await this.receitaService.retornaTodasReceitas(
       ano,
       mes,
       pago,
@@ -57,7 +58,7 @@ export class ReceitasController {
     @User() user: UserPayloadInterface,
     @Query('pago') pago: boolean,
   ) {
-    let data = await this.receitaService.retornaTotalReceitas(
+    const data = await this.receitaService.retornaTotalReceitas(
       0,
       0,
       pago,
@@ -77,7 +78,7 @@ export class ReceitasController {
     @Param('ano', ParseIntPipe) ano: number,
     @Query('pago') pago: boolean,
   ) {
-    let data = await this.receitaService.retornaReceitasAgrupadasPorMes(
+    const data = await this.receitaService.retornaReceitasAgrupadasPorMes(
       ano,
       pago,
       user.userId,
@@ -97,7 +98,7 @@ export class ReceitasController {
     @Param('mes', ParseIntPipe) mes: number,
     @Query('pago') pago: boolean,
   ) {
-    let data = await this.receitaService.retornaTodasReceitas(
+    const data = await this.receitaService.retornaTodasReceitas(
       ano,
       mes,
       pago,
@@ -118,7 +119,7 @@ export class ReceitasController {
     @Param('mes', ParseIntPipe) mes: number,
     @Query('pago') pago: boolean,
   ) {
-    let data = await this.receitaService.retornaValorReceitasAgrupadosPorCarteira(
+    const data = await this.receitaService.retornaValorReceitasAgrupadosPorCarteira(
       ano,
       mes,
       pago,
@@ -139,7 +140,7 @@ export class ReceitasController {
     @Param('mes', ParseIntPipe) mes: number,
     @Query('pago') pago: boolean,
   ) {
-    let data = await this.receitaService.retornaTotalReceitas(
+    const data = await this.receitaService.retornaTotalReceitas(
       ano,
       mes,
       pago,
@@ -157,7 +158,7 @@ export class ReceitasController {
     @User() user: UserPayloadInterface,
     @Param('id', ParseIntPipe) id: number,
   ): Promise<SuccessResponseData<Receitas>> {
-    let data = await this.receitaService.getOne(id, user.userId);
+    const data = await this.receitaService.getOne(id, user.userId);
     return new SuccessResponseData<Receitas>(
       data,
       HttpStatus.OK,
@@ -171,7 +172,7 @@ export class ReceitasController {
     @Param('id', ParseIntPipe) id: number,
     @Body() receita,
   ): Promise<SuccessResponseData<{ id: number; pago: boolean }>> {
-    let data = await this.receitaService.alteraFlagPago(
+    const data = await this.receitaService.alteraFlagPago(
       receita,
       id,
       user.userId,
@@ -189,7 +190,7 @@ export class ReceitasController {
     @Param('id', ParseIntPipe) id: number,
     @Body() receita: ReceitasDTO,
   ): Promise<SuccessResponseData<Receitas>> {
-    let data = await this.receitaService.alteraReceita(
+    const data = await this.receitaService.alteraReceita(
       receita,
       id,
       user.userId,
@@ -206,7 +207,7 @@ export class ReceitasController {
     @User() user: UserPayloadInterface,
     @Param('id', ParseIntPipe) id: number,
   ): Promise<SuccessResponseData<{ deleted: boolean }>> {
-    let data = await this.receitaService.deletaReceita(id, user.userId);
+    const data = await this.receitaService.deletaReceita(id, user.userId);
     return new SuccessResponseData<{ deleted: boolean }>(
       data,
       HttpStatus.OK,
@@ -219,7 +220,7 @@ export class ReceitasController {
   async insereReceita(
     @Body() receita: ReceitasDTO,
   ): Promise<SuccessResponseData<Receitas>> {
-    let data = await this.receitaService.insereReceita(receita);
+    const data = await this.receitaService.insereReceita(receita);
     return new SuccessResponseData<Receitas>(
       data,
       HttpStatus.CREATED,

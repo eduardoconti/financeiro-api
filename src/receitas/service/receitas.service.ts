@@ -1,15 +1,16 @@
-import { YIELD_ERROR_MESSAGES } from './../constants/messages.constants';
 import {
   Injectable,
   Inject,
   BadRequestException,
   UnauthorizedException,
 } from '@nestjs/common';
-import { Between, Repository } from 'typeorm';
-import { Receitas } from '../entity/receitas.entity';
-import { ReceitasDTO } from '../dto/receitas.dto';
 import { ERROR_MESSAGES } from 'src/users/constants/messages.constants';
+import { Between, Repository } from 'typeorm';
+
 import { EarningsGroupMonthDTO } from '../dto';
+import { ReceitasDTO } from '../dto/receitas.dto';
+import { Receitas } from '../entity/receitas.entity';
+import { YIELD_ERROR_MESSAGES } from './../constants/messages.constants';
 
 const select = [
   'receitas.id',
@@ -41,7 +42,7 @@ export class ReceitaService {
   constructor(
     @Inject('RECEITAS')
     private receitaRepository: Repository<Receitas>,
-  ) { }
+  ) {}
 
   async retornaTodasReceitas(
     ano?: number,
@@ -53,7 +54,7 @@ export class ReceitaService {
     ano = ano ?? 0;
 
     try {
-      let receitas = await this.receitaRepository
+      const receitas = await this.receitaRepository
         .createQueryBuilder('receitas')
         .select(select)
         .innerJoin('receitas.carteira', 'carteira')
@@ -78,7 +79,7 @@ export class ReceitaService {
     userId?: string,
   ) {
     try {
-      let receitas = await this.receitaRepository
+      const receitas = await this.receitaRepository
         .createQueryBuilder('receitas')
         .select([
           'SUM(receitas.valor) valor',
@@ -95,7 +96,7 @@ export class ReceitaService {
         .orderBy('valor', 'DESC')
         .getRawMany();
       return receitas.map((receita) => {
-        let valor = receita.valor ? parseFloat(receita.valor.toFixed(2)) : 0;
+        const valor = receita.valor ? parseFloat(receita.valor.toFixed(2)) : 0;
         return { ...receita, valor: valor };
       });
     } catch (error) {
@@ -110,7 +111,7 @@ export class ReceitaService {
     userId?: string,
   ) {
     try {
-      let { sum } = await this.receitaRepository
+      const { sum } = await this.receitaRepository
         .createQueryBuilder('receitas')
         .select('SUM(receitas.valor)', 'sum')
         .innerJoin('receitas.user', 'user')
@@ -131,53 +132,59 @@ export class ReceitaService {
     userId?: string,
   ): Promise<{ [key: string]: EarningsGroupMonthDTO<Receitas> }> {
     try {
-
-      const dateWhere = (ano: number) => Between(new Date(ano, 0, 1), new Date(ano, 11, 31));
-      var where: { [k: string]: any } = {};
+      const dateWhere = (ano: number) =>
+        Between(new Date(ano, 0, 1), new Date(ano, 11, 31));
+      const where: { [k: string]: any } = {};
 
       if (ano) {
         //where.pagamento = dateWhere(ano)
       }
       if (userId) {
         where.user = {
-          id: userId
-        }
+          id: userId,
+        };
       }
       if (pago != null) {
-        where.pago = pago
+        where.pago = pago;
       }
-      let receitas = await this.receitaRepository.find({
+      const receitas = await this.receitaRepository.find({
         relations: ['user', 'carteira'],
         where: where,
         order: { pagamento: 'ASC' },
-      })
+      });
 
-      let monthEarnings: { [key: string]: EarningsGroupMonthDTO<Receitas> } = {};
+      const monthEarnings: {
+        [key: string]: EarningsGroupMonthDTO<Receitas>;
+      } = {};
 
-      receitas.forEach(element => {
-        let key = String((element.pagamento).getFullYear()) + String("0" + (element.pagamento).getMonth()).slice(-2);
+      receitas.forEach((element) => {
+        const key =
+          String(element.pagamento.getFullYear()) +
+          String('0' + element.pagamento.getMonth()).slice(-2);
 
         if (key in monthEarnings) {
           monthEarnings[key].quantity++;
           monthEarnings[key].total += element.valor;
           if (element.pago) {
-            monthEarnings[key].totalPayed += element.valor
+            monthEarnings[key].totalPayed += element.valor;
           } else {
-            monthEarnings[key].totalOpen += element.valor
+            monthEarnings[key].totalOpen += element.valor;
           }
-          monthEarnings[key].data.push(element)
+          monthEarnings[key].data.push(element);
         } else {
-          monthEarnings[key] = new EarningsGroupMonthDTO(
-            (element.pagamento).getMonth(),
+          monthEarnings[
+            key
+          ] = new EarningsGroupMonthDTO(
+            element.pagamento.getMonth(),
             element.valor,
-            (element.pago ? element.valor : 0),
-            (element.pago ? 0 : element.valor),
+            element.pago ? element.valor : 0,
+            element.pago ? 0 : element.valor,
             1,
-            [element]);
+            [element],
+          );
         }
-
       });
-      return monthEarnings
+      return monthEarnings;
       // return monthEarnings.map((element) => {
       //   element.total = Math.round(element.total * 100) / 100;
       //   element.totalOpen = Math.round(element.totalOpen * 100) / 100;

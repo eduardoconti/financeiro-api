@@ -6,6 +6,7 @@ import {
 } from '@nestjs/common';
 import { ERROR_MESSAGES } from 'src/shared/constants/messages';
 import { Repository } from 'typeorm';
+
 import { TransferenciasDTO } from '../dto/transferencias.dto';
 import { Transferencias } from '../entity/transferencias.entity';
 
@@ -51,8 +52,7 @@ export class TransferenciaService {
     mes = mes ?? 0;
     ano = ano ?? 0;
     try {
-
-      let transferencias = await this.transferenciaRepository
+      const transferencias = await this.transferenciaRepository
         .createQueryBuilder('transferencias')
         .select(select)
         .innerJoin('transferencias.carteiraOrigem', 'carteiraOrigem')
@@ -72,7 +72,7 @@ export class TransferenciaService {
 
   async getOne(id: number, userId?: string): Promise<Transferencias> {
     try {
-      let transferencia = await this.transferenciaRepository.findOneOrFail(
+      const transferencia = await this.transferenciaRepository.findOneOrFail(
         { id },
         { relations: ['carteiraOrigem', 'carteiraDestino', 'user'] },
       );
@@ -146,7 +146,7 @@ export class TransferenciaService {
     userId?: string,
   ) {
     try {
-      let transferencias = await this.transferenciaRepository
+      const transferencias = await this.transferenciaRepository
         .createQueryBuilder('transferencias')
         .select([
           'carteiraOrigem.id id',
@@ -176,7 +176,7 @@ export class TransferenciaService {
     userId?: string,
   ) {
     try {
-      let transferencias = await this.transferenciaRepository
+      const transferencias = await this.transferenciaRepository
         .createQueryBuilder('transferencias')
         .select([
           'carteiraDestino.id id',

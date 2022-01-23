@@ -1,6 +1,3 @@
-import { JwtAuthGuard } from '@auth/guard';
-import { UserPayloadInterface } from '@auth/interfaces';
-import { TYPES } from '@config/dependency-injection';
 import {
   Controller,
   Get,
@@ -12,10 +9,16 @@ import {
   UseGuards,
   Inject,
 } from '@nestjs/common';
-
 import { ApiTags } from '@nestjs/swagger';
 import { User } from '@shared/decorator';
+
+import { JwtAuthGuard } from '@auth/guard';
+import { UserPayloadInterface } from '@auth/interfaces';
+
 import { UserLoggedGuard } from '@users/guard';
+
+import { TYPES } from '@config/dependency-injection';
+
 import { CarteirasDTO } from './dto';
 import { Carteiras } from './entity';
 import { ICarteirasService } from './service';
@@ -26,7 +29,8 @@ import { ICarteirasService } from './service';
 export class CarteirasController {
   constructor(
     @Inject(TYPES.CarteiraService)
-    private readonly carteiraService: ICarteirasService) { }
+    private readonly carteiraService: ICarteirasService,
+  ) {}
 
   @Get()
   @UseGuards(UserLoggedGuard)

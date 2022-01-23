@@ -1,4 +1,5 @@
 import { Users } from 'src/users/entity/users.entity';
+
 import { UserPayloadInterface } from '../interfaces/user-payload.interface';
 
 export class UserPayloadDto implements UserPayloadInterface {

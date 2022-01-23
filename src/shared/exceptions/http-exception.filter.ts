@@ -4,13 +4,14 @@ import {
   ArgumentsHost,
   HttpException,
 } from '@nestjs/common';
-import { Response } from 'express';
 import * as Sentry from '@sentry/node';
+import { Response } from 'express';
+
 import { ResponseDataDto } from '../dto/response-data.dto';
 import { HttpInternalMessages } from '../enums/http-internal-messages';
 @Catch(HttpException)
 export class HttpExceptionFilter implements ExceptionFilter {
-  private sendErrorSentry(error): void {
+  private sendErrorSentry(error: any): void {
     let errorMessage = error.message;
     if (typeof error === 'object' && error.hasOwnProperty('error')) {
       errorMessage = error.error.concat('\n', errorMessage);
@@ -23,7 +24,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
     const response = ctx.getResponse<Response>();
     const status = exception.getStatus();
     const errorResponse = exception.getResponse() as any;
-    console.log(exception.message)
+
     this.sendErrorSentry(errorResponse);
     const internalMessage = errorResponse.error
       ? errorResponse.error

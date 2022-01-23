@@ -5,6 +5,7 @@ import {
 } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { PASSWORD_ERROR_MESSAGES } from 'src/shared/constants/password-messages';
+
 import { IPasswordManagerService } from './password-mannager.service.interface';
 
 @Injectable()

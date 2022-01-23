@@ -1,3 +1,3 @@
 export const TYPES = {
-    AuthService: Symbol('AuthService'),
-}
+  AuthService: Symbol('AuthService'),
+};

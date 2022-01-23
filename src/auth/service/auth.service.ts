@@ -1,10 +1,14 @@
-import { SignDto, UserPayloadDto } from '@auth/dto';
-import { UserPayloadInterface } from '@auth/interfaces';
-import { TYPES } from '@config/dependency-injection';
 import { Inject, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+
+import { SignDto, UserPayloadDto } from '@auth/dto';
+import { UserPayloadInterface } from '@auth/interfaces';
+
 import { Users } from '@users/entity';
-import { IUserService, PasswordManagerService, } from '@users/service';
+import { IUserService, PasswordManagerService } from '@users/service';
+
+import { TYPES } from '@config/dependency-injection';
+
 import { IAuthService } from './auth.service.interface';
 
 @Injectable()
@@ -15,7 +19,7 @@ export class AuthService implements IAuthService {
     @Inject(TYPES.PasswordManagerService)
     private passwordManager: PasswordManagerService,
     private jwtService: JwtService,
-  ) { }
+  ) {}
 
   async validateUser(login: string, pass: string): Promise<Users | undefined> {
     const user = await this.usersService.returnUserByLogin(login);
@@ -23,7 +27,6 @@ export class AuthService implements IAuthService {
     if (user && (await this.passwordManager.compareHash(pass, user.password))) {
       return user;
     }
-
   }
 
   async login(user: UserPayloadDto): Promise<SignDto> {

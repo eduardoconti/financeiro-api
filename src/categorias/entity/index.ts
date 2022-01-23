@@ -1,1 +1,1 @@
-export * from './categorias.entity'
+export * from './categorias.entity';

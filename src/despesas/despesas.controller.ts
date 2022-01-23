@@ -12,20 +12,22 @@ import {
   ParseIntPipe,
   Inject,
 } from '@nestjs/common';
-
-import { ApiQuery, ApiTags } from '@nestjs/swagger';
 import { HttpStatus } from '@nestjs/common';
-import { JwtAuthGuard } from '@auth/guard';
+import { ApiQuery, ApiTags } from '@nestjs/swagger';
 import { User } from '@shared/decorator';
-import { UserPayloadInterface } from '@auth/interfaces';
 import { SuccessResponseData } from '@shared/dto';
-import { Despesas } from './entity';
+import { UserLoggedGuard } from 'src/users/guard';
+
+import { JwtAuthGuard } from '@auth/guard';
+import { UserPayloadInterface } from '@auth/interfaces';
+
+import { TYPES } from '@config/dependency-injection';
+
 import { SUCCESS_MESSAGES } from './constants';
 import { DespesasDTO, ExpensePatchFlagPayedDTO } from './dto';
+import { Despesas } from './entity';
 import { ExpenseDeletedResponse } from './interface';
-import { UserLoggedGuard } from 'src/users/guard';
 import { IExpenseService } from './service/expense.service.interface';
-import { TYPES } from '@config/dependency-injection';
 
 @Controller('despesas')
 @ApiTags('despesas')

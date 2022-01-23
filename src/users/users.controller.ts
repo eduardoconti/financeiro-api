@@ -8,15 +8,16 @@ import {
   Delete,
   Inject,
 } from '@nestjs/common';
-
 import { ApiTags } from '@nestjs/swagger';
 
-import { TYPES } from '@config/dependency-injection';
 import { JwtAuthGuard } from '@auth/guard';
-import { IUserService } from './service';
-import { MasterUserGuard } from './guard';
-import { Users } from './entity';
+
+import { TYPES } from '@config/dependency-injection';
+
 import { UserDto } from './dto';
+import { Users } from './entity';
+import { MasterUserGuard } from './guard';
+import { IUserService } from './service';
 
 @ApiTags('users')
 @Controller('users')
@@ -24,7 +25,8 @@ import { UserDto } from './dto';
 export class UsersController {
   constructor(
     @Inject(TYPES.UserService)
-    private readonly userService: IUserService) { }
+    private readonly userService: IUserService,
+  ) {}
   @Get()
   @UseGuards(MasterUserGuard)
   async returnAllUsers(): Promise<Users[]> {

@@ -1,4 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
+
 import { GraphicController } from './graphic.controller';
 
 describe('GraphicController', () => {

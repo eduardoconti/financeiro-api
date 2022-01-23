@@ -1,4 +1,5 @@
 import { Connection } from 'typeorm';
+
 import { Users } from './entity/users.entity';
 
 export const UsersProviders = [

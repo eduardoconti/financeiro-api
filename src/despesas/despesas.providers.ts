@@ -1,5 +1,7 @@
-import { TYPES } from '@config/dependency-injection';
 import { Connection } from 'typeorm';
+
+import { TYPES } from '@config/dependency-injection';
+
 import { Despesas } from './entity/despesas.entity';
 
 export const despesasProviders = [

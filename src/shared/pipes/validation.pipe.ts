@@ -4,8 +4,8 @@ import {
   ArgumentMetadata,
   BadRequestException,
 } from '@nestjs/common';
-import { validate, ValidationError } from 'class-validator';
 import { plainToClass } from 'class-transformer';
+import { validate, ValidationError } from 'class-validator';
 
 @Injectable()
 export class ValidationPipe implements PipeTransform<any> {
@@ -28,12 +28,12 @@ export class ValidationPipe implements PipeTransform<any> {
   }
 
   private static formatErrors(validationErrors: ValidationError[]): string {
-    let errorsArray: string[] = [];
+    const errorsArray: string[] = [];
 
-    for (let error of validationErrors) {
-      let errorsString: string = '';
+    for (const error of validationErrors) {
+      let errorsString = '';
 
-      for (let constraint in error.constraints) {
+      for (const constraint in error.constraints) {
         if (!error.constraints.hasOwnProperty(constraint)) {
           continue;
         }

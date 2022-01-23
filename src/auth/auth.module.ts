@@ -1,10 +1,12 @@
-import { TYPES } from '@config/dependency-injection';
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
+
 import { UsersModule } from '@users/users.module';
+
+import { TYPES } from '@config/dependency-injection';
+
 import { AuthController } from './auth.controller';
 import { AuthService } from './service';
 import { JwtStrategy, LocalStrategy } from './strategy';
@@ -24,15 +26,20 @@ import { JwtStrategy, LocalStrategy } from './strategy';
     }),
   ],
   controllers: [AuthController],
-  providers: [{
-    provide: TYPES.AuthService,
-    useClass: AuthService
-  },
+  providers: [
+    {
+      provide: TYPES.AuthService,
+      useClass: AuthService,
+    },
     LocalStrategy,
-    JwtStrategy],
-  exports: [{
-    provide: TYPES.AuthService,
-    useClass: AuthService
-  }, JwtModule],
+    JwtStrategy,
+  ],
+  exports: [
+    {
+      provide: TYPES.AuthService,
+      useClass: AuthService,
+    },
+    JwtModule,
+  ],
 })
-export class AuthModule { }
+export class AuthModule {}

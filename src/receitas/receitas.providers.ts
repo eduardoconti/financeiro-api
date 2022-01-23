@@ -1,4 +1,5 @@
 import { Connection } from 'typeorm';
+
 import { Receitas } from './entity/receitas.entity';
 
 export const ReceitasProviders = [

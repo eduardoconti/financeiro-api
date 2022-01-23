@@ -5,6 +5,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { Observable } from 'rxjs';
+
 import { ERROR_MESSAGES } from '../constants/messages.constants';
 
 @Injectable()

@@ -5,14 +5,17 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { Repository } from 'typeorm';
-import { Users } from '../entity/users.entity';
-import { UserDto } from '../dto/users.dto';
 import { v4 as uuidv4 } from 'uuid';
-import { ERROR_MESSAGES } from '../constants/messages.constants';
-import { IPasswordManagerService } from './password-mannager.service.interface';
+
 import { UserDeleteResponseDTO } from '@users/dto';
-import { IUserService } from './users.service.interface';
+
 import { TYPES } from '@config/dependency-injection';
+
+import { ERROR_MESSAGES } from '../constants/messages.constants';
+import { UserDto } from '../dto/users.dto';
+import { Users } from '../entity/users.entity';
+import { IPasswordManagerService } from './password-mannager.service.interface';
+import { IUserService } from './users.service.interface';
 
 @Injectable()
 export class UsersService implements IUserService {
@@ -21,7 +24,7 @@ export class UsersService implements IUserService {
     private userRepository: Repository<Users>,
     @Inject(TYPES.PasswordManagerService)
     private passwordManager: IPasswordManagerService,
-  ) { }
+  ) {}
 
   async returnAllUsers(): Promise<Users[]> {
     try {
@@ -43,7 +46,7 @@ export class UsersService implements IUserService {
   }
 
   async createUser(user: UserDto): Promise<Users> {
-    let passwordHash: string = await this.passwordManager.getHash(
+    const passwordHash: string = await this.passwordManager.getHash(
       user.password,
     );
 

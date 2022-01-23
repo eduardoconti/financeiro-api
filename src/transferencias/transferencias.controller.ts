@@ -10,22 +10,22 @@ import {
   Post,
   UseGuards,
 } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
+import { JwtAuthGuard } from 'src/auth/guard/jwt-auth.guard';
+import { UserPayloadInterface } from 'src/auth/interfaces/user-payload.interface';
+import { User } from 'src/shared/decorator/user.decorator';
+import { SuccessResponseData } from 'src/shared/dto/success-response-data.dto';
+import { UserLoggedGuard } from 'src/users/guard/user-logged-auth.guard';
 
 import { TransferenciasDTO } from './dto/transferencias.dto';
 import { Transferencias } from './entity/transferencias.entity';
-import { ApiTags } from '@nestjs/swagger';
 import { TransferenciaService } from './service/transferencias.service';
-import { JwtAuthGuard } from 'src/auth/guard/jwt-auth.guard';
-import { User } from 'src/shared/decorator/user.decorator';
-import { UserPayloadInterface } from 'src/auth/interfaces/user-payload.interface';
-import { UserLoggedGuard } from 'src/users/guard/user-logged-auth.guard';
-import { SuccessResponseData } from 'src/shared/dto/success-response-data.dto';
 
 @Controller('transferencias')
 @ApiTags('transferencias')
 @UseGuards(JwtAuthGuard)
 export class TransferenciasController {
-  constructor(private readonly transferenciaService: TransferenciaService) { }
+  constructor(private readonly transferenciaService: TransferenciaService) {}
   @Get()
   async retornaTodasTransferencias(
     @User() user: UserPayloadInterface,
@@ -33,7 +33,7 @@ export class TransferenciasController {
     @Query('mes') mes?: number,
     @Query('pago') pago?: boolean,
   ): Promise<SuccessResponseData<Transferencias[]>> {
-    let data = await this.transferenciaService.retornaTodas(
+    const data = await this.transferenciaService.retornaTodas(
       ano,
       mes,
       pago,
@@ -44,9 +44,9 @@ export class TransferenciasController {
 
   @Get('/id/:id')
   async retornaTransferenciaPoId(
-    @Param('id') id?: number,
+    @Param('id') id: number,
   ): Promise<SuccessResponseData<Transferencias>> {
-    let data = await this.transferenciaService.getOne(id);
+    const data = await this.transferenciaService.getOne(id);
     return new SuccessResponseData<Transferencias>(data);
   }
 
@@ -57,7 +57,7 @@ export class TransferenciasController {
     @Param('mes') mes?: number,
     @Query('pago') pago?: boolean,
   ): Promise<SuccessResponseData<Transferencias[]>> {
-    let data = await this.transferenciaService.retornaTodas(
+    const data = await this.transferenciaService.retornaTodas(
       ano,
       mes,
       pago,
@@ -73,7 +73,7 @@ export class TransferenciasController {
     @Param('mes') mes?: number,
     @Query('pago') pago?: boolean,
   ) {
-    let data = await this.transferenciaService.retornaValorDespesasAgrupadosPorCarteiraOrigem(
+    const data = await this.transferenciaService.retornaValorDespesasAgrupadosPorCarteiraOrigem(
       ano,
       mes,
       pago,
@@ -89,7 +89,7 @@ export class TransferenciasController {
     @Param('mes') mes?: number,
     @Query('pago') pago?: boolean,
   ) {
-    let data = await this.transferenciaService.retornaValorDespesasAgrupadosPorCarteiraDestino(
+    const data = await this.transferenciaService.retornaValorDespesasAgrupadosPorCarteiraDestino(
       ano,
       mes,
       pago,
@@ -104,7 +104,7 @@ export class TransferenciasController {
     @Param('id') id: number,
     @Body() transferencia: { id: number; pago: boolean },
   ): Promise<SuccessResponseData<{ id: number; pago: boolean }>> {
-    let data = await this.transferenciaService.alteraFlagPago(
+    const data = await this.transferenciaService.alteraFlagPago(
       id,
       transferencia,
       user.userId,
@@ -118,7 +118,7 @@ export class TransferenciasController {
     @Param('id') id: number,
     @Body() transferencia: TransferenciasDTO,
   ): Promise<SuccessResponseData<Transferencias>> {
-    let data = await this.transferenciaService.alteraTransferencia(
+    const data = await this.transferenciaService.alteraTransferencia(
       id,
       transferencia,
       user.userId,
@@ -131,7 +131,10 @@ export class TransferenciasController {
     @User() user: UserPayloadInterface,
     @Param('id') id: number,
   ): Promise<SuccessResponseData<{ deleted: boolean }>> {
-    let data = await this.transferenciaService.deletaTransferencia(id, user.userId);
+    const data = await this.transferenciaService.deletaTransferencia(
+      id,
+      user.userId,
+    );
     return new SuccessResponseData<{ deleted: boolean }>(data);
   }
 
@@ -140,7 +143,9 @@ export class TransferenciasController {
   async insereTransferencia(
     @Body() transferencia: TransferenciasDTO,
   ): Promise<SuccessResponseData<Transferencias>> {
-    let data = await this.transferenciaService.insereTransferencia(transferencia);
+    const data = await this.transferenciaService.insereTransferencia(
+      transferencia,
+    );
     return new SuccessResponseData<Transferencias>(data);
   }
 }

@@ -1,6 +1,6 @@
-import { IsArray, IsNumber, IsString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { Exclude } from 'class-transformer';
+import { IsArray, IsNumber, IsString } from 'class-validator';
 import { Users } from 'src/users/entity/users.entity';
 import {
   Entity,
@@ -9,6 +9,7 @@ import {
   OneToMany,
   ManyToOne,
 } from 'typeorm';
+
 import { Despesas } from '../../despesas/entity/despesas.entity';
 
 @Entity({ schema: 'public', name: 'categorias' })

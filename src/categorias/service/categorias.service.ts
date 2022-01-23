@@ -1,12 +1,10 @@
-import { CategoriaDeleteResponseDTO } from '@categorias/dto';
-import { TYPES } from '@config/dependency-injection';
-import {
-  Injectable,
-  Inject,
-  BadRequestException,
-} from '@nestjs/common';
-
+import { Injectable, Inject, BadRequestException } from '@nestjs/common';
 import { Repository } from 'typeorm';
+
+import { CategoriaDeleteResponseDTO } from '@categorias/dto';
+
+import { TYPES } from '@config/dependency-injection';
+
 import { CategoriasDTO } from '../dto/categorias.dto';
 import { Categorias } from '../entity/categorias.entity';
 import { ICategoriaService } from './categoria.service.interface';
@@ -16,11 +14,11 @@ export class CategoriasService implements ICategoriaService {
   constructor(
     @Inject(TYPES.CategoriaRepository)
     private readonly categoriaRepository: Repository<Categorias>,
-  ) { }
+  ) {}
 
   async getOne(id: number): Promise<Categorias> {
     try {
-      let categoria = await this.categoriaRepository.findOneOrFail(
+      const categoria = await this.categoriaRepository.findOneOrFail(
         { id },
         { relations: ['user'] },
       );
@@ -53,9 +51,7 @@ export class CategoriasService implements ICategoriaService {
     }
   }
 
-  async deletaCategoria(
-    id: number,
-  ): Promise<CategoriaDeleteResponseDTO> {
+  async deletaCategoria(id: number): Promise<CategoriaDeleteResponseDTO> {
     try {
       await this.getOne(id);
       await this.categoriaRepository.delete({ id });

@@ -1,6 +1,8 @@
-import { Home } from '@app/dto';
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+
+import { Home } from '@app/dto';
+
 import { IAppService } from './app.service.interface';
 
 @Injectable()
