@@ -43,6 +43,7 @@ module.exports = {
           '/^@db/',
           '/^@despesas/',
           '/^@graphic/',
+          '/^@transference/',
           ['parent', 'sibling', 'index'],
         ],
         alphabetize: { order: 'asc', ignoreCase: true },

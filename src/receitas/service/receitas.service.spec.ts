@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 
 import { Receitas } from '../entity/receitas.entity';
-import { ReceitaService } from './receitas.service';
+import { ReceitaService } from './earning.service';
 describe('ReceitasService', () => {
   let service: ReceitaService;
   const mockRepository = {};

@@ -29,14 +29,14 @@ export class Despesas {
   pago!: boolean;
 
   @ManyToOne(() => Carteiras, (carteiras) => carteiras.id, { nullable: false })
-  carteira!: Carteiras;
+  carteira!: number;
 
   @ManyToOne(() => Categorias, (categorias) => categorias.id, {
     nullable: false,
   })
-  categoria!: Categorias;
+  categoria!: number;
 
   @ManyToOne(() => Users, (users) => users.id, { nullable: false })
   @Exclude()
-  user!: Users;
+  user!: string;
 }

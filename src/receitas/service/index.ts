@@ -1,1 +1,2 @@
-export * from './receitas.service';
+export * from './earning.service';
+export * from './earning.service.interface';

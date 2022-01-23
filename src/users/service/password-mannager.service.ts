@@ -3,8 +3,8 @@ import {
   ServiceUnavailableException,
   UnauthorizedException,
 } from '@nestjs/common';
+import { PASSWORD_ERROR_MESSAGES } from '@shared/constants';
 import * as bcrypt from 'bcrypt';
-import { PASSWORD_ERROR_MESSAGES } from 'src/shared/constants/password-messages';
 
 import { IPasswordManagerService } from './password-mannager.service.interface';
 

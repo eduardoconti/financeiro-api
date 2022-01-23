@@ -17,19 +17,19 @@ export class Categorias {
   @PrimaryGeneratedColumn()
   @ApiProperty()
   @IsNumber()
-  id: number;
+  id!: number;
 
   @Column('text', { nullable: false })
   @IsString()
-  descricao: string;
+  descricao!: string;
 
   @OneToMany(() => Despesas, (despesas) => despesas.categoria, {
     nullable: false,
   })
   @IsArray()
-  categoria: Despesas[];
+  categoria!: Despesas[];
 
   @ManyToOne(() => Users, (users) => users.id, { nullable: false })
   @Exclude()
-  user: Users;
+  user!: string;
 }

@@ -11,7 +11,7 @@
     "outDir": "./dist",
     "baseUrl": "./",
     "incremental": true,
-    "strict": true,
+    //"strict": true,
     "paths": {
       "@app/*": ["src/app/*"],
       "@users/*": ["src/users/*"],
@@ -24,6 +24,7 @@
       "@graphic/*": ["src/graphic/*"],
       "@receitas/*": ["src/receitas/*"],
       "@shared/*": ["src/shared/*"],
+      "@transference/*": ["src/transferencias/*"],
     }
 
   }

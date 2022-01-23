@@ -3,7 +3,7 @@
 /node_modules
 /datajson
 
-.env
+*.env
 # Logs
 logs
 *.log

@@ -1,20 +1,25 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { ReceitaService } from '@receitas/service';
+import { IEarningService, ReceitaService } from '@receitas/service';
 
 import { TYPES } from '@config/dependency-injection';
 
 import { IExpenseService } from '@despesas/service';
 
-import { GeneralGraphicDataDTO } from '../dto/general-graphic';
-import { GeneralGraphicResponseDataDTO } from './../dto/general-graphic/general-graphic-response-data.dto';
-import { GeneralGraphicResponseDTO } from './../dto/general-graphic/general-graphic-response.dto';
+import {
+  GeneralGraphicDataDTO,
+  GeneralGraphicResponseDataDTO,
+  GeneralGraphicResponseDTO,
+} from '@graphic/dto/general-graphic';
+
+import { IGraphicService } from './graphic.service.interface';
 
 @Injectable()
-export class GraphicService {
+export class GraphicService implements IGraphicService {
   constructor(
     @Inject(TYPES.ExpenseService)
     private despesasService: IExpenseService,
-    private receitasService: ReceitaService,
+    @Inject(TYPES.EarningService)
+    private receitasService: IEarningService,
   ) {}
   async generalGraphic(
     userId: string,

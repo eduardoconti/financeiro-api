@@ -1,29 +1,31 @@
 import { Exclude } from 'class-transformer';
-import { Users } from 'src/users/entity/users.entity';
 import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
 
-import { Carteiras } from '../../carteiras/entity/carteiras.entity';
+import { Carteiras } from '@carteiras/entity';
+
+import { Users } from '@users/entity';
+
 @Entity({ schema: 'public', name: 'receitas' })
 export class Receitas {
   @PrimaryGeneratedColumn()
-  id: number;
+  id!: number;
 
   @Column('text', { nullable: false })
-  descricao: string;
+  descricao!: string;
 
   @Column('float', { default: 0 })
-  valor: number;
+  valor!: number;
 
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
-  pagamento: Date;
+  pagamento!: Date;
 
   @Column('boolean', { default: false })
-  pago: boolean;
+  pago!: boolean;
 
   @ManyToOne(() => Carteiras, (carteiras) => carteiras.id, { nullable: false })
-  carteira: Carteiras;
+  carteira!: number;
 
   @ManyToOne(() => Users, (users) => users.id, { nullable: false })
   @Exclude()
-  user: Users;
+  user!: string;
 }

@@ -1,7 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { CONSTRAINTS_LIMITS, CONSTRAINTS_MESSAGES } from '@shared/constants';
 import { IsNotEmpty, IsString, IsUUID, Length } from 'class-validator';
-import { CONSTRAINTS_LIMITS, CONSTRAINTS_MESSAGES } from 'src/shared/constants';
-import { Users } from 'src/users/entity/users.entity';
 
 export class CarteirasDTO {
   @ApiProperty({
@@ -14,11 +13,11 @@ export class CarteirasDTO {
   })
   @IsUUID('4')
   @IsNotEmpty({ message: CONSTRAINTS_MESSAGES.IS_NOT_EMPTY })
-  user: Users;
+  user!: string;
 
   @IsString({ message: CONSTRAINTS_MESSAGES.IS_STRING })
   @Length(CONSTRAINTS_LIMITS.DESCRICAO.min, CONSTRAINTS_LIMITS.DESCRICAO.max, {
     message: CONSTRAINTS_MESSAGES.IS_LENGTH,
   })
-  descricao: string;
+  descricao!: string;
 }

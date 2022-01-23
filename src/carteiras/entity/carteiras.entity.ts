@@ -15,36 +15,36 @@ import {
 export class Carteiras {
   @PrimaryGeneratedColumn()
   @ApiProperty()
-  id: number;
+  id!: number;
 
   @Column('text', { nullable: false })
-  descricao: string;
+  descricao!: string;
 
   @OneToMany(() => Despesas, (despesas) => despesas.carteira, {
     nullable: false,
   })
-  carteira: Despesas[];
+  carteira!: Despesas[];
 
   @OneToMany(() => Receitas, (receitas) => receitas.carteira, {
     nullable: false,
   })
-  carteiraReceita: Receitas[];
+  carteiraReceita!: Receitas[];
 
   @OneToMany(
     () => Transferencias,
     (transferencia) => transferencia.carteiraOrigem,
     { nullable: false },
   )
-  transferenciaOrigem: Transferencias[];
+  transferenciaOrigem!: Transferencias[];
 
   @OneToMany(
     () => Transferencias,
     (transferencia) => transferencia.carteiraDestino,
     { nullable: false },
   )
-  transferenciaDestino: Transferencias[];
+  transferenciaDestino!: Transferencias[];
 
   @ManyToOne(() => Users, (users) => users.id, { nullable: false })
   @Exclude()
-  user: Users;
+  user!: string;
 }

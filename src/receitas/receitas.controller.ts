@@ -11,23 +11,32 @@ import {
   UseGuards,
   HttpStatus,
   ParseIntPipe,
+  Inject,
 } from '@nestjs/common';
 import { ApiQuery, ApiTags } from '@nestjs/swagger';
-import { JwtAuthGuard } from 'src/auth/guard/jwt-auth.guard';
-import { UserPayloadInterface } from 'src/auth/interfaces/user-payload.interface';
-import { User } from 'src/shared/decorator/user.decorator';
-import { SuccessResponseData } from 'src/shared/dto/success-response-data.dto';
-import { UserLoggedGuard } from 'src/users/guard/user-logged-auth.guard';
+import { User } from '@shared/decorator';
+import { SuccessResponseData } from '@shared/dto';
 
-import { YIELD_SUCCESS_MESSAGES } from './constants/messages.constants';
-import { ReceitasDTO } from './dto/receitas.dto';
-import { Receitas } from './entity/receitas.entity';
-import { ReceitaService } from './service/receitas.service';
+import { JwtAuthGuard } from '@auth/guard';
+import { UserPayloadInterface } from '@auth/interfaces';
+
+import { UserLoggedGuard } from '@users/guard';
+
+import { TYPES } from '@config/dependency-injection';
+
+import { YIELD_SUCCESS_MESSAGES } from './constants';
+import { ReceitasDTO } from './dto';
+import { Receitas } from './entity';
+import { IEarningService } from './service';
+
 @Controller('receitas')
 @ApiTags('receitas')
 @UseGuards(JwtAuthGuard)
 export class ReceitasController {
-  constructor(private readonly receitaService: ReceitaService) {}
+  constructor(
+    @Inject(TYPES.EarningService)
+    private readonly receitaService: IEarningService,
+  ) {}
 
   @Get()
   @ApiQuery({ name: 'ano', required: false, example: new Date().getFullYear() })
@@ -154,11 +163,11 @@ export class ReceitasController {
   }
 
   @Get('/id/:id')
+  @UseGuards(UserLoggedGuard)
   async getById(
-    @User() user: UserPayloadInterface,
     @Param('id', ParseIntPipe) id: number,
   ): Promise<SuccessResponseData<Receitas>> {
-    const data = await this.receitaService.getOne(id, user.userId);
+    const data = await this.receitaService.getOne(id);
     return new SuccessResponseData<Receitas>(
       data,
       HttpStatus.OK,
@@ -167,16 +176,12 @@ export class ReceitasController {
   }
 
   @Patch('flag/:id')
+  @UseGuards(UserLoggedGuard)
   async alteraFlagPago(
-    @User() user: UserPayloadInterface,
     @Param('id', ParseIntPipe) id: number,
     @Body() receita,
   ): Promise<SuccessResponseData<{ id: number; pago: boolean }>> {
-    const data = await this.receitaService.alteraFlagPago(
-      receita,
-      id,
-      user.userId,
-    );
+    const data = await this.receitaService.alteraFlagPago(receita, id);
     return new SuccessResponseData<{ id: number; pago: boolean }>(
       data,
       HttpStatus.OK,
@@ -185,16 +190,12 @@ export class ReceitasController {
   }
 
   @Put('/:id')
+  @UseGuards(UserLoggedGuard)
   async alteraReceita(
-    @User() user: UserPayloadInterface,
     @Param('id', ParseIntPipe) id: number,
     @Body() receita: ReceitasDTO,
   ): Promise<SuccessResponseData<Receitas>> {
-    const data = await this.receitaService.alteraReceita(
-      receita,
-      id,
-      user.userId,
-    );
+    const data = await this.receitaService.alteraReceita(receita, id);
     return new SuccessResponseData<Receitas>(
       data,
       HttpStatus.OK,
@@ -203,11 +204,11 @@ export class ReceitasController {
   }
 
   @Delete('/:id')
+  @UseGuards(UserLoggedGuard)
   async deletaReceita(
-    @User() user: UserPayloadInterface,
     @Param('id', ParseIntPipe) id: number,
   ): Promise<SuccessResponseData<{ deleted: boolean }>> {
-    const data = await this.receitaService.deletaReceita(id, user.userId);
+    const data = await this.receitaService.deletaReceita(id);
     return new SuccessResponseData<{ deleted: boolean }>(
       data,
       HttpStatus.OK,

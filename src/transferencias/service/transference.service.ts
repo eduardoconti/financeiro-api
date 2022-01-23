@@ -1,14 +1,16 @@
-import {
-  Injectable,
-  Inject,
-  BadRequestException,
-  UnauthorizedException,
-} from '@nestjs/common';
-import { ERROR_MESSAGES } from 'src/shared/constants/messages';
+import { Injectable, Inject, BadRequestException } from '@nestjs/common';
 import { Repository } from 'typeorm';
 
-import { TransferenciasDTO } from '../dto/transferencias.dto';
-import { Transferencias } from '../entity/transferencias.entity';
+import { TYPES } from '@config/dependency-injection';
+
+import {
+  TransferenceDeleteResponseDTO,
+  TransferencePathFlagPayedDTO,
+  TransferenciasDTO,
+} from '@transference/dto';
+import { Transferencias } from '@transference/entity';
+
+import { ITransferenceService } from './transference.service.interface';
 
 const select = [
   'transferencias.id',
@@ -20,26 +22,26 @@ const select = [
   'user',
 ];
 
-function CriaWhereMes(mes: number) {
+function CriaWhereMes(mes?: number) {
   return typeof mes === 'undefined' || mes == 0
     ? 'TRUE'
     : "date_part('month',transferencias.transferencia)=" + String(mes);
 }
 
-function CriaWherePago(pago: boolean) {
+function CriaWherePago(pago?: boolean) {
   return typeof pago === 'undefined' ? 'TRUE' : 'transferencias.pago=' + pago;
 }
 
-function CriaWhereAno(ano: number) {
+function CriaWhereAno(ano?: number) {
   return typeof ano == 'undefined' || ano == 0
     ? 'TRUE'
     : "date_part('year',transferencias.transferencia)=" + String(ano);
 }
 
 @Injectable()
-export class TransferenciaService {
+export class TransferenciaService implements ITransferenceService {
   constructor(
-    @Inject('TRANSFERENCIAS')
+    @Inject(TYPES.TransferenceRepository)
     private transferenciaRepository: Repository<Transferencias>,
   ) {}
 
@@ -70,18 +72,13 @@ export class TransferenciaService {
     }
   }
 
-  async getOne(id: number, userId?: string): Promise<Transferencias> {
+  async getOne(id: number): Promise<Transferencias> {
     try {
       const transferencia = await this.transferenciaRepository.findOneOrFail(
         { id },
         { relations: ['carteiraOrigem', 'carteiraDestino', 'user'] },
       );
 
-      if (userId && transferencia.user.id !== userId) {
-        throw new UnauthorizedException(
-          ERROR_MESSAGES.USER_TOKEN_NOT_EQUALS_TO_PARAM_URL,
-        );
-      }
       return transferencia;
     } catch (error) {
       throw new BadRequestException(error);
@@ -105,10 +102,9 @@ export class TransferenciaService {
   async alteraTransferencia(
     id: number,
     transferencia: TransferenciasDTO,
-    userId: string,
   ): Promise<Transferencias> {
     try {
-      await this.getOne(id, userId);
+      await this.getOne(id);
       await this.transferenciaRepository.update({ id }, transferencia);
       return this.getOne(id);
     } catch (error) {
@@ -116,9 +112,12 @@ export class TransferenciaService {
     }
   }
 
-  async alteraFlagPago(id: number, transferencia, userId: string) {
+  async alteraFlagPago(
+    id: number,
+    transferencia: TransferencePathFlagPayedDTO,
+  ): Promise<Transferencias> {
     try {
-      await this.getOne(id, userId);
+      await this.getOne(id);
       await this.transferenciaRepository.update({ id }, transferencia);
       return this.getOne(id);
     } catch (error) {
@@ -128,12 +127,11 @@ export class TransferenciaService {
 
   async deletaTransferencia(
     id: number,
-    userId: string,
-  ): Promise<{ deleted: boolean; message?: string }> {
+  ): Promise<TransferenceDeleteResponseDTO> {
     try {
-      await this.getOne(id, userId);
+      await this.getOne(id);
       await this.transferenciaRepository.delete({ id });
-      return { deleted: true };
+      return new TransferenceDeleteResponseDTO();
     } catch (error) {
       throw new BadRequestException(error);
     }
@@ -144,7 +142,7 @@ export class TransferenciaService {
     mes?: number,
     pago?: boolean,
     userId?: string,
-  ) {
+  ): Promise<any[]> {
     try {
       const transferencias = await this.transferenciaRepository
         .createQueryBuilder('transferencias')
@@ -174,7 +172,7 @@ export class TransferenciaService {
     mes?: number,
     pago?: boolean,
     userId?: string,
-  ) {
+  ): Promise<any[]> {
     try {
       const transferencias = await this.transferenciaRepository
         .createQueryBuilder('transferencias')

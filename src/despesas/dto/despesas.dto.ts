@@ -9,10 +9,7 @@ import {
   IsUUID,
   Length,
 } from 'class-validator';
-import { Carteiras } from 'src/carteiras/entity/carteiras.entity';
-import { Categorias } from 'src/categorias/entity/categorias.entity';
 import { CONSTRAINTS_LIMITS, CONSTRAINTS_MESSAGES } from 'src/shared/constants';
-import { Users } from 'src/users/entity/users.entity';
 
 export class DespesasDTO {
   @ApiProperty({
@@ -20,7 +17,7 @@ export class DespesasDTO {
   })
   @IsUUID('4')
   @IsNotEmpty({ message: CONSTRAINTS_MESSAGES.IS_NOT_EMPTY })
-  user: Users;
+  user!: string;
 
   @ApiProperty({
     description: 'Descrição da despesa',
@@ -32,40 +29,40 @@ export class DespesasDTO {
     message: CONSTRAINTS_MESSAGES.IS_LENGTH,
   })
   @IsNotEmpty({ message: CONSTRAINTS_MESSAGES.IS_NOT_EMPTY })
-  descricao: string;
+  descricao!: string;
 
   @ApiProperty({ description: 'Id da categoria' })
   @IsNotEmpty({ message: CONSTRAINTS_MESSAGES.IS_NOT_EMPTY })
   //@IsNumber({}, { message: CONSTRAINTS_MESSAGES.IS_NUMBER })
-  categoria: Categorias;
+  categoria!: number;
 
   @ApiProperty({ description: 'Id da carteira' })
   @IsNotEmpty({ message: CONSTRAINTS_MESSAGES.IS_NOT_EMPTY })
   //@IsNumber({}, { message: CONSTRAINTS_MESSAGES.IS_NUMBER })
-  carteira: Carteiras;
+  carteira!: number;
 
   @ApiProperty({ description: 'Valor da despesa', default: 0 })
   @IsNumber({}, { message: CONSTRAINTS_MESSAGES.IS_NUMBER })
   @IsNotEmpty({ message: CONSTRAINTS_MESSAGES.IS_NOT_EMPTY })
-  valor: number;
+  valor!: number;
 
   @ApiPropertyOptional({
     description: 'Data de vencimento',
     default: new Date(),
   })
-  @IsDateString(null, { message: CONSTRAINTS_MESSAGES.IS_DATE })
+  @IsDateString(undefined, { message: CONSTRAINTS_MESSAGES.IS_DATE })
   @IsOptional()
-  vencimento: Date;
+  vencimento!: Date;
 
   @ApiPropertyOptional({
     description: 'Data de pagamento',
     default: new Date(),
   })
-  @IsDateString(null, { message: CONSTRAINTS_MESSAGES.IS_DATE })
+  @IsDateString(undefined, { message: CONSTRAINTS_MESSAGES.IS_DATE })
   @IsOptional()
   pagamento?: Date;
 
   @ApiPropertyOptional({ description: 'Flag Pago', default: false })
   @IsBoolean({ message: CONSTRAINTS_MESSAGES.IS_BOOLEAN })
-  pago: boolean;
+  pago!: boolean;
 }

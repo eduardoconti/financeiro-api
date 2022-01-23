@@ -1,16 +1,14 @@
+import { Injectable, Inject, BadRequestException } from '@nestjs/common';
+import { YIELD_ERROR_MESSAGES } from '@receitas/constants';
 import {
-  Injectable,
-  Inject,
-  BadRequestException,
-  UnauthorizedException,
-} from '@nestjs/common';
-import { ERROR_MESSAGES } from 'src/users/constants/messages.constants';
+  EarningDeleteResponseDTO,
+  EarningsGroupMonthDTO,
+  ReceitasDTO,
+} from '@receitas/dto';
+import { Receitas } from '@receitas/entity';
 import { Between, Repository } from 'typeorm';
 
-import { EarningsGroupMonthDTO } from '../dto';
-import { ReceitasDTO } from '../dto/receitas.dto';
-import { Receitas } from '../entity/receitas.entity';
-import { YIELD_ERROR_MESSAGES } from './../constants/messages.constants';
+import { TYPES } from '@config/dependency-injection';
 
 const select = [
   'receitas.id',
@@ -21,26 +19,10 @@ const select = [
   'carteira',
 ];
 
-function CriaWhereMes(mes: number) {
-  return !mes || mes == 0
-    ? 'TRUE'
-    : "date_part('month',receitas.pagamento)=" + String(mes);
-}
-
-function CriaWherePago(pago: boolean | undefined) {
-  return typeof pago === 'undefined' ? 'TRUE' : 'receitas.pago=' + pago;
-}
-
-function CriaWhereAno(ano?: number) {
-  return !ano || ano == 0
-    ? 'TRUE'
-    : "date_part('year',receitas.pagamento)=" + String(ano);
-}
-
 @Injectable()
 export class ReceitaService {
   constructor(
-    @Inject('RECEITAS')
+    @Inject(TYPES.EarningRepository)
     private receitaRepository: Repository<Receitas>,
   ) {}
 
@@ -60,9 +42,9 @@ export class ReceitaService {
         .innerJoin('receitas.carteira', 'carteira')
         .innerJoin('receitas.user', 'user')
         .where('user.id= :userId', { userId: userId })
-        .andWhere(CriaWhereAno(ano))
-        .andWhere(CriaWhereMes(mes))
-        .andWhere(CriaWherePago(pago))
+        .andWhere(this.CriaWhereAno(ano))
+        .andWhere(this.CriaWhereMes(mes))
+        .andWhere(this.CriaWherePago(pago))
         .orderBy('receitas.valor', 'DESC')
         .getMany();
 
@@ -77,7 +59,7 @@ export class ReceitaService {
     mes?: number,
     pago?: boolean,
     userId?: string,
-  ) {
+  ): Promise<any[]> {
     try {
       const receitas = await this.receitaRepository
         .createQueryBuilder('receitas')
@@ -89,9 +71,9 @@ export class ReceitaService {
         .innerJoin('receitas.carteira', 'carteira')
         .innerJoin('receitas.user', 'user')
         .where('user.id= :userId', { userId: userId })
-        .andWhere(CriaWhereAno(ano))
-        .andWhere(CriaWhereMes(mes))
-        .andWhere(CriaWherePago(pago))
+        .andWhere(this.CriaWhereAno(ano))
+        .andWhere(this.CriaWhereMes(mes))
+        .andWhere(this.CriaWherePago(pago))
         .groupBy('carteira.id')
         .orderBy('valor', 'DESC')
         .getRawMany();
@@ -109,16 +91,16 @@ export class ReceitaService {
     mes?: number,
     pago?: boolean,
     userId?: string,
-  ) {
+  ): Promise<number> {
     try {
       const { sum } = await this.receitaRepository
         .createQueryBuilder('receitas')
         .select('SUM(receitas.valor)', 'sum')
         .innerJoin('receitas.user', 'user')
         .where('user.id= :userId', { userId: userId })
-        .andWhere(CriaWhereAno(ano))
-        .andWhere(CriaWhereMes(mes))
-        .andWhere(CriaWherePago(pago))
+        .andWhere(this.CriaWhereAno(ano))
+        .andWhere(this.CriaWhereMes(mes))
+        .andWhere(this.CriaWherePago(pago))
         .getRawOne();
       return sum ? parseFloat(sum.toFixed(2)) : 0;
     } catch (error) {
@@ -185,12 +167,6 @@ export class ReceitaService {
         }
       });
       return monthEarnings;
-      // return monthEarnings.map((element) => {
-      //   element.total = Math.round(element.total * 100) / 100;
-      //   element.totalOpen = Math.round(element.totalOpen * 100) / 100;
-      //   element.totalPayed = Math.round(element.totalPayed * 100) / 100;
-      //   return element
-      // })
     } catch (error) {
       throw new BadRequestException(
         error,
@@ -198,23 +174,13 @@ export class ReceitaService {
       );
     }
   }
-  /**
-   *
-   * @param id
-   * @returns Receitas
-   */
-  async getOne(id: number, userId?: string): Promise<Receitas> {
+
+  async getOne(id: number): Promise<Receitas> {
     try {
       const receita = await this.receitaRepository.findOneOrFail(
         { id },
         { relations: ['carteira', 'user'] },
       );
-
-      if (userId && receita.user.id !== userId) {
-        throw new UnauthorizedException(
-          ERROR_MESSAGES.USER_TOKEN_NOT_EQUALS_TO_PARAM_URL,
-        );
-      }
 
       return receita;
     } catch (error) {
@@ -233,13 +199,9 @@ export class ReceitaService {
     return newReceitas;
   }
 
-  async alteraReceita(
-    receitaDto: ReceitasDTO,
-    id: number,
-    userId: string,
-  ): Promise<Receitas> {
+  async alteraReceita(receitaDto: ReceitasDTO, id: number): Promise<Receitas> {
     try {
-      const receita = await this.getOne(id, userId);
+      const receita = await this.getOne(id);
       await this.receitaRepository.update({ id }, receitaDto);
       return receita;
     } catch (error) {
@@ -247,13 +209,9 @@ export class ReceitaService {
     }
   }
 
-  async alteraFlagPago(
-    receitaDto,
-    id: number,
-    userId: string,
-  ): Promise<Receitas> {
+  async alteraFlagPago(receitaDto: ReceitasDTO, id: number): Promise<Receitas> {
     try {
-      const receita = await this.getOne(id, userId);
+      const receita = await this.getOne(id);
       await this.receitaRepository.update({ id }, receitaDto);
       return receita;
     } catch (error) {
@@ -261,16 +219,29 @@ export class ReceitaService {
     }
   }
 
-  async deletaReceita(
-    id: number,
-    userId: string,
-  ): Promise<{ deleted: boolean; message?: string }> {
+  async deletaReceita(id: number): Promise<EarningDeleteResponseDTO> {
     try {
-      await this.getOne(id, userId);
+      await this.getOne(id);
       await this.receitaRepository.delete({ id });
-      return { deleted: true };
+      return new EarningDeleteResponseDTO(true);
     } catch (error) {
       throw new BadRequestException(error);
     }
+  }
+
+  private CriaWhereMes(mes?: number) {
+    return !mes || mes == 0
+      ? 'TRUE'
+      : "date_part('month',receitas.pagamento)=" + String(mes);
+  }
+
+  private CriaWherePago(pago?: boolean) {
+    return typeof pago === 'undefined' ? 'TRUE' : 'receitas.pago=' + pago;
+  }
+
+  private CriaWhereAno(ano?: number) {
+    return !ano || ano == 0
+      ? 'TRUE'
+      : "date_part('year',receitas.pagamento)=" + String(ano);
   }
 }

@@ -11,39 +11,39 @@ import { Entity, Column, PrimaryColumn, OneToMany } from 'typeorm';
 export class Users {
   @PrimaryColumn('uuid')
   @ApiProperty()
-  id: string;
+  id!: string;
 
   @Column('text', { nullable: false })
   @Exclude()
-  password: string;
+  password!: string;
 
   @Column('text', { nullable: false, unique: true })
   @Exclude()
-  login: string;
+  login!: string;
 
   @Column('text', { nullable: false })
-  nome: string;
+  nome!: string;
 
   @Column('integer', { default: 1 })
   @Exclude()
-  status: number;
+  status!: number;
 
   @Column('integer', { default: 1 })
   @Exclude()
-  perfil: number;
+  perfil!: number;
 
   @OneToMany(() => Despesas, (despesas) => despesas.user)
-  userDespesa: Despesas[];
+  userDespesa!: Despesas[];
 
   @OneToMany(() => Receitas, (receitas) => receitas.user)
-  userReceita: Receitas[];
+  userReceita!: Receitas[];
 
   @OneToMany(() => Transferencias, (transferencias) => transferencias.user)
-  userTransferencia: Transferencias[];
+  userTransferencia!: Transferencias[];
 
   @OneToMany(() => Carteiras, (carteiras) => carteiras.user)
-  userCarteiras: Carteiras[];
+  userCarteiras!: Carteiras[];
 
   @OneToMany(() => Categorias, (categorias) => categorias.user)
-  userCategorias: Categorias[];
+  userCategorias!: Categorias[];
 }
