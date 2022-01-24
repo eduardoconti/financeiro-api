@@ -20,8 +20,7 @@ import { TYPES } from '@config/dependency-injection';
 import { CategoriaDeleteResponseDTO } from './dto';
 import { CategoriasDTO } from './dto/categorias.dto';
 import { Categorias } from './entity/categorias.entity';
-import { CategoriasService } from './service';
-import { ICategoriaService } from './service/categoria.service.interface';
+import { ICategoriaService } from './service';
 
 @Controller('categorias')
 @ApiTags('categorias')
@@ -29,7 +28,7 @@ import { ICategoriaService } from './service/categoria.service.interface';
 export class CategoriasController {
   constructor(
     @Inject(TYPES.CategoriaService)
-    private readonly categoriaService: CategoriasService,
+    private readonly categoriaService: ICategoriaService,
   ) {}
 
   @Get()

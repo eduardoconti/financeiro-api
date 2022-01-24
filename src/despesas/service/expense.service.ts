@@ -4,7 +4,7 @@ import {
   BadRequestException,
   InternalServerErrorException,
 } from '@nestjs/common';
-import { Between, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 
 import { TYPES } from '@config/dependency-injection';
 
