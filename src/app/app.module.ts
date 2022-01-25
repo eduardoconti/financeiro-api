@@ -6,7 +6,7 @@ import { TransferenciasModule } from 'src/transferencias/transferencias.module';
 
 import { AuthModule } from '@auth/auth.module';
 
-import { CategoriasModule } from '@categorias/categorias.module';
+import { CategoryModule } from '@categorias/category.module';
 
 import { WalletModule } from '@carteiras/wallet.module';
 
@@ -25,7 +25,7 @@ import { AppService } from './service';
   imports: [
     DespesasModule,
     ReceitasModule,
-    CategoriasModule,
+    CategoryModule,
     WalletModule,
     TransferenciasModule,
     UsersModule,

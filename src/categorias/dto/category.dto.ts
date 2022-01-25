@@ -2,7 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsString, IsUUID, Length } from 'class-validator';
 import { CONSTRAINTS_LIMITS, CONSTRAINTS_MESSAGES } from 'src/shared/constants';
 
-export class CategoriasDTO {
+export class CategoryDTO {
   @ApiProperty({
     description: 'uuid do usuario',
   })

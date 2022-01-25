@@ -30,7 +30,7 @@ import { ExpenseDeletedResponse } from './interface';
 import { IExpenseService } from './service/expense.service.interface';
 
 @Controller('despesas')
-@ApiTags('despesas')
+@ApiTags('Expenses')
 @UseGuards(JwtAuthGuard)
 export class DespesasController {
   constructor(
@@ -131,12 +131,13 @@ export class DespesasController {
     @Param('mes', ParseIntPipe) mes: number,
     @Query('pago') pago: boolean,
   ) {
-    const data = await this.despesaService.retornaValorDespesasAgrupadosPorCategoria(
-      ano,
-      mes,
-      pago,
-      user.userId,
-    );
+    const data =
+      await this.despesaService.retornaValorDespesasAgrupadosPorCategoria(
+        ano,
+        mes,
+        pago,
+        user.userId,
+      );
 
     return new SuccessResponseData(
       data,
@@ -153,12 +154,13 @@ export class DespesasController {
     @Param('mes', ParseIntPipe) mes: number,
     @Query('pago') pago: boolean,
   ) {
-    const data = await this.despesaService.retornaValorDespesasAgrupadosPorCarteira(
-      ano,
-      mes,
-      pago,
-      user.userId,
-    );
+    const data =
+      await this.despesaService.retornaValorDespesasAgrupadosPorCarteira(
+        ano,
+        mes,
+        pago,
+        user.userId,
+      );
 
     return new SuccessResponseData(
       data,

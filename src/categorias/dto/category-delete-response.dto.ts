@@ -1,4 +1,4 @@
-export class CategoriaDeleteResponseDTO {
+export class CategoryDeleteResponseDTO {
   deleted: boolean;
   message?: string;
 

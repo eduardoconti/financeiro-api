@@ -1,4 +1,7 @@
 export const TYPES = {
-  CategoriaService: Symbol('CategoriaService'),
-  CategoriaRepository: Symbol('CategoriaRepository'),
+  InsertCategoryService: Symbol('InsertCategoryService'),
+  UpdateCategoryService: Symbol('UpdateCategoryService'),
+  GetCategoryService: Symbol('GetCategoryService'),
+  DeleteCategoryService: Symbol('DeleteCategoryService'),
+  CategoryRepository: Symbol('CategoryRepository'),
 };

@@ -1,2 +1,2 @@
-export * from './categorias.dto';
-export * from './categoria-delete-response.dto';
+export * from './category.dto';
+export * from './category-delete-response.dto';
