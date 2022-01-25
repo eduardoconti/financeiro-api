@@ -1,8 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNumber, IsString, Length } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsString, Length } from 'class-validator';
 import { CONSTRAINTS_LIMITS, CONSTRAINTS_MESSAGES } from 'src/shared/constants';
 
-export class UserDto {
+export class UserDTO {
   id!: string;
 
   @ApiProperty({
@@ -36,6 +36,7 @@ export class UserDto {
   @Length(CONSTRAINTS_LIMITS.NOME.min, CONSTRAINTS_LIMITS.NOME.max, {
     message: CONSTRAINTS_MESSAGES.IS_LENGTH,
   })
+  @IsNotEmpty()
   nome!: string;
 
   @IsNumber({}, { message: CONSTRAINTS_MESSAGES.IS_NUMBER })

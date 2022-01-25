@@ -1,10 +1,10 @@
-import { TYPES as EARNING_TYPES } from '@receitas/config/dependency-injection';
-
 import { TYPES as AUTH_TYPES } from '@auth/config/dependency-injection';
+
+import { TYPES as EARNING_TYPES } from '@receitas/config/dependency-injection';
 
 import { TYPES as CATEGORIA_TYPES } from '@categorias/config/dependency-injection';
 
-import { TYPES as CARTEIRA_TYPES } from '@carteiras/config/dependency-injection';
+import { TYPES as CARTEIRA_TYPES } from '@wallet/config/dependency-injection';
 
 import { TYPES as APP_TYPES } from '@app/config/dependency-injection';
 

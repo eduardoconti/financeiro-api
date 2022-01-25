@@ -5,7 +5,7 @@ import {
   HttpStatus,
   Inject,
 } from '@nestjs/common';
-import { User } from '@shared/decorator';
+import { User } from '@users/decorator';
 import { SuccessResponseData } from '@shared/dto';
 
 import { SignDto } from '@auth/dto';

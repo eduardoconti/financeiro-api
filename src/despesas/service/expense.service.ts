@@ -200,7 +200,7 @@ export class DespesaService implements IExpenseService {
         [key: string]: ExpensesGroupMonthDTO<Despesas>;
       } = {};
 
-      despesas.forEach((element) => {
+      despesas.forEach((element: Despesas) => {
         const key =
           String(element.vencimento.getFullYear()) +
           String('0' + element.vencimento.getMonth()).slice(-2);
@@ -208,11 +208,11 @@ export class DespesaService implements IExpenseService {
         if (key in monthExpenses) {
           monthExpenses[key].quantity++;
           monthExpenses[key].total += element.valor;
-          if (element.pago) {
-            monthExpenses[key].totalPayed += element.valor;
-          } else {
-            monthExpenses[key].totalOpen += element.valor * 100;
-          }
+
+          element.pago
+            ? (monthExpenses[key].totalPayed += element.valor)
+            : (monthExpenses[key].totalOpen += element.valor * 100);
+
           monthExpenses[key].data.push(element);
         } else {
           monthExpenses[key] = new ExpensesGroupMonthDTO<Despesas>(

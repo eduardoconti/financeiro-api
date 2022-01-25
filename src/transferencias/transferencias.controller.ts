@@ -12,7 +12,7 @@ import {
   Inject,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import { User } from '@shared/decorator';
+import { User } from '@users/decorator';
 import { SuccessResponseData } from '@shared/dto';
 
 import { JwtAuthGuard } from '@auth/guard';
@@ -85,12 +85,13 @@ export class TransferenciasController {
     @Param('mes') mes?: number,
     @Query('pago') pago?: boolean,
   ) {
-    const data = await this.transferenciaService.retornaValorDespesasAgrupadosPorCarteiraOrigem(
-      ano,
-      mes,
-      pago,
-      user.userId,
-    );
+    const data =
+      await this.transferenciaService.retornaValorDespesasAgrupadosPorCarteiraOrigem(
+        ano,
+        mes,
+        pago,
+        user.userId,
+      );
     return new SuccessResponseData(data);
   }
 
@@ -101,12 +102,13 @@ export class TransferenciasController {
     @Param('mes') mes?: number,
     @Query('pago') pago?: boolean,
   ) {
-    const data = await this.transferenciaService.retornaValorDespesasAgrupadosPorCarteiraDestino(
-      ano,
-      mes,
-      pago,
-      user.userId,
-    );
+    const data =
+      await this.transferenciaService.retornaValorDespesasAgrupadosPorCarteiraDestino(
+        ano,
+        mes,
+        pago,
+        user.userId,
+      );
     return new SuccessResponseData(data);
   }
 

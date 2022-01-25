@@ -1,5 +1,5 @@
-import { Home } from '@app/dto';
+import { HomeDTO } from '@app/dto';
 
 export interface IAppService {
-  getHello(): Home;
+  getHello(): HomeDTO;
 }

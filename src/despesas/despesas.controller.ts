@@ -14,7 +14,7 @@ import {
 } from '@nestjs/common';
 import { HttpStatus } from '@nestjs/common';
 import { ApiQuery, ApiTags } from '@nestjs/swagger';
-import { User } from '@shared/decorator';
+import { User } from '@users/decorator';
 import { SuccessResponseData } from '@shared/dto';
 import { UserLoggedGuard } from 'src/users/guard';
 

@@ -3,7 +3,7 @@ import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
 
 import { Categorias } from '@categorias/entity';
 
-import { Carteiras } from '@carteiras/entity';
+import { Carteiras } from '@wallet/entity';
 
 import { Users } from '@users/entity';
 

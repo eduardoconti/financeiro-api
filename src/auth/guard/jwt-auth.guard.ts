@@ -1,12 +1,13 @@
-import {
-  ExecutionContext,
-  Injectable,
-  InternalServerErrorException,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { ExecutionContext, Injectable } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 
+import {
+  InternalServerErrorException,
+  UnauthorizedException,
+} from '@config/exceptions';
+
 import { ERROR_MESSAGES } from '../constants/messages.constants';
+import { ExpiredTokenException, InvalidTokenException } from '@auth/exception';
 @Injectable()
 export class JwtAuthGuard extends AuthGuard('jwt') {
   canActivate(context: ExecutionContext) {
@@ -21,9 +22,9 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
       const { name } = info;
       switch (name) {
         case 'JsonWebTokenError':
-          throw new UnauthorizedException();
+          throw new InvalidTokenException();
         case 'TokenExpiredError':
-          throw new UnauthorizedException();
+          throw new ExpiredTokenException();
         case 'NotBeforeError':
           throw new UnauthorizedException(
             undefined,
@@ -33,11 +34,14 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
     }
 
     if (!user) {
-      throw new UnauthorizedException(ERROR_MESSAGES.AUTHENTICATION_FAILED);
+      throw new UnauthorizedException(
+        undefined,
+        ERROR_MESSAGES.AUTHENTICATION_FAILED,
+      );
     }
 
     if (err) {
-      throw new InternalServerErrorException(err);
+      throw new InternalServerErrorException(undefined, undefined, err);
     }
 
     return user;

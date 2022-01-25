@@ -14,7 +14,7 @@ import {
   Inject,
 } from '@nestjs/common';
 import { ApiQuery, ApiTags } from '@nestjs/swagger';
-import { User } from '@shared/decorator';
+import { User } from '@users/decorator';
 import { SuccessResponseData } from '@shared/dto';
 
 import { JwtAuthGuard } from '@auth/guard';
@@ -128,12 +128,13 @@ export class ReceitasController {
     @Param('mes', ParseIntPipe) mes: number,
     @Query('pago') pago: boolean,
   ) {
-    const data = await this.receitaService.retornaValorReceitasAgrupadosPorCarteira(
-      ano,
-      mes,
-      pago,
-      user.userId,
-    );
+    const data =
+      await this.receitaService.retornaValorReceitasAgrupadosPorCarteira(
+        ano,
+        mes,
+        pago,
+        user.userId,
+      );
     return new SuccessResponseData(
       data,
       HttpStatus.OK,

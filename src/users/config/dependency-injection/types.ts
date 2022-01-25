@@ -1,5 +1,7 @@
 export const TYPES = {
   PasswordManagerService: Symbol('PasswordManagerService'),
-  UserService: Symbol('UserService'),
+  GetUserService: Symbol('GetUserService'),
+  InsertUserService: Symbol('InsertUserService'),
+  DeleteUserService: Symbol('DeleteUserService'),
   UserRepository: Symbol('UserRepository'),
 };

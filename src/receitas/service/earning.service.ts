@@ -1,4 +1,6 @@
 import { Injectable, Inject, BadRequestException } from '@nestjs/common';
+import { Repository } from 'typeorm';
+
 import { YIELD_ERROR_MESSAGES } from '@receitas/constants';
 import {
   EarningDeleteResponseDTO,
@@ -6,7 +8,6 @@ import {
   ReceitasDTO,
 } from '@receitas/dto';
 import { Receitas } from '@receitas/entity';
-import { Between, Repository } from 'typeorm';
 
 import { TYPES } from '@config/dependency-injection';
 
@@ -114,8 +115,8 @@ export class ReceitaService {
     userId?: string,
   ): Promise<{ [key: string]: EarningsGroupMonthDTO<Receitas> }> {
     try {
-      const dateWhere = (ano: number) =>
-        Between(new Date(ano, 0, 1), new Date(ano, 11, 31));
+      // const dateWhere = (ano: number) =>
+      //   Between(new Date(ano, 0, 1), new Date(ano, 11, 31));
       const where: { [k: string]: any } = {};
 
       if (ano) {
@@ -154,9 +155,7 @@ export class ReceitaService {
           }
           monthEarnings[key].data.push(element);
         } else {
-          monthEarnings[
-            key
-          ] = new EarningsGroupMonthDTO(
+          monthEarnings[key] = new EarningsGroupMonthDTO(
             element.pagamento.getMonth(),
             element.valor,
             element.pago ? element.valor : 0,

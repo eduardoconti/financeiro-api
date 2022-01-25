@@ -10,10 +10,12 @@ import {
   Inject,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import { JwtAuthGuard } from 'src/auth/guard/jwt-auth.guard';
-import { UserPayloadInterface } from 'src/auth/interfaces/user-payload.interface';
-import { User } from 'src/shared/decorator/user.decorator';
-import { UserLoggedGuard } from 'src/users/guard/user-logged-auth.guard';
+
+import { JwtAuthGuard } from '@auth/guard/jwt-auth.guard';
+import { UserPayloadInterface } from '@auth/interfaces/user-payload.interface';
+
+import { User } from '@users/decorator/user.decorator';
+import { UserLoggedGuard } from '@users/guard/user-logged-auth.guard';
 
 import { TYPES } from '@config/dependency-injection';
 

@@ -35,8 +35,9 @@ module.exports = {
         groups: [
           'module',
           '/^@auth/',
+          '/^@receitas/',
           '/^@categorias/',
-          '/^@carteiras/',
+          '/^@wallet/',
           '/^@app/',
           '/^@users/',
           '/^@config/',
@@ -44,6 +45,7 @@ module.exports = {
           '/^@despesas/',
           '/^@graphic/',
           '/^@transference/',
+          '/^@shared/',
           ['parent', 'sibling', 'index'],
         ],
         alphabetize: { order: 'asc', ignoreCase: true },

@@ -14,40 +14,48 @@ import { JwtAuthGuard } from '@auth/guard';
 
 import { TYPES } from '@config/dependency-injection';
 
-import { UserDto } from './dto';
+import { UserDeleteResponseDTO, UserDTO } from './dto';
 import { Users } from './entity';
 import { MasterUserGuard } from './guard';
-import { IUserService } from './service';
+import {
+  IDeleteUserService,
+  IGetUserService,
+  IInsertUserService,
+} from './service';
 
 @ApiTags('users')
 @Controller('users')
 @UseGuards(JwtAuthGuard)
 export class UsersController {
   constructor(
-    @Inject(TYPES.UserService)
-    private readonly userService: IUserService,
+    @Inject(TYPES.GetUserService)
+    private readonly getUserService: IGetUserService,
+    @Inject(TYPES.InsertUserService)
+    private readonly insertserService: IInsertUserService,
+    @Inject(TYPES.DeleteUserService)
+    private readonly deleteUserService: IDeleteUserService,
   ) {}
   @Get()
   @UseGuards(MasterUserGuard)
-  async returnAllUsers(): Promise<Users[]> {
-    return await this.userService.returnAllUsers();
+  async getAllUsers(): Promise<Users[]> {
+    return await this.getUserService.getAll();
   }
 
   @Post()
   @UseGuards(MasterUserGuard)
-  async createUser(@Body() user: UserDto): Promise<Users> {
-    return await this.userService.createUser(user);
+  async createUser(@Body() user: UserDTO): Promise<Users> {
+    return await this.insertserService.insert(user);
   }
 
+  @Get('login/:login')
   @UseGuards(MasterUserGuard)
-  @Get('/login/:login')
-  async returnUserByEmail(@Param('login') login: string): Promise<Users> {
-    return await this.userService.returnUserByLogin(login);
+  async getUserByLogin(@Param('login') login: string): Promise<Users> {
+    return await this.getUserService.getUserByLogin(login);
   }
 
   @Delete('/:id')
   @UseGuards(MasterUserGuard)
-  async deletUser(@Param('id') id: string): Promise<{ deleted: boolean }> {
-    return this.userService.deletUser(id);
+  async deleteUser(@Param('id') id: string): Promise<UserDeleteResponseDTO> {
+    return await this.deleteUserService.delete(id);
   }
 }

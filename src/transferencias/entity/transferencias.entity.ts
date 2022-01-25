@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
 
-import { Carteiras } from '@carteiras/entity';
+import { Carteiras } from '@wallet/entity';
 
 import { Users } from '@users/entity';
 

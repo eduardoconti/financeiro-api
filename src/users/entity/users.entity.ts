@@ -1,11 +1,16 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Exclude } from 'class-transformer';
-import { Carteiras } from 'src/carteiras/entity/carteiras.entity';
-import { Categorias } from 'src/categorias/entity/categorias.entity';
-import { Despesas } from 'src/despesas/entity/despesas.entity';
-import { Receitas } from 'src/receitas/entity/receitas.entity';
-import { Transferencias } from 'src/transferencias/entity/transferencias.entity';
 import { Entity, Column, PrimaryColumn, OneToMany } from 'typeorm';
+
+import { Receitas } from '@receitas/entity';
+
+import { Categorias } from '@categorias/entity';
+
+import { Carteiras } from '@wallet/entity';
+
+import { Despesas } from '@despesas/entity';
+
+import { Transferencias } from '@transference/entity';
 
 @Entity({ schema: 'public', name: 'users' })
 export class Users {

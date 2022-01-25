@@ -1,8 +1,10 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { IEarningService, ReceitaService } from '@receitas/service';
+
+import { IEarningService } from '@receitas/service';
 
 import { TYPES } from '@config/dependency-injection';
 
+import { ExpensesGroupMonthDTO } from '@despesas/dto';
 import { IExpenseService } from '@despesas/service';
 
 import {
@@ -35,11 +37,37 @@ export class GraphicService implements IGraphicService {
       pago,
       userId,
     );
-    const graphicData: GeneralGraphicResponseDTO = new GeneralGraphicResponseDTO();
+    const graphicData: GeneralGraphicResponseDTO =
+      new GeneralGraphicResponseDTO();
 
     let totalBallance = 0;
 
-    Object.getOwnPropertyNames(despesas).forEach((key) => {
+    const expensesProperties = Object.getOwnPropertyNames(despesas);
+    const receitasProperties = Object.getOwnPropertyNames(receitas);
+    const properties =
+      expensesProperties.length > receitasProperties.length
+        ? expensesProperties
+        : receitasProperties;
+
+    properties.forEach((key) => {
+      receitas[key] ??
+        (receitas[key] = new ExpensesGroupMonthDTO(
+          despesas[key].month,
+          0,
+          0,
+          0,
+          0,
+        ));
+
+      despesas[key] ??
+        (despesas[key] = new ExpensesGroupMonthDTO(
+          receitas[key].month,
+          0,
+          0,
+          0,
+          0,
+        ));
+
       const ballance = receitas[key].total - despesas[key].total;
 
       const earnings = GeneralGraphicDataDTO.build({

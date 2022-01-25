@@ -1,5 +1,5 @@
 import { Controller, Get, Inject, UseGuards } from '@nestjs/common';
-import { User } from '@shared/decorator';
+import { User } from '@users/decorator';
 import { SuccessResponseData } from '@shared/dto';
 
 import { JwtAuthGuard } from '@auth/guard';

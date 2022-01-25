@@ -1,27 +1,37 @@
 import { Module } from '@nestjs/common';
-import { DatabaseModule } from 'src/db/database.module';
-import { Connection } from 'typeorm';
+import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { TYPES } from '@config/dependency-injection';
 
 import { Users } from './entity';
-import { PasswordManagerService } from './service/password-mannager.service';
-import { UsersService } from './service/users.service';
+import { UserRepository } from './repository';
+import {
+  DeleteUserService,
+  GetUserService,
+  InsertUserService,
+  PasswordManagerService,
+} from './service';
 import { UsersController } from './users.controller';
-import { UsersProviders } from './users.provider';
 
 @Module({
-  imports: [DatabaseModule],
+  imports: [TypeOrmModule.forFeature([Users])],
   controllers: [UsersController],
   providers: [
     {
       provide: TYPES.UserRepository,
-      useFactory: (connection: Connection) => connection.getRepository(Users),
-      inject: ['DATABASE_CONNECTION'],
+      useClass: UserRepository,
     },
     {
-      provide: TYPES.UserService,
-      useClass: UsersService,
+      provide: TYPES.GetUserService,
+      useClass: GetUserService,
+    },
+    {
+      provide: TYPES.InsertUserService,
+      useClass: InsertUserService,
+    },
+    {
+      provide: TYPES.DeleteUserService,
+      useClass: DeleteUserService,
     },
     {
       provide: TYPES.PasswordManagerService,
@@ -30,8 +40,8 @@ import { UsersProviders } from './users.provider';
   ],
   exports: [
     {
-      provide: TYPES.UserService,
-      useClass: UsersService,
+      provide: TYPES.GetUserService,
+      useClass: GetUserService,
     },
     {
       provide: TYPES.PasswordManagerService,

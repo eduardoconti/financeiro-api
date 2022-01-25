@@ -16,7 +16,7 @@
       "@app/*": ["src/app/*"],
       "@users/*": ["src/users/*"],
       "@auth/*": ["src/auth/*"],
-      "@carteiras/*": ["src/carteiras/*"],
+      "@wallet/*": ["src/wallet/*"],
       "@categorias/*": ["src/categorias/*"],
       "@config/*": ["src/config/*"],
       "@db/*": ["src/db/*"],

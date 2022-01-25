@@ -5,7 +5,7 @@ import { SignDto, UserPayloadDto } from '@auth/dto';
 import { UserPayloadInterface } from '@auth/interfaces';
 
 import { Users } from '@users/entity';
-import { IUserService, PasswordManagerService } from '@users/service';
+import { IGetUserService, PasswordManagerService } from '@users/service';
 
 import { TYPES } from '@config/dependency-injection';
 
@@ -14,15 +14,15 @@ import { IAuthService } from './auth.service.interface';
 @Injectable()
 export class AuthService implements IAuthService {
   constructor(
-    @Inject(TYPES.UserService)
-    private usersService: IUserService,
+    @Inject(TYPES.GetUserService)
+    private usersService: IGetUserService,
     @Inject(TYPES.PasswordManagerService)
     private passwordManager: PasswordManagerService,
     private jwtService: JwtService,
   ) {}
 
   async validateUser(login: string, pass: string): Promise<Users | undefined> {
-    const user = await this.usersService.returnUserByLogin(login);
+    const user = await this.usersService.getUserByLogin(login);
 
     if (user && (await this.passwordManager.compareHash(pass, user.password))) {
       return user;
