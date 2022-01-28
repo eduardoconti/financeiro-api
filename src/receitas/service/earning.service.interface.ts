@@ -1,5 +1,6 @@
 import {
   EarningDeleteResponseDTO,
+  EarningPatchFlagPayedDTO,
   EarningsGroupMonthDTO,
   ReceitasDTO,
 } from '@receitas/dto';
@@ -39,7 +40,10 @@ export interface IEarningService {
 
   alteraReceita(receitaDto: ReceitasDTO, id: number): Promise<Receitas>;
 
-  alteraFlagPago(receitaDto: ReceitasDTO, id: number): Promise<Receitas>;
+  alteraFlagPago(
+    receitaDto: EarningPatchFlagPayedDTO,
+    id: number,
+  ): Promise<Receitas>;
 
   deletaReceita(id: number): Promise<EarningDeleteResponseDTO>;
 }

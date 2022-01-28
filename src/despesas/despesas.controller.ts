@@ -14,7 +14,6 @@ import {
 } from '@nestjs/common';
 import { HttpStatus } from '@nestjs/common';
 import { ApiQuery, ApiTags } from '@nestjs/swagger';
-import { UserLoggedGuard } from 'src/users/guard';
 
 import { JwtAuthGuard } from '@auth/guard';
 import { UserPayloadInterface } from '@auth/interfaces';
@@ -207,7 +206,6 @@ export class DespesasController {
   }
 
   @Patch('flag/:id')
-  @UseGuards(UserLoggedGuard)
   async alteraFlagPago(
     @Param('id', ParseIntPipe) id: number,
     @Body() despesa: ExpensePatchFlagPayedDTO,
@@ -221,7 +219,6 @@ export class DespesasController {
   }
 
   @Put('/:id')
-  @UseGuards(UserLoggedGuard)
   async alteraDespesa(
     @Param('id', ParseIntPipe) id: number,
     @Body() despesa: DespesasDTO,
@@ -235,7 +232,6 @@ export class DespesasController {
   }
 
   @Delete('/:id')
-  @UseGuards(UserLoggedGuard)
   async deletaDespesa(
     @Param('id', ParseIntPipe) id: number,
   ): Promise<SuccessResponseData<ExpenseDeletedResponse>> {

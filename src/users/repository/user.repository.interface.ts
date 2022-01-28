@@ -1,10 +1,11 @@
 import { UserDeleteResponseDTO, UserDTO } from '@users/dto';
 import { Users } from '@users/entity';
+import { FindUserByParams } from '@users/types';
 
 export interface IUserRepository {
   insert(userRequest: UserDTO): Promise<Users>;
   delete(id: string): Promise<UserDeleteResponseDTO>;
   findAll(): Promise<Users[]>;
-  findByLogin(login: string): Promise<Users | undefined>;
-  findById(id: string): Promise<Users>;
+  findOneByParams(params: FindUserByParams): Promise<Users | undefined>;
+  findByParams(params: FindUserByParams): Promise<Users[] | undefined>;
 }

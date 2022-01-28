@@ -30,7 +30,6 @@ export class GetCategoryService implements IGetCategoryService {
   async findCategoryUserById(id: number, userId: string): Promise<Categorias> {
     const category = await this.categoriaRepository.findById(id);
 
-    //console.log(category);
     if (!category) {
       throw new CategoryNotFoundException();
     }

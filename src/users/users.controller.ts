@@ -36,7 +36,6 @@ export class UsersController {
     private readonly deleteUserService: IDeleteUserService,
   ) {}
   @Get()
-  @UseGuards(MasterUserGuard)
   async getAllUsers(): Promise<Users[]> {
     return await this.getUserService.getAll();
   }
@@ -48,13 +47,11 @@ export class UsersController {
   }
 
   @Get('login/:login')
-  @UseGuards(MasterUserGuard)
   async getUserByLogin(@Param('login') login: string): Promise<Users> {
     return await this.getUserService.getUserByLogin(login);
   }
 
   @Delete('/:id')
-  @UseGuards(MasterUserGuard)
   async deleteUser(@Param('id') id: string): Promise<UserDeleteResponseDTO> {
     return await this.deleteUserService.delete(id);
   }

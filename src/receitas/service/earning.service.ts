@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import { YIELD_ERROR_MESSAGES } from '@receitas/constants';
 import {
   EarningDeleteResponseDTO,
+  EarningPatchFlagPayedDTO,
   EarningsGroupMonthDTO,
   ReceitasDTO,
 } from '@receitas/dto';
@@ -209,7 +210,10 @@ export class ReceitaService {
     }
   }
 
-  async alteraFlagPago(receitaDto: ReceitasDTO, id: number): Promise<Receitas> {
+  async alteraFlagPago(
+    receitaDto: EarningPatchFlagPayedDTO,
+    id: number,
+  ): Promise<Receitas> {
     try {
       const receita = await this.getOne(id);
       await this.receitaRepository.update({ id }, receitaDto);

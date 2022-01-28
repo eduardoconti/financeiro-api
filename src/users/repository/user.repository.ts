@@ -9,6 +9,7 @@ import {
   GetUserException,
   InsertUserException,
 } from '@users/exception';
+import { FindUserByParams } from '@users/types';
 
 import { IUserRepository } from './user.repository.interface';
 
@@ -29,26 +30,19 @@ export class UserRepository implements IUserRepository {
     }
   }
 
-  async findById(id: string): Promise<Users> {
+  async findOneByParams(params: FindUserByParams): Promise<Users | undefined> {
     try {
-      return await this.userRepository.findOneOrFail({
-        where: [{ id: id }],
-      });
+      return await this.userRepository.findOne({ where: params });
     } catch (error) {
-      throw new GetUserException(ERROR_MESSAGES.USER_FIND_BY_ID_ERROR, error);
+      throw new GetUserException(ERROR_MESSAGES.USER_FIND_ERROR, error, params);
     }
   }
 
-  async findByLogin(login: string): Promise<Users | undefined> {
+  async findByParams(params: FindUserByParams): Promise<Users[] | undefined> {
     try {
-      return await this.userRepository.findOne({
-        where: [{ login: login }],
-      });
+      return await this.userRepository.find({ where: params });
     } catch (error) {
-      throw new GetUserException(
-        ERROR_MESSAGES.USER_FIND_BY_LOGIN_ERROR + login,
-        error,
-      );
+      throw new GetUserException(ERROR_MESSAGES.USER_FIND_ERROR, error, params);
     }
   }
 

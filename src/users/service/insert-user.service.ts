@@ -21,7 +21,8 @@ export class InsertUserService implements IInsertUserService {
   ) {}
 
   async insert(userRequest: UserDTO): Promise<Users> {
-    if (await this.userRepository.findByLogin(userRequest.login)) {
+    const { login } = userRequest;
+    if (await this.userRepository.findOneByParams({ login })) {
       throw new UserLoginAlreadyExistsException(
         ERROR_MESSAGES.USER_LOGIN_ALREADY_EXISTS_ERROR,
       );

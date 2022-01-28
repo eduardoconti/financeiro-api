@@ -19,14 +19,13 @@ import { JwtAuthGuard } from '@auth/guard';
 import { UserPayloadInterface } from '@auth/interfaces';
 
 import { User } from '@users/decorator';
-import { UserLoggedGuard } from '@users/guard';
 
 import { TYPES } from '@config/dependency-injection';
 
 import { SuccessResponseData } from '@shared/dto';
 
 import { YIELD_SUCCESS_MESSAGES } from './constants';
-import { ReceitasDTO } from './dto';
+import { EarningPatchFlagPayedDTO, ReceitasDTO } from './dto';
 import { Receitas } from './entity';
 import { IEarningService } from './service';
 
@@ -165,7 +164,6 @@ export class ReceitasController {
   }
 
   @Get('/id/:id')
-  @UseGuards(UserLoggedGuard)
   async getById(
     @Param('id', ParseIntPipe) id: number,
   ): Promise<SuccessResponseData<Receitas>> {
@@ -178,10 +176,9 @@ export class ReceitasController {
   }
 
   @Patch('flag/:id')
-  @UseGuards(UserLoggedGuard)
   async alteraFlagPago(
     @Param('id', ParseIntPipe) id: number,
-    @Body() receita: ReceitasDTO,
+    @Body() receita: EarningPatchFlagPayedDTO,
   ): Promise<SuccessResponseData<{ id: number; pago: boolean }>> {
     const data = await this.receitaService.alteraFlagPago(receita, id);
     return new SuccessResponseData<{ id: number; pago: boolean }>(
@@ -192,7 +189,6 @@ export class ReceitasController {
   }
 
   @Put('/:id')
-  @UseGuards(UserLoggedGuard)
   async alteraReceita(
     @Param('id', ParseIntPipe) id: number,
     @Body() receita: ReceitasDTO,
@@ -206,7 +202,6 @@ export class ReceitasController {
   }
 
   @Delete('/:id')
-  @UseGuards(UserLoggedGuard)
   async deletaReceita(
     @Param('id', ParseIntPipe) id: number,
   ): Promise<SuccessResponseData<{ deleted: boolean }>> {
@@ -219,7 +214,6 @@ export class ReceitasController {
   }
 
   @Post()
-  @UseGuards(UserLoggedGuard)
   async insereReceita(
     @Body() receita: ReceitasDTO,
   ): Promise<SuccessResponseData<Receitas>> {

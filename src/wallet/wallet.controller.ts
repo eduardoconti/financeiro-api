@@ -44,25 +44,21 @@ export class WalletController {
   ) {}
 
   @Get()
-  @UseGuards(UserLoggedGuard)
   async getAll(@User() user: UserPayloadInterface): Promise<Carteiras[]> {
     return await this.getWalletService.getAllByUserId(user.userId);
   }
 
   @Post()
-  @UseGuards(UserLoggedGuard)
   async insert(@Body() wallet: CarteirasDTO): Promise<Carteiras> {
     return this.insertWalletService.insertWallet(wallet);
   }
 
   @Delete('/:id')
-  @UseGuards(UserLoggedGuard)
   async delete(@Param('id') id: number): Promise<{ deleted: boolean }> {
     return this.deleteWalletService.deleteWallet(id);
   }
 
   @Put('/:id')
-  @UseGuards(UserLoggedGuard)
   async update(
     @Param('id') id: number,
     @Body() wallet: CarteirasDTO,

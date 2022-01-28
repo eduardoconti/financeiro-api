@@ -38,17 +38,17 @@ export class Users {
   perfil!: number;
 
   @OneToMany(() => Despesas, (despesas) => despesas.user)
-  userDespesa!: Despesas[];
+  userDespesa?: Despesas[];
 
   @OneToMany(() => Receitas, (receitas) => receitas.user)
-  userReceita!: Receitas[];
+  userReceita?: Receitas[];
 
   @OneToMany(() => Transferencias, (transferencias) => transferencias.user)
-  userTransferencia!: Transferencias[];
+  userTransferencia?: Transferencias[];
 
   @OneToMany(() => Carteiras, (carteiras) => carteiras.user)
-  userCarteiras!: Carteiras[];
+  userCarteiras?: Carteiras[];
 
   @OneToMany(() => Categorias, (categorias) => categorias.user)
-  userCategorias!: Categorias[];
+  userCategorias?: Categorias[];
 }
