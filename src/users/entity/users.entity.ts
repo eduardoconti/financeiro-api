@@ -4,7 +4,7 @@ import { Entity, Column, PrimaryColumn, OneToMany } from 'typeorm';
 
 import { Receitas } from '@receitas/entity';
 
-import { Categorias } from '@categorias/entity';
+import { Categorias } from '@category/entity';
 
 import { Carteiras } from '@wallet/entity';
 

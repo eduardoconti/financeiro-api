@@ -36,7 +36,7 @@ module.exports = {
           'module',
           '/^@auth/',
           '/^@receitas/',
-          '/^@categorias/',
+          '/^@category/',
           '/^@wallet/',
           '/^@app/',
           '/^@users/',

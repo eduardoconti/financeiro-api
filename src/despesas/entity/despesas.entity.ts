@@ -1,7 +1,7 @@
 import { Exclude, Transform } from 'class-transformer';
 import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
 
-import { Categorias } from '@categorias/entity';
+import { Categorias } from '@category/entity';
 
 import { Carteiras } from '@wallet/entity';
 

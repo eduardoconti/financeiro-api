@@ -2,14 +2,23 @@ import {
   Injectable,
   CanActivate,
   ExecutionContext,
-  UnauthorizedException,
+  Inject,
 } from '@nestjs/common';
+import { Request } from 'express';
 import { Observable } from 'rxjs';
 
-import { ERROR_MESSAGES } from '../constants/messages.constants';
+import { ERROR_MESSAGES } from '@users/constants';
+import { IGetUserService } from '@users/service';
+
+import { TYPES } from '@config/dependency-injection';
+import { UnauthorizedException } from '@config/exceptions';
 
 @Injectable()
 export class UserLoggedGuard implements CanActivate {
+  constructor(
+    @Inject(TYPES.GetUserService)
+    private readonly getUserService: IGetUserService,
+  ) {}
   canActivate(
     context: ExecutionContext,
   ): boolean | Promise<boolean> | Observable<boolean> {
@@ -17,9 +26,14 @@ export class UserLoggedGuard implements CanActivate {
     return this.validateRequest(request);
   }
 
-  async validateRequest(request) {
+  async validateRequest(request: any) {
+    // try {
+    await this.getUserService.getUserById(request.body.user);
+    // } catch (error) {}
+
     if (request.body.user && request.user.userId !== request.body.user) {
       throw new UnauthorizedException(
+        undefined,
         ERROR_MESSAGES.USER_TOKEN_NOT_EQUALS_TO_PARAM_URL,
       );
     }

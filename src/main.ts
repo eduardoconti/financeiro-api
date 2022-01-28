@@ -4,6 +4,8 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import * as Sentry from '@sentry/node';
 import * as helmet from 'helmet';
 
+import { BaseException } from '@config/exceptions';
+
 import { AppModule } from './app/app.module';
 import { HttpExceptionFilter } from './shared/exceptions/http-exception.filter';
 import { ValidationPipe } from './shared/pipes/validation.pipe';
@@ -17,9 +19,9 @@ async function bootstrap() {
   app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
 
   const options = new DocumentBuilder()
-    .setTitle(process.env.API_NAME)
+    .setTitle(process.env.API_NAME as string)
     .setDescription('API controle financeiro')
-    .setVersion(process.env.VERSION)
+    .setVersion(process.env.VERSION as string)
     .build();
   const document = SwaggerModule.createDocument(app, options);
 
@@ -28,8 +30,28 @@ async function bootstrap() {
   Sentry.init({
     dsn: process.env.SENTRY_DSN,
     tracesSampleRate: 1.0,
+    integrations: [new Sentry.Integrations.Http({ tracing: true })],
+    attachStacktrace: true,
+    beforeSend(event, hint) {
+      const exception = hint?.originalException;
+
+      if (exception instanceof BaseException) {
+        event.extra = {
+          message: exception.message,
+          reason: exception.reason,
+          error: exception.error,
+          data: exception.data,
+        };
+      }
+
+      return event;
+    },
   });
 
-  await app.listen(parseInt(process.env.PORT));
+  app.use(Sentry.Handlers.requestHandler());
+  app.use(Sentry.Handlers.tracingHandler());
+  app.use(Sentry.Handlers.errorHandler());
+
+  await app.listen(parseInt(process.env.PORT as string));
 }
 bootstrap();

@@ -1,5 +1,7 @@
 import { Module } from '@nestjs/common';
 
+import { UsersModule } from '@users/users.module';
+
 import { TYPES } from '@config/dependency-injection';
 
 import { DatabaseModule } from '@db/database.module';
@@ -9,7 +11,7 @@ import { TransferenciasController } from './transferencias.controller';
 import { transferenciasProviders } from './transferencias.providers';
 
 @Module({
-  imports: [DatabaseModule],
+  imports: [DatabaseModule, UsersModule],
   controllers: [TransferenciasController],
   providers: [
     ...transferenciasProviders,

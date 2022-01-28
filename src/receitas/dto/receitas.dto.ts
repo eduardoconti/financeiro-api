@@ -1,5 +1,4 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { CONSTRAINTS_LIMITS, CONSTRAINTS_MESSAGES } from '@shared/constants';
 import {
   IsBoolean,
   IsDateString,
@@ -9,6 +8,8 @@ import {
   IsUUID,
   Length,
 } from 'class-validator';
+
+import { CONSTRAINTS_LIMITS, CONSTRAINTS_MESSAGES } from '@shared/constants';
 
 export class ReceitasDTO {
   @ApiProperty({

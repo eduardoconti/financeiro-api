@@ -10,11 +10,11 @@ import {
   Inject,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import { User } from '@users/decorator';
 
 import { JwtAuthGuard } from '@auth/guard';
 import { UserPayloadInterface } from '@auth/interfaces';
 
+import { User } from '@users/decorator';
 import { UserLoggedGuard } from '@users/guard';
 
 import { TYPES } from '@config/dependency-injection';

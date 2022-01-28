@@ -1,6 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { CONSTRAINTS_LIMITS, CONSTRAINTS_MESSAGES } from '@shared/constants';
 import { IsNotEmpty, IsString, IsUUID, Length } from 'class-validator';
+
+import { CONSTRAINTS_LIMITS, CONSTRAINTS_MESSAGES } from '@shared/constants';
 
 export class CarteirasDTO {
   @ApiProperty({

@@ -16,8 +16,9 @@ export class DespesasDTO {
     description: 'uuid do usuario',
   })
   @IsUUID('4')
-  @IsNotEmpty({ message: CONSTRAINTS_MESSAGES.IS_NOT_EMPTY })
-  user!: string;
+  //@IsNotEmpty({ message: CONSTRAINTS_MESSAGES.IS_NOT_EMPTY })
+  @IsOptional()
+  userId!: string;
 
   @ApiProperty({
     description: 'Descrição da despesa',

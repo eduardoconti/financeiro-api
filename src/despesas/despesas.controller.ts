@@ -14,14 +14,16 @@ import {
 } from '@nestjs/common';
 import { HttpStatus } from '@nestjs/common';
 import { ApiQuery, ApiTags } from '@nestjs/swagger';
-import { User } from '@users/decorator';
-import { SuccessResponseData } from '@shared/dto';
 import { UserLoggedGuard } from 'src/users/guard';
 
 import { JwtAuthGuard } from '@auth/guard';
 import { UserPayloadInterface } from '@auth/interfaces';
 
+import { User } from '@users/decorator';
+
 import { TYPES } from '@config/dependency-injection';
+
+import { SuccessResponseData } from '@shared/dto';
 
 import { SUCCESS_MESSAGES } from './constants';
 import { DespesasDTO, ExpensePatchFlagPayedDTO } from './dto';
@@ -246,10 +248,12 @@ export class DespesasController {
   }
 
   @Post()
-  @UseGuards(UserLoggedGuard)
   async insereDespesa(
     @Body() despesa: DespesasDTO,
+    @User() userToken: UserPayloadInterface,
   ): Promise<SuccessResponseData<Despesas>> {
+    despesa.userId = userToken.userId;
+    console.log(despesa);
     const data = await this.despesaService.insereDespesa(despesa);
     return new SuccessResponseData<Despesas>(
       data,

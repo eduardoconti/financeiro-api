@@ -9,7 +9,7 @@ export class ExpensesGroupMonthDTO<T> {
   @Transform(({ value }) => Math.round(value * 100) / 100)
   totalOpen: number;
   quantity: number;
-  data?: T[];
+  data: T[];
 
   constructor(
     month: number,
@@ -17,7 +17,7 @@ export class ExpensesGroupMonthDTO<T> {
     totalPayed: number,
     totalOpen: number,
     quantity: number,
-    data?: T[],
+    data: T[],
   ) {
     this.month = month;
     this.total = total;

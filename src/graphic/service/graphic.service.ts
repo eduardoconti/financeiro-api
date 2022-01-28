@@ -1,5 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 
+import { EarningsGroupMonthDTO } from '@receitas/dto';
 import { IEarningService } from '@receitas/service';
 
 import { TYPES } from '@config/dependency-injection';
@@ -51,12 +52,13 @@ export class GraphicService implements IGraphicService {
 
     properties.forEach((key) => {
       receitas[key] ??
-        (receitas[key] = new ExpensesGroupMonthDTO(
+        (receitas[key] = new EarningsGroupMonthDTO(
           despesas[key].month,
           0,
           0,
           0,
           0,
+          [],
         ));
 
       despesas[key] ??
@@ -66,6 +68,7 @@ export class GraphicService implements IGraphicService {
           0,
           0,
           0,
+          [],
         ));
 
       const ballance = receitas[key].total - despesas[key].total;

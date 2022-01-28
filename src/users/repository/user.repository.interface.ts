@@ -5,5 +5,6 @@ export interface IUserRepository {
   insert(userRequest: UserDTO): Promise<Users>;
   delete(id: string): Promise<UserDeleteResponseDTO>;
   findAll(): Promise<Users[]>;
-  findByLogin(login: string): Promise<Users>;
+  findByLogin(login: string): Promise<Users | undefined>;
+  findById(id: string): Promise<Users>;
 }

@@ -1,5 +1,7 @@
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 
+import { UsersModule } from '@users/users.module';
+
 import { TYPES } from '@config/dependency-injection';
 
 import { DatabaseModule } from '../db/database.module';
@@ -9,7 +11,7 @@ import { DespesasMiddleware } from './middleware/despesas.middleware';
 import { DespesaService } from './service/expense.service';
 
 @Module({
-  imports: [DatabaseModule],
+  imports: [DatabaseModule, UsersModule],
   controllers: [DespesasController],
   providers: [
     ...despesasProviders,

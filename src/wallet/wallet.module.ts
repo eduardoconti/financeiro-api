@@ -1,6 +1,8 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
+import { UsersModule } from '@users/users.module';
+
 import { TYPES } from '@config/dependency-injection';
 
 import { Carteiras } from './entity';
@@ -14,7 +16,7 @@ import {
 import { WalletController } from './wallet.controller';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Carteiras])],
+  imports: [TypeOrmModule.forFeature([Carteiras]), UsersModule],
   controllers: [WalletController],
   providers: [
     {

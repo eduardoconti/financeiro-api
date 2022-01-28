@@ -29,7 +29,17 @@ export class UserRepository implements IUserRepository {
     }
   }
 
-  async findByLogin(login: string): Promise<Users> {
+  async findById(id: string): Promise<Users> {
+    try {
+      return await this.userRepository.findOneOrFail({
+        where: [{ id: id }],
+      });
+    } catch (error) {
+      throw new GetUserException(ERROR_MESSAGES.USER_FIND_BY_ID_ERROR, error);
+    }
+  }
+
+  async findByLogin(login: string): Promise<Users | undefined> {
     try {
       return await this.userRepository.findOne({
         where: [{ login: login }],

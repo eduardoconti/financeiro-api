@@ -5,19 +5,23 @@ import {
   HttpStatus,
   Inject,
 } from '@nestjs/common';
-import { User } from '@users/decorator';
-import { SuccessResponseData } from '@shared/dto';
+import { ApiTags } from '@nestjs/swagger';
 
 import { SignDto } from '@auth/dto';
 import { LocalAuthGuard } from '@auth/guard';
 import { UserPayloadInterface } from '@auth/interfaces';
 import { IAuthService } from '@auth/service';
 
+import { User } from '@users/decorator';
+
 import { TYPES } from '@config/dependency-injection';
+
+import { SuccessResponseData } from '@shared/dto';
 
 import { SUCCESS_MESSAGES } from './constants';
 
 @Controller('auth')
+@ApiTags('Auth')
 export class AuthController {
   constructor(
     @Inject(TYPES.AuthService)

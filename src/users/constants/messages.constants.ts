@@ -8,6 +8,8 @@ export const ERROR_MESSAGES = {
   USER_UPDATE_ERROR: 'Não foi possível atualizar o usuário!',
   USER_NOT_FOUND: 'Usuário naõ encontrado!',
   USER_TOKEN_NOT_EQUALS_TO_PARAM_URL: 'Usuário logado não possui permissão!',
+  RECORD_NOT_BELONG_TO_LOGGED_USER:
+    'O registro encontrado não percente ao usuário logado!',
   NOT_IS_MASTER_USER: 'Acesso negado!',
 };
 

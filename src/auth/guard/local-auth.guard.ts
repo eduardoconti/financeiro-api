@@ -4,6 +4,8 @@ import { AuthGuard } from '@nestjs/passport';
 import { ERROR_MESSAGES } from '@auth/constants';
 import { LoginUnauthorizedException } from '@auth/exception/login-unauthorized.exception';
 
+import { InternalServerErrorException } from '@config/exceptions';
+
 @Injectable()
 export class LocalAuthGuard extends AuthGuard('local') {
   canActivate(context: ExecutionContext) {
@@ -14,16 +16,17 @@ export class LocalAuthGuard extends AuthGuard('local') {
 
   handleRequest<D>(err: any, userDatabase: D) {
     // You can throw an exception based on either "info" or "err" arguments
-    console.log(err);
 
-    if (err) {
-      throw new LoginUnauthorizedException(err.reason, err);
-    }
     if (!userDatabase) {
       throw new LoginUnauthorizedException(
         ERROR_MESSAGES.AUTHENTICATION_FAILED,
       );
     }
+
+    if (err) {
+      throw new InternalServerErrorException(undefined, undefined, err);
+    }
+
     return userDatabase;
   }
 }

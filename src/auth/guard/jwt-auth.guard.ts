@@ -1,13 +1,14 @@
 import { ExecutionContext, Injectable } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 
+import { ExpiredTokenException, InvalidTokenException } from '@auth/exception';
+
 import {
   InternalServerErrorException,
   UnauthorizedException,
 } from '@config/exceptions';
 
 import { ERROR_MESSAGES } from '../constants/messages.constants';
-import { ExpiredTokenException, InvalidTokenException } from '@auth/exception';
 @Injectable()
 export class JwtAuthGuard extends AuthGuard('jwt') {
   canActivate(context: ExecutionContext) {

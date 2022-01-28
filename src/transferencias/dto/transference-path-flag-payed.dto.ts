@@ -1,6 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { CONSTRAINTS_MESSAGES } from '@shared/constants';
 import { IsBoolean } from 'class-validator';
+
+import { CONSTRAINTS_MESSAGES } from '@shared/constants';
 
 export class TransferencePathFlagPayedDTO {
   @ApiProperty({ description: 'Flag Pago' })

@@ -14,15 +14,16 @@ import {
   Inject,
 } from '@nestjs/common';
 import { ApiQuery, ApiTags } from '@nestjs/swagger';
-import { User } from '@users/decorator';
-import { SuccessResponseData } from '@shared/dto';
 
 import { JwtAuthGuard } from '@auth/guard';
 import { UserPayloadInterface } from '@auth/interfaces';
 
+import { User } from '@users/decorator';
 import { UserLoggedGuard } from '@users/guard';
 
 import { TYPES } from '@config/dependency-injection';
+
+import { SuccessResponseData } from '@shared/dto';
 
 import { YIELD_SUCCESS_MESSAGES } from './constants';
 import { ReceitasDTO } from './dto';
@@ -180,7 +181,7 @@ export class ReceitasController {
   @UseGuards(UserLoggedGuard)
   async alteraFlagPago(
     @Param('id', ParseIntPipe) id: number,
-    @Body() receita,
+    @Body() receita: ReceitasDTO,
   ): Promise<SuccessResponseData<{ id: number; pago: boolean }>> {
     const data = await this.receitaService.alteraFlagPago(receita, id);
     return new SuccessResponseData<{ id: number; pago: boolean }>(

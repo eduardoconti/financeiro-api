@@ -6,7 +6,7 @@ import { AuthModule } from '@auth/auth.module';
 
 import { ReceitasModule } from '@receitas/receitas.module';
 
-import { CategoryModule } from '@categorias/category.module';
+import { CategoryModule } from '@category/category.module';
 
 import { WalletModule } from '@wallet/wallet.module';
 

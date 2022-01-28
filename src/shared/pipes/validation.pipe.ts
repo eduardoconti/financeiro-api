@@ -1,5 +1,3 @@
-import { ValidationErrorDTO } from '@config/dto';
-import { BadRequestException } from '@config/exceptions';
 import {
   PipeTransform,
   Injectable,
@@ -8,6 +6,9 @@ import {
 } from '@nestjs/common';
 import { plainToClass } from 'class-transformer';
 import { validate } from 'class-validator';
+
+import { ValidationErrorDTO } from '@config/dto';
+import { BadRequestException } from '@config/exceptions';
 
 @Injectable()
 export class ValidationPipe implements PipeTransform<any> {

@@ -4,4 +4,5 @@ export const TYPES = {
   InsertUserService: Symbol('InsertUserService'),
   DeleteUserService: Symbol('DeleteUserService'),
   UserRepository: Symbol('UserRepository'),
+  CheckUserRegisterInterceptor: Symbol('CheckUserRegisterInterceptor'),
 };

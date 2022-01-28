@@ -153,6 +153,7 @@ export class ReceitaService {
           } else {
             monthEarnings[key].totalOpen += element.valor;
           }
+
           monthEarnings[key].data.push(element);
         } else {
           monthEarnings[key] = new EarningsGroupMonthDTO(

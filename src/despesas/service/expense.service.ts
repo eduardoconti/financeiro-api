@@ -7,6 +7,7 @@ import {
 import { Repository } from 'typeorm';
 
 import { TYPES } from '@config/dependency-injection';
+import { InternalServerErrorException as FCInternalServerErrorException } from '@config/exceptions';
 
 import { EXPENSE_ERROR_MESSAGES } from '@despesas/constants';
 import { DespesasDTO, ExpensePatchFlagPayedDTO } from '@despesas/dto';
@@ -253,13 +254,23 @@ export class DespesaService implements IExpenseService {
 
   async insereDespesa(despesa: DespesasDTO): Promise<Despesas> {
     try {
-      const newDespesas = await this.despesaRepository.create(despesa);
+      const entity = new Despesas();
+      entity.user = despesa.userId;
+      entity.carteira = despesa.carteira;
+      entity.categoria = despesa.categoria;
+      entity.pagamento = despesa.pagamento as Date;
+      entity.valor = despesa.valor;
+      entity.vencimento = despesa.vencimento;
+      entity.descricao = despesa.descricao;
+
+      const newDespesas = await this.despesaRepository.create(entity);
       await this.despesaRepository.save(newDespesas);
       return newDespesas;
     } catch (error) {
-      throw new BadRequestException(
-        error,
+      throw new FCInternalServerErrorException(
+        undefined,
         EXPENSE_ERROR_MESSAGES.EXPENSE_CREATE_ERROR,
+        error,
       );
     }
   }
