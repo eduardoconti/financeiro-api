@@ -1,12 +1,21 @@
 import { Module } from '@nestjs/common';
-import { DatabaseModule } from '../db/database.module';
-import { transferenciasProviders } from './transferencias.providers';
+
+import { UsersModule } from '@users/users.module';
+
+import { TYPES } from '@config/dependency-injection';
+
+import { DatabaseModule } from '@db/database.module';
+
+import { TransferenciaService } from './service';
 import { TransferenciasController } from './transferencias.controller';
-import { TransferenciaService } from './service/transferencias.service';
+import { transferenciasProviders } from './transferencias.providers';
 
 @Module({
-  imports: [DatabaseModule],
+  imports: [DatabaseModule, UsersModule],
   controllers: [TransferenciasController],
-  providers: [...transferenciasProviders, TransferenciaService],
+  providers: [
+    ...transferenciasProviders,
+    { provide: TYPES.TransferenceService, useClass: TransferenciaService },
+  ],
 })
 export class TransferenciasModule {}

@@ -1,47 +1,58 @@
 import {
   Body,
-  ClassSerializerInterceptor,
   Controller,
   Get,
   Param,
   Post,
   UseGuards,
-  UseInterceptors,
   Delete,
+  Inject,
 } from '@nestjs/common';
-import { UserDto } from './dto/users.dto';
-import { UsersService } from './service/users.service';
 import { ApiTags } from '@nestjs/swagger';
-import { MasterUserGuard } from './guard/master-user.guard';
-import { JwtAuthGuard } from 'src/auth/guard/jwt-auth.guard';
-import { Users } from './entity/users.entity';
+
+import { JwtAuthGuard } from '@auth/guard';
+
+import { TYPES } from '@config/dependency-injection';
+
+import { UserDeleteResponseDTO, UserDTO } from './dto';
+import { Users } from './entity';
+import { MasterUserGuard } from './guard';
+import {
+  IDeleteUserService,
+  IGetUserService,
+  IInsertUserService,
+} from './service';
 
 @ApiTags('users')
 @Controller('users')
 @UseGuards(JwtAuthGuard)
 export class UsersController {
-  constructor(private readonly userService: UsersService) {}
+  constructor(
+    @Inject(TYPES.GetUserService)
+    private readonly getUserService: IGetUserService,
+    @Inject(TYPES.InsertUserService)
+    private readonly insertserService: IInsertUserService,
+    @Inject(TYPES.DeleteUserService)
+    private readonly deleteUserService: IDeleteUserService,
+  ) {}
   @Get()
-  @UseGuards(MasterUserGuard)
-  async returnAllUsers(): Promise<Users[]> {
-    return await this.userService.returnAllUsers();
+  async getAllUsers(): Promise<Users[]> {
+    return await this.getUserService.getAll();
   }
 
   @Post()
   @UseGuards(MasterUserGuard)
-  async createUser(@Body() user: UserDto): Promise<Users> {
-    return await this.userService.createUser(user);
+  async createUser(@Body() user: UserDTO): Promise<Users> {
+    return await this.insertserService.insert(user);
   }
 
-  @UseGuards(MasterUserGuard)
-  @Get('/login/:login')
-  async returnUserByEmail(@Param('login') login: string): Promise<Users> {
-    return await this.userService.returnUserByLogin(login);
+  @Get('login/:login')
+  async getUserByLogin(@Param('login') login: string): Promise<Users> {
+    return await this.getUserService.getUserByLogin(login);
   }
 
   @Delete('/:id')
-  @UseGuards(MasterUserGuard)
-  async deletUser(@Param('id') id: string): Promise<{ deleted: boolean }> {
-    return this.userService.deletUser(id);
+  async deleteUser(@Param('id') id: string): Promise<UserDeleteResponseDTO> {
+    return await this.deleteUserService.delete(id);
   }
 }

@@ -1,9 +1,13 @@
-import {
-  ExecutionContext,
-  Injectable,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { ExecutionContext, Injectable } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
+
+import { ExpiredTokenException, InvalidTokenException } from '@auth/exception';
+
+import {
+  InternalServerErrorException,
+  UnauthorizedException,
+} from '@config/exceptions';
+
 import { ERROR_MESSAGES } from '../constants/messages.constants';
 @Injectable()
 export class JwtAuthGuard extends AuthGuard('jwt') {
@@ -13,13 +17,34 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
     return super.canActivate(context);
   }
 
-  handleRequest(err, user, info) {
+  handleRequest<D>(err: any, user: D, info: any) {
     // You can throw an exception based on either "info" or "err" arguments
-    if (err || !user) {
-      throw (
-        err || new UnauthorizedException(ERROR_MESSAGES.AUTHENTICATION_FAILED)
+    if (info) {
+      const { name } = info;
+      switch (name) {
+        case 'JsonWebTokenError':
+          throw new InvalidTokenException();
+        case 'TokenExpiredError':
+          throw new ExpiredTokenException();
+        case 'NotBeforeError':
+          throw new UnauthorizedException(
+            undefined,
+            'Token not accepted (nbf)',
+          );
+      }
+    }
+
+    if (!user) {
+      throw new UnauthorizedException(
+        undefined,
+        ERROR_MESSAGES.AUTHENTICATION_FAILED,
       );
     }
+
+    if (err) {
+      throw new InternalServerErrorException(undefined, undefined, err);
+    }
+
     return user;
   }
 }

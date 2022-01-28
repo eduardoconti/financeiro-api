@@ -2,38 +2,75 @@ import {
   ExceptionFilter,
   Catch,
   ArgumentsHost,
-  HttpException,
+  MethodNotAllowedException as CommonMethodNotAllowedException,
+  NotFoundException as CommonNotFoundException,
+  BadRequestException as CommonBadRequestException,
+  HttpStatus,
 } from '@nestjs/common';
-import { Response } from 'express';
 import * as Sentry from '@sentry/node';
-import { ResponseDataDto } from '../dto/response-data.dto';
-import { HttpInternalMessages } from '../enums/http-internal-messages';
-@Catch(HttpException)
+import { QueryFailedError } from 'typeorm';
+
+import { ErrorResponseDTO } from '@config/dto';
+import {
+  BadRequestException,
+  HttpBaseException,
+  InternalServerErrorException,
+  MethodNotAllowedException,
+  NotImplementedException,
+} from '@config/exceptions';
+
+@Catch()
 export class HttpExceptionFilter implements ExceptionFilter {
-  private sendErrorSentry(error): void {
-    let errorMessage = error.message;
-    if (typeof error === 'object' && error.hasOwnProperty('error')) {
-      errorMessage = error.error.concat('\n', errorMessage);
-    }
-    Sentry.captureException(errorMessage);
-  }
-
-  catch(exception: HttpException, host: ArgumentsHost) {
+  catch(exception: unknown, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
-    const response = ctx.getResponse<Response>();
-    const status = exception.getStatus();
-    const errorResponse = exception.getResponse() as any;
+    const response = ctx.getResponse();
+    console.log(exception);
+    Sentry.captureException(exception);
 
-    this.sendErrorSentry(errorResponse);
-    const internalMessage = errorResponse.error
-      ? errorResponse.error
-      : HttpInternalMessages.INTERNAL_SERVER_ERROR;
-    const message = errorResponse.message
-      ? errorResponse.message
-      : HttpInternalMessages.INTERNAL_SERVER_ERROR;
-    console.log(new ResponseDataDto(status, internalMessage, message));
-    response
-      .status(status)
-      .json(new ResponseDataDto(status, internalMessage, message));
+    if (exception instanceof CommonNotFoundException) {
+      const notFoundException = new NotImplementedException();
+      return response
+        .status(notFoundException.httpStatus)
+        .json(notFoundException.getResponse());
+    }
+
+    if (exception instanceof CommonMethodNotAllowedException) {
+      const methodNotAllowedException = new MethodNotAllowedException();
+      return response
+        .status(methodNotAllowedException.httpStatus)
+        .json(methodNotAllowedException.getResponse());
+    }
+
+    if (exception instanceof CommonBadRequestException) {
+      const badRequestException = new BadRequestException(
+        undefined,
+        exception?.message,
+      );
+      return response
+        .status(badRequestException.httpStatus)
+        .json(badRequestException.getResponse());
+    }
+
+    if (exception instanceof HttpBaseException) {
+      const errorResponse = exception.getResponse();
+      const status = exception.httpStatus;
+
+      if (exception?.error?.constructor === QueryFailedError) {
+        return response
+          .status(status)
+          .json(
+            new ErrorResponseDTO(
+              exception.error.message,
+              exception.error.driverError.detail,
+            ),
+          );
+      } else {
+        return response.status(status).json(errorResponse);
+      }
+    }
+
+    return response
+      .status(HttpStatus.INTERNAL_SERVER_ERROR)
+      .json(new InternalServerErrorException().getResponse());
   }
 }

@@ -1,12 +1,11 @@
-import {
-  Injectable,
-  CanActivate,
-  ExecutionContext,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common';
 import { Observable } from 'rxjs';
-import { UserPayloadInterface } from 'src/auth/interfaces/user-payload.interface';
-import { ERROR_MESSAGES } from '../../shared/constants/messages';
+
+import { UserPayloadInterface } from '@auth/interfaces';
+
+import { ERROR_MESSAGES } from '@users/constants';
+
+import { UnauthorizedException } from '@config/exceptions';
 
 @Injectable()
 export class MasterUserGuard implements CanActivate {
@@ -19,7 +18,10 @@ export class MasterUserGuard implements CanActivate {
 
   async validateRequest(user: UserPayloadInterface) {
     if (user.userProfile !== 2) {
-      throw new UnauthorizedException(ERROR_MESSAGES.NOT_IS_MASTER_USER);
+      throw new UnauthorizedException(
+        undefined,
+        ERROR_MESSAGES.NOT_IS_MASTER_USER,
+      );
     }
     return true;
   }

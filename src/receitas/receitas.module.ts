@@ -1,12 +1,21 @@
 import { Module } from '@nestjs/common';
+
+import { UsersModule } from '@users/users.module';
+
+import { TYPES } from '@config/dependency-injection';
+
 import { DatabaseModule } from '../db/database.module';
-import { ReceitasProviders } from './receitas.providers';
-import { ReceitaService } from './service/receitas.service';
 import { ReceitasController } from './receitas.controller';
+import { ReceitasProviders } from './receitas.providers';
+import { ReceitaService } from './service/earning.service';
 
 @Module({
-  imports: [DatabaseModule],
+  imports: [DatabaseModule, UsersModule],
   controllers: [ReceitasController],
-  providers: [...ReceitasProviders, ReceitaService],
+  providers: [
+    ...ReceitasProviders,
+    { provide: TYPES.EarningService, useClass: ReceitaService },
+  ],
+  exports: [{ provide: TYPES.EarningService, useClass: ReceitaService }],
 })
 export class ReceitasModule {}

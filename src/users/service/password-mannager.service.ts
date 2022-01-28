@@ -1,20 +1,24 @@
-import {
-  Injectable,
-  ServiceUnavailableException,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
-import { PASSWORD_ERROR_MESSAGES } from 'src/shared/constants/password-messages';
+
+import { PasswordHashCompareException } from '@users/exception';
+
+import { InternalServerErrorException } from '@config/exceptions';
+
+import { PASSWORD_ERROR_MESSAGES } from '@shared/constants';
+
+import { IPasswordManagerService } from './password-mannager.service.interface';
 
 @Injectable()
-export class PasswordManagerService {
+export class PasswordManagerService implements IPasswordManagerService {
   async getHash(password: string): Promise<string> {
     try {
       return bcrypt.hash(password, 15);
     } catch (err) {
-      throw new ServiceUnavailableException(
-        err,
+      throw new InternalServerErrorException(
+        undefined,
         PASSWORD_ERROR_MESSAGES.GENERATE_HASH_ERROR,
+        err,
       );
     }
   }
@@ -23,7 +27,7 @@ export class PasswordManagerService {
     const passwordConfirm = await bcrypt.compare(password, hash);
 
     if (!passwordConfirm) {
-      throw new UnauthorizedException(
+      throw new PasswordHashCompareException(
         PASSWORD_ERROR_MESSAGES.COMPARE_HASH_AND_PASSWORD_ERROR,
       );
     }

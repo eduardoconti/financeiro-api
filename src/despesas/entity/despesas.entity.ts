@@ -1,38 +1,42 @@
+import { Exclude, Transform } from 'class-transformer';
 import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
-import { Categorias } from '../../categorias/entity/categorias.entity';
-import { Carteiras } from '../../carteiras/entity/carteiras.entity';
-import { Users } from 'src/users/entity/users.entity';
-import { Exclude } from 'class-transformer';
+
+import { Categorias } from '@category/entity';
+
+import { Carteiras } from '@wallet/entity';
+
+import { Users } from '@users/entity';
 
 @Entity({ schema: 'public', name: 'despesas' })
 export class Despesas {
   @PrimaryGeneratedColumn()
-  id: number;
+  id!: number;
 
   @Column('text', { nullable: false })
-  descricao: string;
+  descricao!: string;
 
   @Column('float', { default: 0 })
-  valor: number;
+  @Transform(({ value }) => Math.round(value * 100) / 100)
+  valor!: number;
 
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
-  vencimento: Date;
+  vencimento!: Date;
 
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
-  pagamento: Date;
+  pagamento!: Date;
 
   @Column('boolean', { default: false })
-  pago: boolean;
+  pago!: boolean;
 
   @ManyToOne(() => Carteiras, (carteiras) => carteiras.id, { nullable: false })
-  carteira: Carteiras;
+  carteira!: number;
 
   @ManyToOne(() => Categorias, (categorias) => categorias.id, {
     nullable: false,
   })
-  categoria: Categorias;
+  categoria!: number;
 
   @ManyToOne(() => Users, (users) => users.id, { nullable: false })
   @Exclude()
-  user: Users;
+  user!: string;
 }

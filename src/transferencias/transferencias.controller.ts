@@ -9,23 +9,36 @@ import {
   Delete,
   Post,
   UseGuards,
+  Inject,
 } from '@nestjs/common';
-
-import { TransferenciasDTO } from './dto/transferencias.dto';
-import { Transferencias } from './entity/transferencias.entity';
 import { ApiTags } from '@nestjs/swagger';
-import { TransferenciaService } from './service/transferencias.service';
-import { JwtAuthGuard } from 'src/auth/guard/jwt-auth.guard';
-import { User } from 'src/shared/decorator/user.decorator';
-import { UserPayloadInterface } from 'src/auth/interfaces/user-payload.interface';
-import { UserLoggedGuard } from 'src/users/guard/user-logged-auth.guard';
-import { SuccessResponseData } from 'src/shared/dto/success-response-data.dto';
+
+import { JwtAuthGuard } from '@auth/guard';
+import { UserPayloadInterface } from '@auth/interfaces';
+
+import { User } from '@users/decorator';
+import { UserLoggedGuard } from '@users/guard';
+
+import { TYPES } from '@config/dependency-injection';
+
+import { SuccessResponseData } from '@shared/dto';
+
+import {
+  TransferenceDeleteResponseDTO,
+  TransferencePathFlagPayedDTO,
+  TransferenciasDTO,
+} from './dto';
+import { Transferencias } from './entity';
+import { ITransferenceService } from './service';
 
 @Controller('transferencias')
 @ApiTags('transferencias')
 @UseGuards(JwtAuthGuard)
 export class TransferenciasController {
-  constructor(private readonly transferenciaService: TransferenciaService) {}
+  constructor(
+    @Inject(TYPES.TransferenceService)
+    private readonly transferenciaService: ITransferenceService,
+  ) {}
   @Get()
   async retornaTodasTransferencias(
     @User() user: UserPayloadInterface,
@@ -33,7 +46,7 @@ export class TransferenciasController {
     @Query('mes') mes?: number,
     @Query('pago') pago?: boolean,
   ): Promise<SuccessResponseData<Transferencias[]>> {
-    let data = await this.transferenciaService.retornaTodas(
+    const data = await this.transferenciaService.retornaTodas(
       ano,
       mes,
       pago,
@@ -44,9 +57,9 @@ export class TransferenciasController {
 
   @Get('/id/:id')
   async retornaTransferenciaPoId(
-    @Param('id') id?: number,
+    @Param('id') id: number,
   ): Promise<SuccessResponseData<Transferencias>> {
-    let data = await this.transferenciaService.getOne(id);
+    const data = await this.transferenciaService.getOne(id);
     return new SuccessResponseData<Transferencias>(data);
   }
 
@@ -57,7 +70,7 @@ export class TransferenciasController {
     @Param('mes') mes?: number,
     @Query('pago') pago?: boolean,
   ): Promise<SuccessResponseData<Transferencias[]>> {
-    let data = await this.transferenciaService.retornaTodas(
+    const data = await this.transferenciaService.retornaTodas(
       ano,
       mes,
       pago,
@@ -73,12 +86,13 @@ export class TransferenciasController {
     @Param('mes') mes?: number,
     @Query('pago') pago?: boolean,
   ) {
-    let data = await this.transferenciaService.retornaValorDespesasAgrupadosPorCarteiraOrigem(
-      ano,
-      mes,
-      pago,
-      user.userId,
-    );
+    const data =
+      await this.transferenciaService.retornaValorDespesasAgrupadosPorCarteiraOrigem(
+        ano,
+        mes,
+        pago,
+        user.userId,
+      );
     return new SuccessResponseData(data);
   }
 
@@ -89,50 +103,49 @@ export class TransferenciasController {
     @Param('mes') mes?: number,
     @Query('pago') pago?: boolean,
   ) {
-    let data = await this.transferenciaService.retornaValorDespesasAgrupadosPorCarteiraDestino(
-      ano,
-      mes,
-      pago,
-      user.userId,
-    );
+    const data =
+      await this.transferenciaService.retornaValorDespesasAgrupadosPorCarteiraDestino(
+        ano,
+        mes,
+        pago,
+        user.userId,
+      );
     return new SuccessResponseData(data);
   }
 
   @Patch('flag/:id')
+  @UseGuards(UserLoggedGuard)
   async alteraFlagPago(
-    @User() user: UserPayloadInterface,
     @Param('id') id: number,
-    @Body() transferencia: { id: number; pago: boolean },
-  ): Promise<SuccessResponseData<{ id: number; pago: boolean }>> {
-    let data = this.transferenciaService.alteraFlagPago(
+    @Body() transferencia: TransferencePathFlagPayedDTO,
+  ): Promise<SuccessResponseData<Transferencias>> {
+    const data = await this.transferenciaService.alteraFlagPago(
       id,
       transferencia,
-      user.userId,
     );
-    return new SuccessResponseData<{ id: number; pago: boolean }>(data);
+    return new SuccessResponseData<Transferencias>(data);
   }
 
   @Put('/:id')
+  @UseGuards(UserLoggedGuard)
   async alteraTransferencia(
-    @User() user: UserPayloadInterface,
     @Param('id') id: number,
     @Body() transferencia: TransferenciasDTO,
   ): Promise<SuccessResponseData<Transferencias>> {
-    let data = this.transferenciaService.alteraTransferencia(
+    const data = await this.transferenciaService.alteraTransferencia(
       id,
       transferencia,
-      user.userId,
     );
     return new SuccessResponseData<Transferencias>(data);
   }
 
   @Delete('/:id')
+  @UseGuards(UserLoggedGuard)
   async deletaTransferencia(
-    @User() user: UserPayloadInterface,
     @Param('id') id: number,
-  ): Promise<SuccessResponseData<{ deleted: boolean }>> {
-    let data = this.transferenciaService.deletaTransferencia(id, user.userId);
-    return new SuccessResponseData<{ deleted: boolean }>(data);
+  ): Promise<SuccessResponseData<TransferenceDeleteResponseDTO>> {
+    const data = await this.transferenciaService.deletaTransferencia(id);
+    return new SuccessResponseData<TransferenceDeleteResponseDTO>(data);
   }
 
   @Post()
@@ -140,7 +153,9 @@ export class TransferenciasController {
   async insereTransferencia(
     @Body() transferencia: TransferenciasDTO,
   ): Promise<SuccessResponseData<Transferencias>> {
-    let data = this.transferenciaService.insereTransferencia(transferencia);
+    const data = await this.transferenciaService.insereTransferencia(
+      transferencia,
+    );
     return new SuccessResponseData<Transferencias>(data);
   }
 }

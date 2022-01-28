@@ -1,9 +1,9 @@
 export const ERROR_MESSAGES = {
-  AUTHENTICATION_FAILED: 'Falha de autenticação',
-  TOKEN_DECODE_ERROR: 'Erro ao decodificar o token',
+  AUTHENTICATION_FAILED: 'Falha de autenticação!',
+  TOKEN_DECODE_ERROR: 'Token inválido!',
+  TOKEN_EXPIRED: 'Token expirado!',
 };
 
 export const SUCCESS_MESSAGES = {
-  GET_SUCCESS: 'Resposta retornada com sucesso.',
-  AUTHENTICATION_SUCCESS: 'Usuário Autenticado!',
+  AUTHENTICATION_SUCCESS: 'Usuário autenticado!',
 };

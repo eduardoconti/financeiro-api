@@ -1,9 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNumber, IsString, Length } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsString, Length } from 'class-validator';
 import { CONSTRAINTS_LIMITS, CONSTRAINTS_MESSAGES } from 'src/shared/constants';
 
-export class UserDto {
-  id: string;
+export class UserDTO {
+  id!: string;
 
   @ApiProperty({
     description: 'Login',
@@ -14,7 +14,7 @@ export class UserDto {
   @Length(CONSTRAINTS_LIMITS.LOGIN.min, CONSTRAINTS_LIMITS.LOGIN.max, {
     message: CONSTRAINTS_MESSAGES.IS_LENGTH,
   })
-  login: string;
+  login!: string;
 
   @ApiProperty({
     description: 'Login',
@@ -25,7 +25,7 @@ export class UserDto {
   @Length(CONSTRAINTS_LIMITS.PASSWORD.min, CONSTRAINTS_LIMITS.PASSWORD.max, {
     message: CONSTRAINTS_MESSAGES.IS_LENGTH,
   })
-  password: string;
+  password!: string;
 
   @ApiProperty({
     description: 'Nome',
@@ -36,13 +36,14 @@ export class UserDto {
   @Length(CONSTRAINTS_LIMITS.NOME.min, CONSTRAINTS_LIMITS.NOME.max, {
     message: CONSTRAINTS_MESSAGES.IS_LENGTH,
   })
-  nome: string;
+  @IsNotEmpty()
+  nome!: string;
 
   @IsNumber({}, { message: CONSTRAINTS_MESSAGES.IS_NUMBER })
-  status: number;
+  status!: number;
 
   @IsNumber({}, { message: CONSTRAINTS_MESSAGES.IS_NUMBER })
-  perfil: number;
+  perfil!: number;
 
   /**
    *

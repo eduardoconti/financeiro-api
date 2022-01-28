@@ -1,10 +1,11 @@
-import {
-  ExecutionContext,
-  Injectable,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { ExecutionContext, Injectable } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { ERROR_MESSAGES } from '../constants/messages.constants';
+
+import { ERROR_MESSAGES } from '@auth/constants';
+import { LoginUnauthorizedException } from '@auth/exception/login-unauthorized.exception';
+
+import { InternalServerErrorException } from '@config/exceptions';
+
 @Injectable()
 export class LocalAuthGuard extends AuthGuard('local') {
   canActivate(context: ExecutionContext) {
@@ -13,13 +14,19 @@ export class LocalAuthGuard extends AuthGuard('local') {
     return super.canActivate(context);
   }
 
-  handleRequest(err, userDatabase, info) {
+  handleRequest<D>(err: any, userDatabase: D) {
     // You can throw an exception based on either "info" or "err" arguments
-    if (err || !userDatabase) {
-      throw (
-        err || new UnauthorizedException(ERROR_MESSAGES.AUTHENTICATION_FAILED)
+
+    if (!userDatabase) {
+      throw new LoginUnauthorizedException(
+        ERROR_MESSAGES.AUTHENTICATION_FAILED,
       );
     }
+
+    if (err) {
+      throw new InternalServerErrorException(undefined, undefined, err);
+    }
+
     return userDatabase;
   }
 }
