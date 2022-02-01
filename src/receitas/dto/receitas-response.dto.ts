@@ -2,12 +2,12 @@ import { Receitas } from '../entity/receitas.entity';
 
 export class ReceitasResponseDTO {
   id: number;
-  user: string;
+  userId: string;
   descricao: string;
   valor: number;
   pagamento: Date;
   pago: boolean;
-  carteira: number;
+  carteiraId: number;
 
   constructor(receita: Receitas) {
     this.id = receita.id;
@@ -16,7 +16,7 @@ export class ReceitasResponseDTO {
     this.pagamento = receita.pagamento;
     this.valor = receita.valor;
     this.pago = receita.pago;
-    this.carteira = receita.carteira;
-    this.user = receita.user;
+    this.carteiraId = receita.carteiraId;
+    this.userId = receita.userId;
   }
 }

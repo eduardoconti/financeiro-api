@@ -1,5 +1,11 @@
 import { Exclude, Transform } from 'class-transformer';
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  ManyToOne,
+  JoinColumn,
+} from 'typeorm';
 
 import { Categorias } from '@category/entity';
 
@@ -28,15 +34,42 @@ export class Despesas {
   @Column('boolean', { default: false })
   pago!: boolean;
 
+  @Column({
+    type: 'uuid',
+    nullable: false,
+    name: 'user_id',
+  })
+  @Exclude()
+  userId!: string;
+
+  @Column({
+    type: 'int',
+    nullable: false,
+    name: 'carteira_id',
+  })
+  @Exclude()
+  carteiraId!: number;
+
+  @Column({
+    type: 'int',
+    nullable: false,
+    name: 'categoria_id',
+  })
+  @Exclude()
+  categoriaId!: number;
+
   @ManyToOne(() => Carteiras, (carteiras) => carteiras.id, { nullable: false })
-  carteira!: number;
+  @JoinColumn({ name: 'carteira_id', referencedColumnName: 'id' })
+  carteira!: Carteiras;
 
   @ManyToOne(() => Categorias, (categorias) => categorias.id, {
     nullable: false,
   })
-  categoria!: number;
+  @JoinColumn({ name: 'categoria_id', referencedColumnName: 'id' })
+  categoria!: Categorias;
 
   @ManyToOne(() => Users, (users) => users.id, { nullable: false })
   @Exclude()
-  user!: string;
+  @JoinColumn({ name: 'user_id', referencedColumnName: 'id' })
+  user!: Users;
 }

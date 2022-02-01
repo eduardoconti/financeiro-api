@@ -2,6 +2,7 @@ import {
   EarningDeleteResponseDTO,
   EarningPatchFlagPayedDTO,
   EarningsGroupMonthDTO,
+  GetTotalEarningResponseDTO,
   ReceitasDTO,
 } from '@receitas/dto';
 import { Receitas } from '@receitas/entity';
@@ -22,11 +23,11 @@ export interface IEarningService {
   ): Promise<any[]>;
 
   retornaTotalReceitas(
+    userId: string,
     ano?: number,
     mes?: number,
     pago?: boolean,
-    userId?: string,
-  ): Promise<number>;
+  ): Promise<GetTotalEarningResponseDTO>;
 
   retornaReceitasAgrupadasPorMes(
     ano?: number,

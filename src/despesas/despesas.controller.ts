@@ -25,9 +25,14 @@ import { TYPES } from '@config/dependency-injection';
 import { SuccessResponseData } from '@shared/dto';
 
 import { SUCCESS_MESSAGES } from './constants';
-import { DespesasDTO, ExpensePatchFlagPayedDTO } from './dto';
+import {
+  DespesasDTO,
+  ExpensePatchFlagPayedDTO,
+  GetTotalExpenseResponseDTO,
+} from './dto';
 import { Despesas } from './entity';
 import { ExpenseDeletedResponse } from './interface';
+import { IGetExpenseService } from './service';
 import { IExpenseService } from './service/expense.service.interface';
 
 @Controller('despesas')
@@ -37,6 +42,8 @@ export class DespesasController {
   constructor(
     @Inject(TYPES.ExpenseService)
     private readonly despesaService: IExpenseService,
+    @Inject(TYPES.GetExpenseService)
+    private readonly getExpenseService: IGetExpenseService,
   ) {}
 
   @Get()
@@ -45,15 +52,15 @@ export class DespesasController {
   @ApiQuery({ name: 'pago', required: false, example: true })
   async retornaTodasDespesas(
     @User() user: UserPayloadInterface,
-    @Query('ano', ParseIntPipe) ano?: number,
-    @Query('mes', ParseIntPipe) mes?: number,
+    @Query('ano') ano?: number,
+    @Query('mes') mes?: number,
     @Query('pago') pago?: boolean,
   ): Promise<SuccessResponseData<Despesas[]>> {
-    const data = await this.despesaService.retornaTodasDespesas(
+    const data = await this.getExpenseService.getAllExpensesByUser(
+      user.userId,
       ano,
       mes,
       pago,
-      user.userId,
     );
 
     return new SuccessResponseData<Despesas[]>(
@@ -67,16 +74,16 @@ export class DespesasController {
   @ApiQuery({ name: 'pago', required: false, example: true })
   async retornaTotalDespesas(
     @User() user: UserPayloadInterface,
-    @Query('pago') pago?: boolean,
-  ): Promise<SuccessResponseData<number>> {
-    const data = await this.despesaService.retornaTotalDespesas(
-      0,
-      0,
-      pago,
+    @Query('ano') ano?: number,
+    @Query('mes') mes?: number,
+  ): Promise<SuccessResponseData<GetTotalExpenseResponseDTO>> {
+    const data = await this.getExpenseService.getTotalExpenses(
       user.userId,
+      ano,
+      mes,
     );
 
-    return new SuccessResponseData<number>(
+    return new SuccessResponseData<GetTotalExpenseResponseDTO>(
       data,
       HttpStatus.OK,
       SUCCESS_MESSAGES.GET_SUCCESS,
@@ -111,11 +118,11 @@ export class DespesasController {
     @Param('mes', ParseIntPipe) mes: number,
     @Query('pago') pago: boolean,
   ) {
-    const data = await this.despesaService.retornaTodasDespesas(
+    const data = await this.getExpenseService.getAllExpensesByUser(
+      user.userId,
       ano,
       mes,
       pago,
-      user.userId,
     );
     return new SuccessResponseData(
       data,
@@ -132,13 +139,12 @@ export class DespesasController {
     @Param('mes', ParseIntPipe) mes: number,
     @Query('pago') pago: boolean,
   ) {
-    const data =
-      await this.despesaService.retornaValorDespesasAgrupadosPorCategoria(
-        ano,
-        mes,
-        pago,
-        user.userId,
-      );
+    const data = await this.getExpenseService.getExpenseValuesGroupByCategory(
+      user.userId,
+      ano,
+      mes,
+      pago,
+    );
 
     return new SuccessResponseData(
       data,
@@ -147,21 +153,20 @@ export class DespesasController {
     );
   }
 
-  @Get('/:ano/mes/:mes/carteira/valor')
+  @Get('carteira/valor')
   @ApiQuery({ name: 'pago', required: false, example: true })
   async retornaValorDespesasAgrupadosPorCarteira(
     @User() user: UserPayloadInterface,
-    @Param('ano', ParseIntPipe) ano: number,
-    @Param('mes', ParseIntPipe) mes: number,
-    @Query('pago') pago: boolean,
-  ) {
-    const data =
-      await this.despesaService.retornaValorDespesasAgrupadosPorCarteira(
-        ano,
-        mes,
-        pago,
-        user.userId,
-      );
+    @Query('ano') ano?: number,
+    @Query('mes') mes?: number,
+    @Query('pago') pago?: boolean,
+  ): Promise<any> {
+    const data = await this.getExpenseService.getExpenseValuesGroupByWallet(
+      user.userId,
+      ano,
+      mes,
+      pago,
+    );
 
     return new SuccessResponseData(
       data,
@@ -171,18 +176,15 @@ export class DespesasController {
   }
 
   @Get('/:ano/mes/:mes/total')
-  @ApiQuery({ name: 'pago', required: false, example: true })
   async getTotalDespesas(
     @User() user: UserPayloadInterface,
     @Param('ano', ParseIntPipe) ano: number,
     @Param('mes', ParseIntPipe) mes: number,
-    @Query('pago') pago: boolean,
   ) {
-    const data = await this.despesaService.retornaTotalDespesas(
+    const data = await this.getExpenseService.getTotalExpenses(
+      user.userId,
       ano,
       mes,
-      pago,
-      user.userId,
     );
 
     return new SuccessResponseData(
@@ -249,7 +251,6 @@ export class DespesasController {
     @User() userToken: UserPayloadInterface,
   ): Promise<SuccessResponseData<Despesas>> {
     despesa.userId = userToken.userId;
-    console.log(despesa);
     const data = await this.despesaService.insereDespesa(despesa);
     return new SuccessResponseData<Despesas>(
       data,

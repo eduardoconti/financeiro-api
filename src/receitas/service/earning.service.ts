@@ -6,11 +6,14 @@ import {
   EarningDeleteResponseDTO,
   EarningPatchFlagPayedDTO,
   EarningsGroupMonthDTO,
+  GetTotalEarningResponseDTO,
   ReceitasDTO,
 } from '@receitas/dto';
 import { Receitas } from '@receitas/entity';
 
 import { TYPES } from '@config/dependency-injection';
+
+import { SqlFileManager } from '@shared/helpers';
 
 const select = [
   'receitas.id',
@@ -42,8 +45,7 @@ export class ReceitaService {
         .createQueryBuilder('receitas')
         .select(select)
         .innerJoin('receitas.carteira', 'carteira')
-        .innerJoin('receitas.user', 'user')
-        .where('user.id= :userId', { userId: userId })
+        .where('receitas.user= :userId', { userId: userId })
         .andWhere(this.CriaWhereAno(ano))
         .andWhere(this.CriaWhereMes(mes))
         .andWhere(this.CriaWherePago(pago))
@@ -89,22 +91,25 @@ export class ReceitaService {
   }
 
   async retornaTotalReceitas(
+    userId: string,
     ano?: number,
     mes?: number,
     pago?: boolean,
-    userId?: string,
-  ): Promise<number> {
+  ): Promise<GetTotalEarningResponseDTO> {
     try {
-      const { sum } = await this.receitaRepository
-        .createQueryBuilder('receitas')
-        .select('SUM(receitas.valor)', 'sum')
-        .innerJoin('receitas.user', 'user')
-        .where('user.id= :userId', { userId: userId })
-        .andWhere(this.CriaWhereAno(ano))
-        .andWhere(this.CriaWhereMes(mes))
-        .andWhere(this.CriaWherePago(pago))
-        .getRawOne();
-      return sum ? parseFloat(sum.toFixed(2)) : 0;
+      const sqlString = SqlFileManager.readFile(
+        __dirname,
+        'get-earning-total-value.sql',
+      );
+
+      const [{ total, totalopen: totalOpen, totalpayed: totalPayed }]: [
+        { total: number; totalopen: number; totalpayed: number },
+      ] = await this.receitaRepository.query(sqlString, [userId, ano, mes]);
+      return GetTotalEarningResponseDTO.build({
+        total,
+        totalOpen,
+        totalPayed,
+      });
     } catch (error) {
       throw new BadRequestException(error);
     }

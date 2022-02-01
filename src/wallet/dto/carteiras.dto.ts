@@ -14,7 +14,7 @@ export class CarteirasDTO {
   })
   @IsUUID('4')
   @IsNotEmpty({ message: CONSTRAINTS_MESSAGES.IS_NOT_EMPTY })
-  user!: string;
+  userId!: string;
 
   @IsString({ message: CONSTRAINTS_MESSAGES.IS_STRING })
   @Length(CONSTRAINTS_LIMITS.DESCRICAO.min, CONSTRAINTS_LIMITS.DESCRICAO.max, {

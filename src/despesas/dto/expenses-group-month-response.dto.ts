@@ -1,6 +1,8 @@
 import { Transform } from 'class-transformer';
 
-export class ExpensesGroupMonthDTO<T> {
+import { Despesas } from '@despesas/entity';
+
+export class ExpensesGroupMonthDTO {
   month: number;
   @Transform(({ value }) => Math.round(value * 100) / 100)
   total: number;
@@ -9,7 +11,7 @@ export class ExpensesGroupMonthDTO<T> {
   @Transform(({ value }) => Math.round(value * 100) / 100)
   totalOpen: number;
   quantity: number;
-  data: T[];
+  data: Despesas[];
 
   constructor(
     month: number,
@@ -17,7 +19,7 @@ export class ExpensesGroupMonthDTO<T> {
     totalPayed: number,
     totalOpen: number,
     quantity: number,
-    data: T[],
+    data: Despesas[],
   ) {
     this.month = month;
     this.total = total;
@@ -26,4 +28,22 @@ export class ExpensesGroupMonthDTO<T> {
     this.quantity = quantity;
     this.data = data;
   }
+
+  static build = ({
+    month,
+    total,
+    totalPayed,
+    totalOpen,
+    quantity,
+    data,
+  }: ExpensesGroupMonthDTO): ExpensesGroupMonthDTO => {
+    return new ExpensesGroupMonthDTO(
+      month,
+      total,
+      totalPayed,
+      totalOpen,
+      quantity,
+      data,
+    );
+  };
 }

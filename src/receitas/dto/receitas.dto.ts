@@ -28,8 +28,9 @@ export class ReceitasDTO {
     description: 'uuid do usuario',
   })
   @IsUUID('4')
-  @IsNotEmpty({ message: CONSTRAINTS_MESSAGES.IS_NOT_EMPTY })
-  user!: string;
+  @IsOptional()
+  //@IsNotEmpty({ message: CONSTRAINTS_MESSAGES.IS_NOT_EMPTY })
+  userId!: string;
 
   @ApiProperty({ default: 0 })
   @IsNotEmpty({ message: CONSTRAINTS_MESSAGES.IS_NOT_EMPTY })
@@ -51,5 +52,5 @@ export class ReceitasDTO {
   @ApiProperty()
   @IsNotEmpty({ message: CONSTRAINTS_MESSAGES.IS_NOT_EMPTY })
   // @IsNumber({}, { message: CONSTRAINTS_MESSAGES.IS_NUMBER })
-  carteira!: number;
+  carteiraId!: number;
 }

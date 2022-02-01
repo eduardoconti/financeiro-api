@@ -30,12 +30,12 @@ export class GraphicService implements IGraphicService {
   ): Promise<GeneralGraphicResponseDTO> {
     const despesas = await this.despesasService.retornaDespesasAgrupadasPorMes(
       undefined,
-      pago,
+      undefined,
       userId,
     );
     const receitas = await this.receitasService.retornaReceitasAgrupadasPorMes(
       undefined,
-      pago,
+      undefined,
       userId,
     );
     const graphicData: GeneralGraphicResponseDTO =

@@ -32,6 +32,7 @@ async function bootstrap() {
     tracesSampleRate: 1.0,
     integrations: [new Sentry.Integrations.Http({ tracing: true })],
     attachStacktrace: true,
+    environment: process.env.ENVIRONMENT,
     beforeSend(event, hint) {
       const exception = hint?.originalException;
 
