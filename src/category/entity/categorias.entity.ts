@@ -7,6 +7,7 @@ import {
   PrimaryGeneratedColumn,
   OneToMany,
   ManyToOne,
+  JoinColumn,
 } from 'typeorm';
 
 import { Despesas } from '../../despesas/entity/despesas.entity';
@@ -20,6 +21,7 @@ export class Categorias {
   @Column({
     type: 'uuid',
     nullable: false,
+    name: 'user_id',
   })
   userId!: string;
 
@@ -32,6 +34,7 @@ export class Categorias {
   categoria?: Despesas[];
 
   @ManyToOne(() => Users, (users) => users.id, { nullable: false })
+  @JoinColumn({ name: 'user_id', referencedColumnName: 'id' })
   @Exclude()
   user?: Users;
 

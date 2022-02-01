@@ -44,8 +44,8 @@ export class ReceitasController {
   @ApiQuery({ name: 'pago', required: false, example: true })
   async retornaTodasReceitas(
     @User() user: UserPayloadInterface,
-    @Query('ano', ParseIntPipe) ano?: number,
-    @Query('mes', ParseIntPipe) mes?: number,
+    @Query('ano') ano?: number,
+    @Query('mes') mes?: number,
     @Query('pago') pago?: boolean,
   ): Promise<SuccessResponseData<Receitas[]>> {
     const data = await this.receitaService.retornaTodasReceitas(
@@ -65,13 +65,15 @@ export class ReceitasController {
   @ApiQuery({ name: 'pago', required: false, example: true })
   async retornaTotalReceitasRecebidas(
     @User() user: UserPayloadInterface,
+    @Query('ano') ano: number,
+    @Query('mes') mes: number,
     @Query('pago') pago: boolean,
   ) {
     const data = await this.receitaService.retornaTotalReceitas(
-      0,
-      0,
-      pago,
       user.userId,
+      ano,
+      mes,
+      pago,
     );
     return new SuccessResponseData(
       data,
@@ -120,13 +122,13 @@ export class ReceitasController {
     );
   }
 
-  @Get('/:ano/mes/:mes/carteira/valor')
+  @Get('carteira/valor')
   @ApiQuery({ name: 'pago', required: false, example: true })
   async retornaValorReceitasAgrupadosPorCarteira(
     @User() user: UserPayloadInterface,
-    @Param('ano', ParseIntPipe) ano: number,
-    @Param('mes', ParseIntPipe) mes: number,
-    @Query('pago') pago: boolean,
+    @Query('ano') ano?: number,
+    @Query('mes') mes?: number,
+    @Query('pago') pago?: boolean,
   ) {
     const data =
       await this.receitaService.retornaValorReceitasAgrupadosPorCarteira(
@@ -151,10 +153,10 @@ export class ReceitasController {
     @Query('pago') pago: boolean,
   ) {
     const data = await this.receitaService.retornaTotalReceitas(
+      user.userId,
       ano,
       mes,
       pago,
-      user.userId,
     );
     return new SuccessResponseData(
       data,

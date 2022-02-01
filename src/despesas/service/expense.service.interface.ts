@@ -9,39 +9,11 @@ import { ExpenseDeletedResponse } from '@despesas/interface';
 export interface IExpenseService {
   getOne(id: number, userId?: string): Promise<Despesas>;
 
-  retornaTodasDespesas(
-    ano?: number,
-    mes?: number,
-    pago?: boolean,
-    userId?: string,
-  ): Promise<Despesas[]>;
-
-  retornaValorDespesasAgrupadosPorCategoria(
-    ano?: number,
-    mes?: number,
-    pago?: boolean,
-    userId?: string,
-  ): Promise<any[]>;
-
-  retornaValorDespesasAgrupadosPorCarteira(
-    ano?: number,
-    mes?: number,
-    pago?: boolean,
-    userId?: string,
-  ): Promise<any[]>;
-
-  retornaTotalDespesas(
-    ano: number,
-    mes: number,
-    pago?: boolean,
-    userId?: string,
-  ): Promise<number>;
-
   retornaDespesasAgrupadasPorMes(
     ano?: number,
     pago?: boolean,
     userId?: string,
-  ): Promise<{ [k: string]: ExpensesGroupMonthDTO<Despesas> }>;
+  ): Promise<{ [k: string]: ExpensesGroupMonthDTO }>;
 
   insereDespesa(despesa: DespesasDTO): Promise<Despesas>;
 

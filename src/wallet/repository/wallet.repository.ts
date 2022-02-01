@@ -52,7 +52,7 @@ export class WalletRepository implements IWalletRepository {
       return await this.repository.find({
         order: { id: 'ASC' },
         relations: ['user'],
-        where: { user: userId },
+        where: { userId: userId },
       });
     } catch (error) {
       throw new BadRequestException(error);

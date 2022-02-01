@@ -1,5 +1,11 @@
 import { Exclude } from 'class-transformer';
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  ManyToOne,
+  JoinColumn,
+} from 'typeorm';
 
 import { Carteiras } from '@wallet/entity';
 
@@ -22,10 +28,27 @@ export class Receitas {
   @Column('boolean', { default: false })
   pago!: boolean;
 
+  @Exclude()
+  @Column({
+    type: 'uuid',
+    nullable: false,
+    name: 'user_id',
+  })
+  userId!: string;
+
+  @Column({
+    type: 'int',
+    nullable: false,
+    name: 'carteira_id',
+  })
+  carteiraId!: number;
+
   @ManyToOne(() => Carteiras, (carteiras) => carteiras.id, { nullable: false })
-  carteira!: number;
+  @JoinColumn({ name: 'carteira_id', referencedColumnName: 'id' })
+  carteira!: Carteiras;
 
   @ManyToOne(() => Users, (users) => users.id, { nullable: false })
+  @JoinColumn({ name: 'user_id', referencedColumnName: 'id' })
   @Exclude()
-  user!: string;
+  user!: Users;
 }

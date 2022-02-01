@@ -13,9 +13,16 @@ import { EXPENSE_ERROR_MESSAGES } from '@despesas/constants';
 import { DespesasDTO, ExpensePatchFlagPayedDTO } from '@despesas/dto';
 import { ExpenseDeletedResponse } from '@despesas/interface';
 
+import { SqlFileManager } from '@shared/helpers';
+
 import { ExpensesGroupMonthDTO } from '../dto/expenses-group-month-response.dto';
 import { Despesas } from '../entity/despesas.entity';
 import { IExpenseService } from './expense.service.interface';
+
+export type ExpenseGroupMonth = {
+  [key: string]: ExpensesGroupMonthDTO;
+};
+
 @Injectable()
 export class DespesaService implements IExpenseService {
   constructor(
@@ -23,209 +30,29 @@ export class DespesaService implements IExpenseService {
     private despesaRepository: Repository<Despesas>,
   ) {}
 
-  private CriaWhereMes(mes?: number) {
-    return !mes || mes == 0
-      ? 'TRUE'
-      : "date_part('month',despesas.vencimento)=" + String(mes);
-  }
-
-  private CriaWherePago(pago?: boolean) {
-    return typeof pago === 'undefined' ? 'TRUE' : 'despesas.pago=' + pago;
-  }
-
-  private CriaWhereAno(ano?: number) {
-    return !ano || ano == 0
-      ? 'TRUE'
-      : "date_part('year',despesas.vencimento)=" + String(ano);
-  }
-  async retornaTodasDespesas(
-    ano?: number,
-    mes?: number,
-    pago?: boolean,
-    userId?: string,
-  ): Promise<Despesas[]> {
-    mes = mes ?? 0;
-    ano = ano ?? 0;
-    try {
-      const select = [
-        'despesas.id',
-        'despesas.descricao',
-        'despesas.valor',
-        'despesas.pago',
-        'despesas.vencimento',
-        'categoria',
-        'carteira',
-      ];
-      const despesas = await this.despesaRepository
-        .createQueryBuilder('despesas')
-        .select(select)
-        .innerJoin('despesas.categoria', 'categoria')
-        .innerJoin('despesas.carteira', 'carteira')
-        .innerJoin('despesas.user', 'user')
-        .orderBy('despesas.valor', 'DESC')
-        .where('user.id= :userId', { userId: userId })
-        .andWhere(this.CriaWhereAno(ano))
-        .andWhere(this.CriaWhereMes(mes))
-        .andWhere(this.CriaWherePago(pago))
-        .getMany();
-
-      return despesas;
-    } catch (error) {
-      throw new BadRequestException(
-        error,
-        EXPENSE_ERROR_MESSAGES.EXPENSE_SELECT_FIND_BY_ID_OR_ALL_ERROR,
-      );
-    }
-  }
-
-  async retornaValorDespesasAgrupadosPorCategoria(
-    ano?: number,
-    mes?: number,
-    pago?: boolean,
-    userId?: string,
-  ): Promise<any[]> {
-    try {
-      const despesas = await this.despesaRepository
-        .createQueryBuilder('despesas')
-        .select([
-          'SUM(despesas.valor) valor',
-          'categoria.descricao descricao',
-          'categoria.id id',
-        ])
-        .innerJoin('despesas.categoria', 'categoria')
-        .innerJoin('despesas.user', 'user')
-        .where('user.id= :userId', { userId: userId })
-        .andWhere(this.CriaWhereAno(ano))
-        .andWhere(this.CriaWhereMes(mes))
-        .andWhere(this.CriaWherePago(pago))
-        .groupBy('categoria.id')
-        .orderBy('valor', 'DESC')
-        .getRawMany();
-
-      return despesas;
-    } catch (error) {
-      throw new BadRequestException(
-        error,
-        EXPENSE_ERROR_MESSAGES.EXPENSE_SELECT_GROUP_MONTH_ERROR,
-      );
-    }
-  }
-
-  async retornaValorDespesasAgrupadosPorCarteira(
-    ano?: number,
-    mes?: number,
-    pago?: boolean,
-    userId?: string,
-  ): Promise<any[]> {
-    try {
-      const despesas = await this.despesaRepository
-        .createQueryBuilder('despesas')
-        .select([
-          'SUM(despesas.valor) valor',
-          'carteira.descricao descricao',
-          'carteira.id id',
-        ])
-        .innerJoin('despesas.carteira', 'carteira')
-        .innerJoin('despesas.user', 'user')
-        .where('user.id= :userId', { userId: userId })
-        .andWhere(this.CriaWhereAno(ano))
-        .andWhere(this.CriaWhereMes(mes))
-        .andWhere(this.CriaWherePago(pago))
-        .groupBy('carteira.id')
-        .orderBy('valor', 'DESC')
-        .getRawMany();
-
-      return despesas;
-    } catch (error) {
-      throw new BadRequestException(
-        error,
-        EXPENSE_ERROR_MESSAGES.EXPENSE_SELECT_GROUP_CATEGORY_ERROR,
-      );
-    }
-  }
-
-  async retornaTotalDespesas(
-    ano = 0,
-    mes = 0,
-    pago?: boolean,
-    userId?: string,
-  ): Promise<number> {
-    try {
-      const { sum } = await this.despesaRepository
-        .createQueryBuilder('despesas')
-        .select('SUM(despesas.valor)', 'sum')
-        .innerJoin('despesas.user', 'user')
-        .where('user.id= :userId', { userId: userId })
-        .andWhere(this.CriaWhereAno(ano))
-        .andWhere(this.CriaWhereMes(mes))
-        .andWhere(this.CriaWherePago(pago))
-        .getRawOne();
-
-      return sum ? parseFloat(sum.toFixed(2)) : 0;
-    } catch (error) {
-      throw new BadRequestException(
-        error,
-        EXPENSE_ERROR_MESSAGES.EXPENSE_SELECT_FIND_BY_ID_OR_ALL_ERROR,
-      );
-    }
-  }
-
   async retornaDespesasAgrupadasPorMes(
     ano?: number,
     pago?: boolean,
     userId?: string,
-  ): Promise<{ [k: string]: ExpensesGroupMonthDTO<Despesas> }> {
+  ): Promise<{ [k: string]: ExpensesGroupMonthDTO }> {
     try {
-      // const dateWhere = (ano: number) =>
-      //   Between(new Date(ano, 0, 1), new Date(ano, 11, 31));
-      const where: { [k: string]: any } = {};
+      const sqlString = SqlFileManager.readFile(
+        __dirname,
+        'get-expense-group-by-month.sql',
+      );
 
-      if (ano) {
-        //where.vencimento = dateWhere(ano)
-      }
-      if (userId) {
-        where.user = {
-          id: userId,
-        };
-      }
-      if (pago != null) {
-        where.pago = pago;
-      }
-      const despesas = await this.despesaRepository.find({
-        relations: ['categoria', 'user', 'carteira'],
-        where: where,
-        order: { vencimento: 'ASC' },
-      });
+      const despesas = await this.despesaRepository.query(sqlString, [userId]);
 
-      const monthExpenses: {
-        [key: string]: ExpensesGroupMonthDTO<Despesas>;
-      } = {};
+      const monthExpenses: ExpenseGroupMonth = {};
 
-      despesas.forEach((element: Despesas) => {
-        const key =
-          String(element.vencimento.getFullYear()) +
-          String('0' + element.vencimento.getMonth()).slice(-2);
-
-        if (key in monthExpenses) {
-          monthExpenses[key].quantity++;
-          monthExpenses[key].total += element.valor;
-
-          element.pago
-            ? (monthExpenses[key].totalPayed += element.valor)
-            : (monthExpenses[key].totalOpen += element.valor * 100);
-
-          monthExpenses[key].data.push(element);
-        } else {
-          monthExpenses[key] = new ExpensesGroupMonthDTO<Despesas>(
-            element.vencimento.getMonth(),
-            element.valor,
-            element.pago ? element.valor : 0,
-            element.pago ? 0 : element.valor,
-            1,
-            [element],
-          );
-        }
-      });
+      despesas.forEach(
+        (element: { month: string; data: ExpensesGroupMonthDTO }) => {
+          const { ...atributes }: ExpensesGroupMonthDTO = element.data;
+          monthExpenses[element.month] = ExpensesGroupMonthDTO.build({
+            ...atributes,
+          });
+        },
+      );
 
       return monthExpenses;
     } catch (error) {
@@ -255,9 +82,9 @@ export class DespesaService implements IExpenseService {
   async insereDespesa(despesa: DespesasDTO): Promise<Despesas> {
     try {
       const entity = new Despesas();
-      entity.user = despesa.userId;
-      entity.carteira = despesa.carteira;
-      entity.categoria = despesa.categoria;
+      entity.userId = despesa.userId;
+      entity.carteiraId = despesa.carteiraId;
+      entity.categoriaId = despesa.categoriaId;
       entity.pagamento = despesa.pagamento as Date;
       entity.valor = despesa.valor;
       entity.vencimento = despesa.vencimento;

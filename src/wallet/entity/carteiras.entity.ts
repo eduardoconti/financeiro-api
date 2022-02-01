@@ -10,6 +10,7 @@ import {
   PrimaryGeneratedColumn,
   OneToMany,
   ManyToOne,
+  JoinColumn,
 } from 'typeorm';
 @Entity({ schema: 'public', name: 'carteiras' })
 export class Carteiras {
@@ -19,6 +20,14 @@ export class Carteiras {
 
   @Column('text', { nullable: false })
   descricao!: string;
+
+  @Exclude()
+  @Column({
+    type: 'uuid',
+    nullable: false,
+    name: 'user_id',
+  })
+  userId!: string;
 
   @OneToMany(() => Despesas, (despesas) => despesas.carteira, {
     nullable: false,
@@ -45,6 +54,7 @@ export class Carteiras {
   transferenciaDestino!: Transferencias[];
 
   @ManyToOne(() => Users, (users) => users.id, { nullable: false })
+  @JoinColumn({ name: 'user_id', referencedColumnName: 'id' })
   @Exclude()
-  user!: string;
+  user!: Users;
 }

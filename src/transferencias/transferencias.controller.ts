@@ -114,7 +114,6 @@ export class TransferenciasController {
   }
 
   @Patch('flag/:id')
-  @UseGuards(UserLoggedGuard)
   async alteraFlagPago(
     @Param('id') id: number,
     @Body() transferencia: TransferencePathFlagPayedDTO,
@@ -127,7 +126,6 @@ export class TransferenciasController {
   }
 
   @Put('/:id')
-  @UseGuards(UserLoggedGuard)
   async alteraTransferencia(
     @Param('id') id: number,
     @Body() transferencia: TransferenciasDTO,
@@ -140,7 +138,6 @@ export class TransferenciasController {
   }
 
   @Delete('/:id')
-  @UseGuards(UserLoggedGuard)
   async deletaTransferencia(
     @Param('id') id: number,
   ): Promise<SuccessResponseData<TransferenceDeleteResponseDTO>> {
@@ -149,7 +146,6 @@ export class TransferenciasController {
   }
 
   @Post()
-  @UseGuards(UserLoggedGuard)
   async insereTransferencia(
     @Body() transferencia: TransferenciasDTO,
   ): Promise<SuccessResponseData<Transferencias>> {
