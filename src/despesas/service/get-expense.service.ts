@@ -41,7 +41,7 @@ export class GetExpenseService implements IGetExpenseService {
     params.vencimento = this.buildDateWhere(ano, mes);
 
     params.userId = userId;
-    console.log(params.vencimento);
+
     return await this.expenseRepository.findByParams({
       ...params,
     });
