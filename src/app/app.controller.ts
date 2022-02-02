@@ -1,5 +1,5 @@
 import { Controller, Get, Inject } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
 import { TYPES } from '@config/dependency-injection';
 
@@ -17,6 +17,10 @@ export class AppController {
   ) {}
 
   @Get()
+  @ApiOperation({
+    summary: 'Check health API',
+    description: 'Get Health API information',
+  })
   getHello(): SuccessResponseData<HomeDTO> {
     return new SuccessResponseData(this.appService.getHello());
   }

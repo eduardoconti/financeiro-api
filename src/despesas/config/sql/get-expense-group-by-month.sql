@@ -1,5 +1,5 @@
 SELECT 
-	concat( date_part('year', d.vencimento),RIGHT(concat('0',CAST(date_part('month', d.vencimento)-1 as VARCHAR(2))),2)) as month, json_build_object(
+	concat( date_part('year', d.vencimento),RIGHT(concat('0',CAST(date_part('month', d.vencimento) as VARCHAR(2))),2)) as month, json_build_object(
 	'month', date_part('month', d.vencimento),
     'total',SUM(d.valor),
     'totalOpen',SUM(CASE WHEN d.pago = false THEN d.valor END),
@@ -31,5 +31,5 @@ WHERE
     --     WHEN (cast ($3 as boolean)) IS NULL THEN true
     --     ELSE d.pago = $3
     -- END
-    GROUP BY date_part('year', d.vencimento), date_part('month', d.vencimento)
+    GROUP BY d.vencimento
     ORDER BY date_part('month', d.vencimento)

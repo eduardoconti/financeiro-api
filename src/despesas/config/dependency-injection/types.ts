@@ -1,6 +1,7 @@
 export const TYPES = {
-  ExpenseService: Symbol('ExpenseService'),
   ExpenseRepository: Symbol('ExpenseRepository'),
-  Repo: Symbol('Repo'),
   GetExpenseService: Symbol('GetExpenseService'),
+  InsertExpenseService: Symbol('InsertExpenseService'),
+  UpdateExpenseService: Symbol('UpdateExpenseService'),
+  DeleteExpenseService: Symbol('DeleteExpenseService'),
 };

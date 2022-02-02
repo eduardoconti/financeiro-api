@@ -25,6 +25,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse();
 
+    console.log(exception);
     Sentry.captureException(exception);
 
     if (exception instanceof CommonNotFoundException) {

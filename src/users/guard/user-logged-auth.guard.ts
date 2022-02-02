@@ -4,7 +4,6 @@ import {
   ExecutionContext,
   Inject,
 } from '@nestjs/common';
-import { Request } from 'express';
 import { Observable } from 'rxjs';
 
 import { ERROR_MESSAGES } from '@users/constants';

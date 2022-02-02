@@ -7,35 +7,45 @@ import { TYPES } from '@config/dependency-injection';
 
 import { DatabaseModule } from '../db/database.module';
 import { DespesasController } from './despesas.controller';
-import { despesasProviders } from './despesas.providers';
 import { Despesas } from './entity';
 import { DespesasMiddleware } from './middleware/despesas.middleware';
 import { ExpenseRepository } from './repository';
-import { GetExpenseService } from './service';
-import { DespesaService } from './service/expense.service';
+import {
+  DeleteExpenseService,
+  GetExpenseService,
+  InsertExpenseService,
+} from './service';
+import { UpdateExpenseService } from './service/update-expense.service';
 
 @Module({
   imports: [DatabaseModule, UsersModule, TypeOrmModule.forFeature([Despesas])],
   controllers: [DespesasController],
   providers: [
-    ...despesasProviders,
     {
-      provide: TYPES.ExpenseService,
-      useClass: DespesaService,
+      provide: TYPES.UpdateExpenseService,
+      useClass: UpdateExpenseService,
     },
     {
-      provide: TYPES.Repo,
+      provide: TYPES.ExpenseRepository,
       useClass: ExpenseRepository,
     },
     {
       provide: TYPES.GetExpenseService,
       useClass: GetExpenseService,
     },
+    {
+      provide: TYPES.InsertExpenseService,
+      useClass: InsertExpenseService,
+    },
+    {
+      provide: TYPES.DeleteExpenseService,
+      useClass: DeleteExpenseService,
+    },
   ],
   exports: [
     {
-      provide: TYPES.ExpenseService,
-      useClass: DespesaService,
+      provide: TYPES.GetExpenseService,
+      useClass: GetExpenseService,
     },
   ],
 })

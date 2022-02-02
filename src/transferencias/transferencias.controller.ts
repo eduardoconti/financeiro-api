@@ -11,13 +11,12 @@ import {
   UseGuards,
   Inject,
 } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
 import { JwtAuthGuard } from '@auth/guard';
 import { UserPayloadInterface } from '@auth/interfaces';
 
 import { User } from '@users/decorator';
-import { UserLoggedGuard } from '@users/guard';
 
 import { TYPES } from '@config/dependency-injection';
 
@@ -32,8 +31,9 @@ import { Transferencias } from './entity';
 import { ITransferenceService } from './service';
 
 @Controller('transferencias')
-@ApiTags('transferencias')
+@ApiTags('Transference')
 @UseGuards(JwtAuthGuard)
+@ApiBearerAuth()
 export class TransferenciasController {
   constructor(
     @Inject(TYPES.TransferenceService)

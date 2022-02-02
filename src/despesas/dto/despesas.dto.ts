@@ -6,20 +6,11 @@ import {
   IsNumber,
   IsOptional,
   IsString,
-  IsUUID,
   Length,
 } from 'class-validator';
 import { CONSTRAINTS_LIMITS, CONSTRAINTS_MESSAGES } from 'src/shared/constants';
 
 export class DespesasDTO {
-  @ApiProperty({
-    description: 'uuid do usuario',
-  })
-  @IsUUID('4')
-  //@IsNotEmpty({ message: CONSTRAINTS_MESSAGES.IS_NOT_EMPTY })
-  @IsOptional()
-  userId!: string;
-
   @ApiProperty({
     description: 'Descrição da despesa',
     minLength: CONSTRAINTS_LIMITS.DESCRICAO.min,
@@ -53,7 +44,7 @@ export class DespesasDTO {
   })
   @IsDateString(undefined, { message: CONSTRAINTS_MESSAGES.IS_DATE })
   @IsOptional()
-  vencimento!: Date;
+  vencimento?: Date;
 
   @ApiPropertyOptional({
     description: 'Data de pagamento',
@@ -65,5 +56,5 @@ export class DespesasDTO {
 
   @ApiPropertyOptional({ description: 'Flag Pago', default: false })
   @IsBoolean({ message: CONSTRAINTS_MESSAGES.IS_BOOLEAN })
-  pago!: boolean;
+  pago?: boolean;
 }

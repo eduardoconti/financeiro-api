@@ -23,6 +23,7 @@ export class Categorias {
     nullable: false,
     name: 'user_id',
   })
+  @Exclude()
   userId!: string;
 
   @Column('text', { nullable: false })

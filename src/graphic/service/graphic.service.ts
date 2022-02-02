@@ -1,12 +1,14 @@
 import { Inject, Injectable } from '@nestjs/common';
+import * as moment from 'moment';
 
+import 'moment/locale/pt-br';
 import { EarningsGroupMonthDTO } from '@receitas/dto';
 import { IEarningService } from '@receitas/service';
 
 import { TYPES } from '@config/dependency-injection';
 
 import { ExpensesGroupMonthDTO } from '@despesas/dto';
-import { IExpenseService } from '@despesas/service';
+import { IGetExpenseService } from '@despesas/service';
 
 import {
   GeneralGraphicDataDTO,
@@ -19,18 +21,13 @@ import { IGraphicService } from './graphic.service.interface';
 @Injectable()
 export class GraphicService implements IGraphicService {
   constructor(
-    @Inject(TYPES.ExpenseService)
-    private despesasService: IExpenseService,
+    @Inject(TYPES.GetExpenseService)
+    private getExpenseService: IGetExpenseService,
     @Inject(TYPES.EarningService)
     private receitasService: IEarningService,
   ) {}
-  async generalGraphic(
-    userId: string,
-    pago?: boolean,
-  ): Promise<GeneralGraphicResponseDTO> {
-    const despesas = await this.despesasService.retornaDespesasAgrupadasPorMes(
-      undefined,
-      undefined,
+  async generalGraphic(userId: string): Promise<GeneralGraphicResponseDTO> {
+    const despesas = await this.getExpenseService.getExpensesGroupByMonth(
       userId,
     );
     const receitas = await this.receitasService.retornaReceitasAgrupadasPorMes(
@@ -52,24 +49,10 @@ export class GraphicService implements IGraphicService {
 
     properties.forEach((key) => {
       receitas[key] ??
-        (receitas[key] = new EarningsGroupMonthDTO(
-          despesas[key].month,
-          0,
-          0,
-          0,
-          0,
-          [],
-        ));
+        (receitas[key] = new EarningsGroupMonthDTO(despesas[key].month, []));
 
       despesas[key] ??
-        (despesas[key] = new ExpensesGroupMonthDTO(
-          receitas[key].month,
-          0,
-          0,
-          0,
-          0,
-          [],
-        ));
+        (despesas[key] = new ExpensesGroupMonthDTO(receitas[key].month, []));
 
       const ballance = receitas[key].total - despesas[key].total;
 
@@ -114,37 +97,11 @@ export class GraphicService implements IGraphicService {
   }
 
   private getMonthName(yearMonth: string): string {
-    switch (yearMonth.slice(4)) {
-      case '00':
-        return this.getYear(yearMonth) + '-' + 'Jan';
-      case '01':
-        return this.getYear(yearMonth) + '-' + 'Fev';
-      case '02':
-        return this.getYear(yearMonth) + '-' + 'Mar';
-      case '03':
-        return this.getYear(yearMonth) + '-' + 'Abr';
-      case '04':
-        return this.getYear(yearMonth) + '-' + 'Mai';
-      case '05':
-        return this.getYear(yearMonth) + '-' + 'Jun';
-      case '06':
-        return this.getYear(yearMonth) + '-' + 'Jul';
-      case '07':
-        return this.getYear(yearMonth) + '-' + 'Ago';
-      case '08':
-        return this.getYear(yearMonth) + '-' + 'Set';
-      case '09':
-        return this.getYear(yearMonth) + '-' + 'Out';
-      case '10':
-        return this.getYear(yearMonth) + '-' + 'Nov';
-      case '11':
-        return this.getYear(yearMonth) + '-' + 'Dez';
-      default:
-        return yearMonth;
-    }
+    moment().locale('pb-br');
+    const dateString = this.createDate(yearMonth);
+    return moment(dateString).format('YYYY[-]MMM');
   }
-
-  private getYear(yearMonth: string) {
-    return yearMonth.slice(0, 4);
+  private createDate(str: string): string {
+    return str.substr(0, 4) + '-' + str.substr(4) + '-01';
   }
 }

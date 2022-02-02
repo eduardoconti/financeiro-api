@@ -2,8 +2,6 @@ import { Module } from '@nestjs/common';
 
 import { ReceitasModule } from '@receitas/receitas.module';
 
-import { UsersModule } from '@users/users.module';
-
 import { TYPES } from '@config/dependency-injection';
 
 import { DespesasModule } from '@despesas/despesas.module';

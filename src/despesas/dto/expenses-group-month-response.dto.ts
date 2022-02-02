@@ -4,6 +4,7 @@ import { Despesas } from '@despesas/entity';
 
 export class ExpensesGroupMonthDTO {
   month: number;
+  data: Despesas[];
   @Transform(({ value }) => Math.round(value * 100) / 100)
   total: number;
   @Transform(({ value }) => Math.round(value * 100) / 100)
@@ -11,15 +12,14 @@ export class ExpensesGroupMonthDTO {
   @Transform(({ value }) => Math.round(value * 100) / 100)
   totalOpen: number;
   quantity: number;
-  data: Despesas[];
 
   constructor(
     month: number,
-    total: number,
-    totalPayed: number,
-    totalOpen: number,
-    quantity: number,
     data: Despesas[],
+    total = 0,
+    totalPayed = 0,
+    totalOpen = 0,
+    quantity = 0,
   ) {
     this.month = month;
     this.total = total;
@@ -39,11 +39,11 @@ export class ExpensesGroupMonthDTO {
   }: ExpensesGroupMonthDTO): ExpensesGroupMonthDTO => {
     return new ExpensesGroupMonthDTO(
       month,
+      data,
       total,
       totalPayed,
       totalOpen,
       quantity,
-      data,
     );
   };
 }

@@ -4,3 +4,5 @@ export * from './patch-flag-payed.dto';
 export * from './get-total-expense-response.dto';
 export * from './get-expense-amout-group-by-wallet-response.dto';
 export * from './get-expense-amout-group-by-category-response.dto';
+export * from './find-expense-by-query-params.dto';
+export * from './expense-delete-response.dto';

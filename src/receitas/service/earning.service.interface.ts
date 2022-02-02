@@ -26,14 +26,13 @@ export interface IEarningService {
     userId: string,
     ano?: number,
     mes?: number,
-    pago?: boolean,
   ): Promise<GetTotalEarningResponseDTO>;
 
   retornaReceitasAgrupadasPorMes(
     ano?: number,
     pago?: boolean,
     userId?: string,
-  ): Promise<{ [key: string]: EarningsGroupMonthDTO<Receitas> }>;
+  ): Promise<{ [key: string]: EarningsGroupMonthDTO }>;
 
   getOne(id: number): Promise<Receitas>;
 

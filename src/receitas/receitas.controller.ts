@@ -13,7 +13,7 @@ import {
   ParseIntPipe,
   Inject,
 } from '@nestjs/common';
-import { ApiQuery, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiQuery, ApiTags } from '@nestjs/swagger';
 
 import { JwtAuthGuard } from '@auth/guard';
 import { UserPayloadInterface } from '@auth/interfaces';
@@ -30,8 +30,9 @@ import { Receitas } from './entity';
 import { IEarningService } from './service';
 
 @Controller('receitas')
-@ApiTags('receitas')
+@ApiTags('Earnings')
 @UseGuards(JwtAuthGuard)
+@ApiBearerAuth()
 export class ReceitasController {
   constructor(
     @Inject(TYPES.EarningService)
@@ -62,18 +63,15 @@ export class ReceitasController {
   }
 
   @Get('/total')
-  @ApiQuery({ name: 'pago', required: false, example: true })
   async retornaTotalReceitasRecebidas(
     @User() user: UserPayloadInterface,
     @Query('ano') ano: number,
     @Query('mes') mes: number,
-    @Query('pago') pago: boolean,
   ) {
     const data = await this.receitaService.retornaTotalReceitas(
       user.userId,
       ano,
       mes,
-      pago,
     );
     return new SuccessResponseData(
       data,
@@ -145,18 +143,15 @@ export class ReceitasController {
   }
 
   @Get('/:ano/mes/:mes/total')
-  @ApiQuery({ name: 'pago', required: false, example: true })
   async getTotalReceitasAnoMes(
     @User() user: UserPayloadInterface,
     @Param('ano', ParseIntPipe) ano: number,
     @Param('mes', ParseIntPipe) mes: number,
-    @Query('pago') pago: boolean,
   ) {
     const data = await this.receitaService.retornaTotalReceitas(
       user.userId,
       ano,
       mes,
-      pago,
     );
     return new SuccessResponseData(
       data,

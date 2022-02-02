@@ -2,10 +2,14 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, SelectQueryBuilder } from 'typeorm';
 
+import { ExpenseDeleteResponseDTO } from '@despesas/dto';
 import { Despesas } from '@despesas/entity';
 import {
+  DeleteExpenseException,
   FindExpenseException,
   GetByQueryException,
+  InsertExpenseException,
+  UpdateExpenseException,
 } from '@despesas/exceptions';
 import { FindExpenseByParams } from '@despesas/types';
 
@@ -32,9 +36,53 @@ export class ExpenseRepository implements IExpenseRepository {
         throw new FindExpenseException(e);
       });
   }
+
+  async findOneByParams(
+    params: FindExpenseByParams,
+  ): Promise<Despesas | undefined> {
+    return await this.repository
+      .findOne({
+        relations: ['user', 'categoria', 'carteira'],
+        where: params,
+        order: { valor: 'DESC' },
+      })
+      .catch((e) => {
+        throw new FindExpenseException(e);
+      });
+  }
   async query(query: string, parameters?: any[]): Promise<any> {
     return await this.repository.query(query, parameters).catch((e) => {
       throw new GetByQueryException(e);
     });
+  }
+
+  async insert(expense: Despesas): Promise<Despesas> {
+    try {
+      const newExpense = await this.repository.create(expense);
+      await this.repository.save(newExpense);
+      return newExpense;
+    } catch (e) {
+      throw new InsertExpenseException(e, expense);
+    }
+  }
+
+  async delete(id: number): Promise<ExpenseDeleteResponseDTO> {
+    await this.repository.delete({ id }).catch((e) => {
+      throw new DeleteExpenseException(e, id);
+    });
+
+    return new ExpenseDeleteResponseDTO();
+  }
+
+  async update(id: number, expense: Partial<Despesas>): Promise<Despesas> {
+    await this.repository.update({ id }, expense).catch((e) => {
+      throw new UpdateExpenseException(e, expense);
+    });
+    const updated = this.repository
+      .findOneOrFail({ where: { id: id } })
+      .catch((e) => {
+        throw new UpdateExpenseException(e, expense);
+      });
+    return updated;
   }
 }

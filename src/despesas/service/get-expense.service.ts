@@ -1,16 +1,18 @@
 import { Inject } from '@nestjs/common';
-import { Between } from 'typeorm';
+import { Between, LessThanOrEqual, MoreThanOrEqual } from 'typeorm';
 
 import { TYPES } from '@config/dependency-injection';
 
 import {
+  ExpensesGroupMonthDTO,
   GetExpenseAmountGroupByCategoryResponse,
   GetExpenseAmountGroupByWalletResponse,
   GetTotalExpenseResponseDTO,
 } from '@despesas/dto';
 import { Despesas } from '@despesas/entity';
+import { ExpenseNotFoundException } from '@despesas/exceptions';
 import { IExpenseRepository } from '@despesas/repository';
-import { FindExpenseByParams } from '@despesas/types';
+import { ExpenseGroupMonth, FindExpenseByParams } from '@despesas/types';
 
 import { SqlFileManager } from '@shared/helpers';
 
@@ -18,28 +20,21 @@ import { IGetExpenseService } from './get-expense.service.interface';
 
 export class GetExpenseService implements IGetExpenseService {
   constructor(
-    @Inject(TYPES.Repo)
+    @Inject(TYPES.ExpenseRepository)
     private expenseRepository: IExpenseRepository,
   ) {}
   async getAllExpensesByUser(
     userId: string,
-    ano?: number,
-    mes?: number,
+    start?: string,
+    end?: string,
     pago?: boolean,
   ): Promise<Despesas[]> {
     const params: FindExpenseByParams = {};
     if (pago !== undefined) {
       params.pago = pago;
     }
-    if (typeof ano === 'string') {
-      ano = parseInt(ano);
-    }
-    if (typeof mes === 'string') {
-      mes = parseInt(mes) - 1;
-    }
 
-    params.vencimento = this.buildDateWhere(ano, mes);
-
+    params.vencimento = this.buildDateWhere(start, end);
     params.userId = userId;
 
     return await this.expenseRepository.findByParams({
@@ -47,10 +42,32 @@ export class GetExpenseService implements IGetExpenseService {
     });
   }
 
+  async getExpensesGroupByMonth(userId: string): Promise<ExpenseGroupMonth> {
+    const sqlString = SqlFileManager.readFile(
+      __dirname,
+      'get-expense-group-by-month.sql',
+    );
+
+    const despesas = await this.expenseRepository.query(sqlString, [userId]);
+
+    const monthExpenses: ExpenseGroupMonth = {};
+
+    despesas.forEach(
+      (element: { month: string; data: ExpensesGroupMonthDTO }) => {
+        const { ...atributes }: ExpensesGroupMonthDTO = element.data;
+        monthExpenses[element.month] = ExpensesGroupMonthDTO.build({
+          ...atributes,
+        });
+      },
+    );
+
+    return monthExpenses;
+  }
+
   async getExpenseValuesGroupByWallet(
     userId: string,
-    ano?: number,
-    mes?: number,
+    start?: string,
+    end?: string,
     pago?: boolean,
   ): Promise<any[]> {
     const sqlString = SqlFileManager.readFile(
@@ -59,8 +76,8 @@ export class GetExpenseService implements IGetExpenseService {
     );
     const despesas = await this.expenseRepository.query(sqlString, [
       userId,
-      ano,
-      mes,
+      start,
+      end,
       pago,
     ]);
     return despesas.map((element: GetExpenseAmountGroupByWalletResponse) => {
@@ -76,8 +93,8 @@ export class GetExpenseService implements IGetExpenseService {
 
   async getExpenseValuesGroupByCategory(
     userId: string,
-    ano?: number,
-    mes?: number,
+    start?: string,
+    end?: string,
     pago?: boolean,
   ): Promise<GetExpenseAmountGroupByCategoryResponse[]> {
     const sqlString = SqlFileManager.readFile(
@@ -87,8 +104,8 @@ export class GetExpenseService implements IGetExpenseService {
 
     const despesas = await this.expenseRepository.query(sqlString, [
       userId,
-      ano,
-      mes,
+      start,
+      end,
       pago,
     ]);
     return despesas.map((element: GetExpenseAmountGroupByCategoryResponse) => {
@@ -104,8 +121,8 @@ export class GetExpenseService implements IGetExpenseService {
 
   async getTotalExpenses(
     userId: string,
-    ano?: number,
-    mes?: number,
+    start?: string,
+    end?: string,
   ): Promise<GetTotalExpenseResponseDTO> {
     const sqlString = SqlFileManager.readFile(
       __dirname,
@@ -114,7 +131,7 @@ export class GetExpenseService implements IGetExpenseService {
 
     const [{ total, totalopen: totalOpen, totalpayed: totalPayed }]: [
       { total: number; totalopen: number; totalpayed: number },
-    ] = await this.expenseRepository.query(sqlString, [userId, ano, mes]);
+    ] = await this.expenseRepository.query(sqlString, [userId, start, end]);
 
     return GetTotalExpenseResponseDTO.build({
       total,
@@ -123,19 +140,25 @@ export class GetExpenseService implements IGetExpenseService {
     });
   }
 
-  private buildDateWhere(ano?: number, mes?: number) {
-    if (ano !== undefined) {
-      const initialDate = this.buildInitialDate(ano, mes);
-      const finalDate = this.buildFinalDate(ano, mes);
-      return Between(initialDate, finalDate);
+  async findOne(params: FindExpenseByParams): Promise<Despesas> {
+    const expense = await this.expenseRepository.findOneByParams(params);
+    if (!expense) {
+      throw new ExpenseNotFoundException();
     }
+    return expense;
   }
-
-  private buildInitialDate(ano: number, mes?: number): Date {
-    return new Date(ano, mes ?? 0, 1, -3, 0, 0);
-  }
-
-  private buildFinalDate(ano: number, mes?: number): Date {
-    return new Date(ano, (mes ?? 11) + 1, 0, 20, 59, 59);
+  private buildDateWhere(start?: string, end?: string) {
+    if (!start && !end) {
+      return;
+    }
+    if (start && end) {
+      return Between(start, end);
+    }
+    if (start) {
+      return MoreThanOrEqual(start);
+    }
+    if (end) {
+      return LessThanOrEqual(end);
+    }
   }
 }

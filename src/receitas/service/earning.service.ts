@@ -94,7 +94,6 @@ export class ReceitaService {
     userId: string,
     ano?: number,
     mes?: number,
-    pago?: boolean,
   ): Promise<GetTotalEarningResponseDTO> {
     try {
       const sqlString = SqlFileManager.readFile(
@@ -119,7 +118,7 @@ export class ReceitaService {
     ano?: number,
     pago?: boolean,
     userId?: string,
-  ): Promise<{ [key: string]: EarningsGroupMonthDTO<Receitas> }> {
+  ): Promise<{ [key: string]: EarningsGroupMonthDTO }> {
     try {
       // const dateWhere = (ano: number) =>
       //   Between(new Date(ano, 0, 1), new Date(ano, 11, 31));
@@ -143,7 +142,7 @@ export class ReceitaService {
       });
 
       const monthEarnings: {
-        [key: string]: EarningsGroupMonthDTO<Receitas>;
+        [key: string]: EarningsGroupMonthDTO;
       } = {};
 
       receitas.forEach((element) => {
@@ -164,11 +163,11 @@ export class ReceitaService {
         } else {
           monthEarnings[key] = new EarningsGroupMonthDTO(
             element.pagamento.getMonth(),
+            [element],
             element.valor,
             element.pago ? element.valor : 0,
             element.pago ? 0 : element.valor,
             1,
-            [element],
           );
         }
       });

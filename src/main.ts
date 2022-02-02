@@ -22,6 +22,16 @@ async function bootstrap() {
     .setTitle(process.env.API_NAME as string)
     .setDescription('API controle financeiro')
     .setVersion(process.env.VERSION as string)
+    .addBearerAuth()
+    .addTag('App', 'Gathers endpoints to check health API')
+    .addTag('Authentication', 'Gathers endpoints to authenticate with API')
+    .addTag('Users', 'Gathers endpoints to handle users')
+    .addTag('Expenses', 'Gathers endpoints to handle expenses')
+    .addTag('Earnings', 'Gathers endpoints to handle earnings')
+    .addTag('Transference', 'Gathers endpoints to handle transference')
+    .addTag('Categories', 'Gathers endpoints to handle categories')
+    .addTag('Wallets', 'Gathers endpoints to handle wallets')
+    .addTag('Graphic', 'Gathers endpoints to handle graphics')
     .build();
   const document = SwaggerModule.createDocument(app, options);
 

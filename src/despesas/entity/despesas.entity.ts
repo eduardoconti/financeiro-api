@@ -16,7 +16,7 @@ import { Users } from '@users/entity';
 @Entity({ schema: 'public', name: 'despesas' })
 export class Despesas {
   @PrimaryGeneratedColumn()
-  id!: number;
+  id?: number;
 
   @Column('text', { nullable: false })
   descricao!: string;
@@ -26,13 +26,13 @@ export class Despesas {
   valor!: number;
 
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
-  vencimento!: Date;
+  vencimento?: Date;
 
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
-  pagamento!: Date;
+  pagamento?: Date;
 
   @Column('boolean', { default: false })
-  pago!: boolean;
+  pago?: boolean;
 
   @Column({
     type: 'uuid',
@@ -60,16 +60,58 @@ export class Despesas {
 
   @ManyToOne(() => Carteiras, (carteiras) => carteiras.id, { nullable: false })
   @JoinColumn({ name: 'carteira_id', referencedColumnName: 'id' })
-  carteira!: Carteiras;
+  carteira?: Carteiras;
 
   @ManyToOne(() => Categorias, (categorias) => categorias.id, {
     nullable: false,
   })
   @JoinColumn({ name: 'categoria_id', referencedColumnName: 'id' })
-  categoria!: Categorias;
+  categoria?: Categorias;
 
   @ManyToOne(() => Users, (users) => users.id, { nullable: false })
   @Exclude()
   @JoinColumn({ name: 'user_id', referencedColumnName: 'id' })
-  user!: Users;
+  user?: Users;
+
+  constructor(
+    userId: string,
+    descricao: string,
+    valor: number,
+    categoriaId: number,
+    carteiraId: number,
+    vencimento?: Date,
+    pagamento?: Date,
+    pago?: boolean,
+  ) {
+    this.userId = userId;
+    this.descricao = descricao;
+    this.valor = valor;
+    this.categoriaId = categoriaId;
+    this.carteiraId = carteiraId;
+    this.vencimento = vencimento;
+    this.pagamento = pagamento;
+    this.pago = pago;
+  }
+
+  static build = ({
+    userId,
+    descricao,
+    valor,
+    categoriaId,
+    carteiraId,
+    vencimento,
+    pagamento,
+    pago,
+  }: Despesas): Despesas => {
+    return new Despesas(
+      userId,
+      descricao,
+      valor,
+      categoriaId,
+      carteiraId,
+      vencimento,
+      pagamento,
+      pago,
+    );
+  };
 }
