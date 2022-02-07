@@ -1,6 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Exclude } from 'class-transformer';
-import { Users } from 'src/users/entity/users.entity';
 import {
   Entity,
   Column,
@@ -10,7 +9,9 @@ import {
   JoinColumn,
 } from 'typeorm';
 
-import { Despesas } from '../../despesas/entity/despesas.entity';
+import { Users } from '@users/entity';
+
+import { Despesas } from '@despesas/entity';
 
 @Entity({ schema: 'public', name: 'categorias' })
 export class Categorias {

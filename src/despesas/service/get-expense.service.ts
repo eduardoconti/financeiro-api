@@ -57,12 +57,9 @@ export class GetExpenseService implements IGetExpenseService {
       __dirname,
       'get-expense-value-group-by-wallet.sql',
     );
-    const despesas = await this.expenseRepository.query(sqlString, [
-      userId,
-      ano,
-      mes,
-      pago,
-    ]);
+    const despesas = await this.expenseRepository.query<
+      GetExpenseAmountGroupByWalletResponse[]
+    >(sqlString, [userId, ano, mes, pago]);
     return despesas.map((element: GetExpenseAmountGroupByWalletResponse) => {
       const { valor, descricao, id }: GetExpenseAmountGroupByWalletResponse =
         element;
@@ -85,12 +82,9 @@ export class GetExpenseService implements IGetExpenseService {
       'get-expense-value-group-by-category.sql',
     );
 
-    const despesas = await this.expenseRepository.query(sqlString, [
-      userId,
-      ano,
-      mes,
-      pago,
-    ]);
+    const despesas = await this.expenseRepository.query<
+      GetExpenseAmountGroupByCategoryResponse[]
+    >(sqlString, [userId, ano, mes, pago]);
     return despesas.map((element: GetExpenseAmountGroupByCategoryResponse) => {
       const { valor, descricao, id }: GetExpenseAmountGroupByCategoryResponse =
         element;

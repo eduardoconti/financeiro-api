@@ -1,9 +1,10 @@
+import { Despesas } from '@despesas/entity';
 import { ApiProperty } from '@nestjs/swagger';
+import { Receitas } from '@receitas/entity';
+import { Transferencias } from '@transference/entity';
+import { Users } from '@users/entity';
 import { Exclude } from 'class-transformer';
-import { Despesas } from 'src/despesas/entity/despesas.entity';
-import { Receitas } from 'src/receitas/entity/receitas.entity';
-import { Transferencias } from 'src/transferencias/entity/transferencias.entity';
-import { Users } from 'src/users/entity/users.entity';
+
 import {
   Entity,
   Column,

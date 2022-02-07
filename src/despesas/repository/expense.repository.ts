@@ -32,9 +32,13 @@ export class ExpenseRepository implements IExpenseRepository {
         throw new FindExpenseException(e);
       });
   }
-  async query(query: string, parameters?: any[]): Promise<any> {
-    return await this.repository.query(query, parameters).catch((e) => {
-      throw new GetByQueryException(e);
-    });
+  async query<T>(query: string, parameters?: string[] | undefined): Promise<T> {
+    const result: T = await this.repository
+      .query(query, parameters)
+      .catch((e) => {
+        throw new GetByQueryException(e);
+      });
+
+    return result;
   }
 }

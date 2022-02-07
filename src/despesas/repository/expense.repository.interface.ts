@@ -6,5 +6,5 @@ import { FindExpenseByParams } from '@despesas/types';
 export interface IExpenseRepository {
   queryBuilder(alias: string): SelectQueryBuilder<Despesas>;
   findByParams(params: FindExpenseByParams): Promise<Despesas[]>;
-  query(query: string, parameters?: any[]): Promise<any>;
+  query<T>(query: string, parameters?: any[]): Promise<T>;
 }

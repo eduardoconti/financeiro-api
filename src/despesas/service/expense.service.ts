@@ -41,7 +41,9 @@ export class DespesaService implements IExpenseService {
         'get-expense-group-by-month.sql',
       );
 
-      const despesas = await this.despesaRepository.query(sqlString, [userId]);
+      const despesas: [] = await this.despesaRepository.query(sqlString, [
+        userId,
+      ]);
 
       const monthExpenses: ExpenseGroupMonth = {};
 
@@ -90,7 +92,7 @@ export class DespesaService implements IExpenseService {
       entity.vencimento = despesa.vencimento;
       entity.descricao = despesa.descricao;
 
-      const newDespesas = await this.despesaRepository.create(entity);
+      const newDespesas = this.despesaRepository.create(entity);
       await this.despesaRepository.save(newDespesas);
       return newDespesas;
     } catch (error) {
