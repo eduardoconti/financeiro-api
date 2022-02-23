@@ -89,6 +89,7 @@ export class DespesaService implements IExpenseService {
       entity.valor = despesa.valor;
       entity.vencimento = despesa.vencimento;
       entity.descricao = despesa.descricao;
+      entity.pago = despesa.pago;
 
       const newDespesas = await this.despesaRepository.create(entity);
       await this.despesaRepository.save(newDespesas);
