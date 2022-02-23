@@ -30,7 +30,7 @@ export class ExpenseRepository implements IExpenseRepository {
       .find({
         relations: ['user', 'categoria', 'carteira'],
         where: params,
-        order: { valor: 'DESC' },
+        order: { vencimento: 'ASC' },
       })
       .catch((e) => {
         throw new FindExpenseException(e);
