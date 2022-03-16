@@ -1,9 +1,9 @@
 import {
   GetEarningAmountGroupByWalletResponse,
   GetTotalEarningResponseDTO,
-} from '@receitas/dto';
-import { Receitas } from '@receitas/entity';
-import { EarningGroupMonth, FindEarningByParams } from '@receitas/types';
+} from '@earning/dto';
+import { Receitas } from '@earning/entity';
+import { EarningGroupMonth, FindEarningByParams } from '@earning/types';
 
 export interface IGetEarningService {
   getAllEarningsByUser(

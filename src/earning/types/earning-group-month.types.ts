@@ -1,4 +1,4 @@
-import { EarningsGroupMonthDTO } from '@receitas/dto';
+import { EarningsGroupMonthDTO } from '@earning/dto';
 
 export type EarningGroupMonth = {
   [key: string]: EarningsGroupMonthDTO;

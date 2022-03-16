@@ -35,7 +35,7 @@ module.exports = {
         groups: [
           'module',
           '/^@auth/',
-          '/^@receitas/',
+          '/^@earning/',
           '/^@category/',
           '/^@wallet/',
           '/^@app/',

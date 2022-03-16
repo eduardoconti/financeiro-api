@@ -1,8 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Receitas } from '@earning/entity';
 import { Exclude } from 'class-transformer';
 import { Entity, Column, PrimaryColumn, OneToMany } from 'typeorm';
-
-import { Receitas } from '@receitas/entity';
 
 import { Categorias } from '@category/entity';
 

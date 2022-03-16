@@ -1,17 +1,16 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, SelectQueryBuilder } from 'typeorm';
-
-import { EarningDeleteResponseDTO } from '@receitas/dto';
-import { Receitas } from '@receitas/entity';
+import { EarningDeleteResponseDTO } from '@earning/dto';
+import { Receitas } from '@earning/entity';
 import {
   DeleteEarningException,
   FindEarningException,
   GetByQueryException,
   InsertEarningException,
   UpdateEarningException,
-} from '@receitas/exceptions';
-import { FindEarningByParams } from '@receitas/types';
+} from '@earning/exceptions';
+import { FindEarningByParams } from '@earning/types';
+import { Repository, SelectQueryBuilder } from 'typeorm';
 
 import { IEarningRepository } from './earning.repository.interface';
 

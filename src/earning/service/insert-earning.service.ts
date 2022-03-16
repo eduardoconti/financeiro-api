@@ -1,8 +1,7 @@
 import { Inject } from '@nestjs/common';
-
-import { ReceitasDTO } from '@receitas/dto';
-import { Receitas } from '@receitas/entity';
-import { IEarningRepository } from '@receitas/repository';
+import { ReceitasDTO } from '@earning/dto';
+import { Receitas } from '@earning/entity';
+import { IEarningRepository } from '@earning/repository';
 
 import { TYPES } from '@config/dependency-injection';
 

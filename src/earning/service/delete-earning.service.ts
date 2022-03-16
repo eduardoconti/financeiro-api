@@ -1,11 +1,10 @@
 import { Inject } from '@nestjs/common';
-
-import { EarningDeleteResponseDTO } from '@receitas/dto';
+import { EarningDeleteResponseDTO } from '@earning/dto';
 import {
   DeleteEarningException,
   EarningNotFoundException,
-} from '@receitas/exceptions';
-import { IEarningRepository } from '@receitas/repository';
+} from '@earning/exceptions';
+import { IEarningRepository } from '@earning/repository';
 
 import { TYPES } from '@config/dependency-injection';
 

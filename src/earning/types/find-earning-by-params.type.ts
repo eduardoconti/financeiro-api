@@ -1,6 +1,5 @@
+import { Receitas } from '@earning/entity';
 import { FindConditions, ObjectLiteral } from 'typeorm';
-
-import { Receitas } from '@receitas/entity';
 
 export type FindEarningByParams =
   | FindConditions<Receitas>[]

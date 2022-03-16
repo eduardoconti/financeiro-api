@@ -1,9 +1,9 @@
 import { Inject, Injectable } from '@nestjs/common';
-import * as moment from 'moment';
 
 import 'moment/locale/pt-br';
-import { EarningsGroupMonthDTO } from '@receitas/dto';
-import { IGetEarningService } from '@receitas/service';
+import { EarningsGroupMonthDTO } from '@earning/dto';
+import { IGetEarningService } from '@earning/service';
+import * as moment from 'moment';
 
 import { TYPES } from '@config/dependency-injection';
 

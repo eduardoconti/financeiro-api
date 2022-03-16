@@ -1,8 +1,7 @@
+import { EarningDeleteResponseDTO } from '@earning/dto';
+import { Receitas } from '@earning/entity';
+import { FindEarningByParams } from '@earning/types';
 import { SelectQueryBuilder } from 'typeorm';
-
-import { EarningDeleteResponseDTO } from '@receitas/dto';
-import { Receitas } from '@receitas/entity';
-import { FindEarningByParams } from '@receitas/types';
 
 export interface IEarningRepository {
   queryBuilder(alias: string): SelectQueryBuilder<Receitas>;

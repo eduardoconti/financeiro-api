@@ -1,5 +1,5 @@
-import { ReceitasDTO, EarningPatchFlagPayedDTO } from '@receitas/dto';
-import { Receitas } from '@receitas/entity';
+import { ReceitasDTO, EarningPatchFlagPayedDTO } from '@earning/dto';
+import { Receitas } from '@earning/entity';
 
 export interface IUpdateEarningService {
   update(

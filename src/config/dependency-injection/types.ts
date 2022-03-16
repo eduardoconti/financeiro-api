@@ -1,6 +1,6 @@
-import { TYPES as AUTH_TYPES } from '@auth/config/dependency-injection';
+import { TYPES as EARNING_TYPES } from '@earning/config/dependency-injection';
 
-import { TYPES as EARNING_TYPES } from '@receitas/config/dependency-injection';
+import { TYPES as AUTH_TYPES } from '@auth/config/dependency-injection';
 
 import { TYPES as CATEGORIA_TYPES } from '@category/config/dependency-injection';
 

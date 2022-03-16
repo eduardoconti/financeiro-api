@@ -1,4 +1,4 @@
-import { EarningDeleteResponseDTO } from '@receitas/dto';
+import { EarningDeleteResponseDTO } from '@earning/dto';
 
 export interface IDeleteEarningService {
   delete(id: number, userId: string): Promise<EarningDeleteResponseDTO>;

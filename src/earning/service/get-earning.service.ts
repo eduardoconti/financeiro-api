@@ -1,20 +1,19 @@
 import { Inject } from '@nestjs/common';
 import {
+  EarningsGroupMonthDTO,
+  GetEarningAmountGroupByWalletResponse,
+  GetTotalEarningResponseDTO,
+} from '@earning/dto';
+import { Receitas } from '@earning/entity';
+import { EarningNotFoundException } from '@earning/exceptions';
+import { IEarningRepository } from '@earning/repository';
+import { EarningGroupMonth, FindEarningByParams } from '@earning/types';
+import {
   Between,
   FindOperator,
   LessThanOrEqual,
   MoreThanOrEqual,
 } from 'typeorm';
-
-import {
-  EarningsGroupMonthDTO,
-  GetEarningAmountGroupByWalletResponse,
-  GetTotalEarningResponseDTO,
-} from '@receitas/dto';
-import { Receitas } from '@receitas/entity';
-import { EarningNotFoundException } from '@receitas/exceptions';
-import { IEarningRepository } from '@receitas/repository';
-import { EarningGroupMonth, FindEarningByParams } from '@receitas/types';
 
 import { TYPES } from '@config/dependency-injection';
 

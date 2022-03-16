@@ -1,10 +1,9 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { ReceitasModule } from '@earning/receitas.module';
 
 import { AuthModule } from '@auth/auth.module';
-
-import { ReceitasModule } from '@receitas/receitas.module';
 
 import { CategoryModule } from '@category/category.module';
 

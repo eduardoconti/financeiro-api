@@ -1,9 +1,8 @@
 import { Injectable, Inject } from '@nestjs/common';
-
-import { EarningPatchFlagPayedDTO, ReceitasDTO } from '@receitas/dto';
-import { Receitas } from '@receitas/entity';
-import { EarningNotFoundException } from '@receitas/exceptions';
-import { IEarningRepository } from '@receitas/repository';
+import { EarningPatchFlagPayedDTO, ReceitasDTO } from '@earning/dto';
+import { Receitas } from '@earning/entity';
+import { EarningNotFoundException } from '@earning/exceptions';
+import { IEarningRepository } from '@earning/repository';
 
 import { TYPES } from '@config/dependency-injection';
 

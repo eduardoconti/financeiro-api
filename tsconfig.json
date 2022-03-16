@@ -22,7 +22,7 @@
       "@db/*": ["src/db/*"],
       "@despesas/*": ["src/despesas/*"],
       "@graphic/*": ["src/graphic/*"],
-      "@receitas/*": ["src/receitas/*"],
+      "@earning/*": ["src/earning/*"],
       "@shared/*": ["src/shared/*"],
       "@transference/*": ["src/transferencias/*"],
     }

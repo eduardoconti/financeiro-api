@@ -1,4 +1,4 @@
-import { YIELD_ERROR_MESSAGES } from '@receitas/constants';
+import { YIELD_ERROR_MESSAGES } from '@earning/constants';
 
 import { NotFoundException } from '@config/exceptions';
 

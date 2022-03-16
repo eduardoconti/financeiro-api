@@ -1,6 +1,5 @@
 import { Module } from '@nestjs/common';
-
-import { ReceitasModule } from '@receitas/receitas.module';
+import { ReceitasModule } from '@earning/receitas.module';
 
 import { TYPES } from '@config/dependency-injection';
 
