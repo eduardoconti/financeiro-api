@@ -13,7 +13,7 @@ import {
   Inject,
 } from '@nestjs/common';
 import { HttpStatus } from '@nestjs/common';
-import { ApiBearerAuth, ApiQuery, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
 import { JwtAuthGuard } from '@auth/guard';
 import { UserPayloadInterface } from '@auth/interfaces';
@@ -30,6 +30,7 @@ import {
   ExpenseDeleteResponseDTO,
   ExpensePatchFlagPayedDTO,
   FindExpenseByQueryParamsDTO,
+  GetExpenseAmountGroupByCategoryResponse,
   GetTotalExpenseResponseDTO,
 } from './dto';
 import { Despesas } from './entity';
@@ -39,8 +40,9 @@ import {
   IInsertExpenseService,
 } from './service';
 import { IUpdateExpenseService } from './service/update-expense.service.interface';
+import { ExpenseGroupMonth } from './types';
 
-@Controller('despesas')
+@Controller('expenses')
 @ApiTags('Expenses')
 @UseGuards(JwtAuthGuard)
 @ApiBearerAuth()
@@ -57,7 +59,7 @@ export class DespesasController {
   ) {}
 
   @Get()
-  async retornaTodasDespesas(
+  async getAllExpenses(
     @User() user: UserPayloadInterface,
     @Query() params: FindExpenseByQueryParamsDTO,
   ): Promise<SuccessResponseData<Despesas[]>> {
@@ -76,8 +78,8 @@ export class DespesasController {
     );
   }
 
-  @Get('/total')
-  async retornaTotalDespesas(
+  @Get('values')
+  async getExpensesValues(
     @User() user: UserPayloadInterface,
     @Query() params: FindExpenseByQueryParamsDTO,
   ): Promise<SuccessResponseData<GetTotalExpenseResponseDTO>> {
@@ -95,21 +97,8 @@ export class DespesasController {
     );
   }
 
-  @Get('group/mes')
-  async retornaDespesasAgrupadasPorMes(@User() user: UserPayloadInterface) {
-    const data = await this.getExpenseService.getExpensesGroupByMonth(
-      user.userId,
-    );
-
-    return new SuccessResponseData(
-      data,
-      HttpStatus.OK,
-      SUCCESS_MESSAGES.GET_SUCCESS,
-    );
-  }
-
-  @Get('valor/categoria')
-  async retornaValorDespesasAgrupadosPorCategoria(
+  @Get('values/category')
+  async getExpensesValuesGroupByCategory(
     @User() user: UserPayloadInterface,
     @Query() params: FindExpenseByQueryParamsDTO,
   ) {
@@ -121,16 +110,15 @@ export class DespesasController {
       pago,
     );
 
-    return new SuccessResponseData(
+    return new SuccessResponseData<GetExpenseAmountGroupByCategoryResponse[]>(
       data,
       HttpStatus.OK,
       SUCCESS_MESSAGES.GET_SUCCESS,
     );
   }
 
-  @Get('valor/carteira')
-  @ApiQuery({ name: 'pago', required: false, example: true })
-  async retornaValorDespesasAgrupadosPorCarteira(
+  @Get('values/wallet')
+  async getExpensesValuesGroupByWallet(
     @User() user: UserPayloadInterface,
     @Query() params: FindExpenseByQueryParamsDTO,
   ): Promise<any> {
@@ -149,8 +137,21 @@ export class DespesasController {
     );
   }
 
+  @Get('month')
+  async getExpensesValuesGroupByMonth(@User() user: UserPayloadInterface) {
+    const data = await this.getExpenseService.getExpensesGroupByMonth(
+      user.userId,
+    );
+
+    return new SuccessResponseData<ExpenseGroupMonth>(
+      data,
+      HttpStatus.OK,
+      SUCCESS_MESSAGES.GET_SUCCESS,
+    );
+  }
+
   @Get(':id')
-  async getById(
+  async getExpenseById(
     @User() userToken: UserPayloadInterface,
     @Param('id', ParseIntPipe) id: number,
   ): Promise<SuccessResponseData<Despesas>> {
@@ -166,7 +167,7 @@ export class DespesasController {
   }
 
   @Patch('flag/:id')
-  async alteraFlagPago(
+  async updateFlagPayedById(
     @User() userToken: UserPayloadInterface,
     @Param('id', ParseIntPipe) id: number,
     @Body() despesa: ExpensePatchFlagPayedDTO,
@@ -184,7 +185,7 @@ export class DespesasController {
   }
 
   @Put(':id')
-  async alteraDespesa(
+  async updateById(
     @User() userToken: UserPayloadInterface,
     @Param('id', ParseIntPipe) id: number,
     @Body() despesa: Partial<DespesasDTO>,
@@ -202,7 +203,7 @@ export class DespesasController {
   }
 
   @Delete(':id')
-  async deletaDespesa(
+  async deletById(
     @User() userToken: UserPayloadInterface,
     @Param('id', ParseIntPipe) id: number,
   ): Promise<SuccessResponseData<ExpenseDeleteResponseDTO>> {
@@ -215,7 +216,7 @@ export class DespesasController {
   }
 
   @Post()
-  async insereDespesa(
+  async insertExpense(
     @Body() despesa: DespesasDTO,
     @User() userToken: UserPayloadInterface,
   ): Promise<SuccessResponseData<Despesas>> {

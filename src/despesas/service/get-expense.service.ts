@@ -1,5 +1,10 @@
 import { Inject } from '@nestjs/common';
-import { Between, LessThanOrEqual, MoreThanOrEqual } from 'typeorm';
+import {
+  Between,
+  FindOperator,
+  LessThanOrEqual,
+  MoreThanOrEqual,
+} from 'typeorm';
 
 import { TYPES } from '@config/dependency-injection';
 
@@ -150,7 +155,11 @@ export class GetExpenseService implements IGetExpenseService {
     }
     return expense;
   }
-  private buildDateWhere(start?: string, end?: string) {
+
+  private buildDateWhere(
+    start?: string,
+    end?: string,
+  ): FindOperator<string> | undefined {
     if (!start && !end) {
       return;
     }

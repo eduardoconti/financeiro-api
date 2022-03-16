@@ -13,7 +13,7 @@ import {
   ParseIntPipe,
   Inject,
 } from '@nestjs/common';
-import { ApiBearerAuth, ApiQuery, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
 import { JwtAuthGuard } from '@auth/guard';
 import { UserPayloadInterface } from '@auth/interfaces';
@@ -25,35 +25,49 @@ import { TYPES } from '@config/dependency-injection';
 import { SuccessResponseData } from '@shared/dto';
 
 import { YIELD_SUCCESS_MESSAGES } from './constants';
-import { EarningPatchFlagPayedDTO, ReceitasDTO } from './dto';
+import {
+  EarningDeleteResponseDTO,
+  EarningPatchFlagPayedDTO,
+  FindEarningByQueryParamsDTO,
+  GetEarningAmountGroupByWalletResponse,
+  GetTotalEarningResponseDTO,
+  ReceitasDTO,
+} from './dto';
 import { Receitas } from './entity';
-import { IEarningService } from './service';
+import {
+  IDeleteEarningService,
+  IGetEarningService,
+  IInsertEarningService,
+  IUpdateEarningService,
+} from './service';
+import { EarningGroupMonth } from './types';
 
-@Controller('receitas')
+@Controller('earnings')
 @ApiTags('Earnings')
 @UseGuards(JwtAuthGuard)
 @ApiBearerAuth()
 export class ReceitasController {
   constructor(
-    @Inject(TYPES.EarningService)
-    private readonly receitaService: IEarningService,
+    @Inject(TYPES.InsertEarningService)
+    private readonly insertEarningService: IInsertEarningService,
+    @Inject(TYPES.UpdateEarningService)
+    private readonly updateEarningService: IUpdateEarningService,
+    @Inject(TYPES.DeleteEarningService)
+    private readonly deleteteEarningService: IDeleteEarningService,
+    @Inject(TYPES.GetEarningService)
+    private readonly getEarningService: IGetEarningService,
   ) {}
 
   @Get()
-  @ApiQuery({ name: 'ano', required: false, example: new Date().getFullYear() })
-  @ApiQuery({ name: 'mes', required: false, example: new Date().getMonth() })
-  @ApiQuery({ name: 'pago', required: false, example: true })
   async retornaTodasReceitas(
     @User() user: UserPayloadInterface,
-    @Query('ano') ano?: number,
-    @Query('mes') mes?: number,
-    @Query('pago') pago?: boolean,
+    @Query() params: FindEarningByQueryParamsDTO,
   ): Promise<SuccessResponseData<Receitas[]>> {
-    const data = await this.receitaService.retornaTodasReceitas(
-      ano,
-      mes,
-      pago,
+    const data = await this.getEarningService.getAllEarningsByUser(
       user.userId,
+      params.start,
+      params.end,
+      params.pago,
     );
     return new SuccessResponseData<Receitas[]>(
       data,
@@ -62,109 +76,67 @@ export class ReceitasController {
     );
   }
 
-  @Get('/total')
+  @Get('values')
   async retornaTotalReceitasRecebidas(
     @User() user: UserPayloadInterface,
-    @Query('ano') ano: number,
-    @Query('mes') mes: number,
-  ) {
-    const data = await this.receitaService.retornaTotalReceitas(
+    @Query() params: FindEarningByQueryParamsDTO,
+  ): Promise<SuccessResponseData<GetTotalEarningResponseDTO>> {
+    const data = await this.getEarningService.getTotalEarnings(
       user.userId,
-      ano,
-      mes,
+      params.start,
+      params.end,
     );
-    return new SuccessResponseData(
+    return new SuccessResponseData<GetTotalEarningResponseDTO>(
       data,
       HttpStatus.OK,
       YIELD_SUCCESS_MESSAGES.GET_SUCCESS,
     );
   }
 
-  @Get('/:ano/mes')
-  @ApiQuery({ name: 'pago', required: false, example: true })
+  @Get('month')
   async retornaReceitasAgrupadasPorMes(
     @User() user: UserPayloadInterface,
-    @Param('ano', ParseIntPipe) ano: number,
-    @Query('pago') pago: boolean,
-  ) {
-    const data = await this.receitaService.retornaReceitasAgrupadasPorMes(
-      ano,
-      pago,
+    @Query() params: FindEarningByQueryParamsDTO,
+  ): Promise<SuccessResponseData<EarningGroupMonth>> {
+    const data = await this.getEarningService.getEarningsGroupByMonth(
       user.userId,
+      params.start,
+      params.end,
     );
-    return new SuccessResponseData(
+    return new SuccessResponseData<EarningGroupMonth>(
       data,
       HttpStatus.OK,
       YIELD_SUCCESS_MESSAGES.GET_SUCCESS,
     );
   }
 
-  @Get('/:ano/mes/:mes')
-  @ApiQuery({ name: 'pago', required: false, example: true })
-  async retornaReceitasAnoMes(
+  @Get('values/wallet')
+  async GetEarningsValuesGroupByWallet(
     @User() user: UserPayloadInterface,
-    @Param('ano', ParseIntPipe) ano: number,
-    @Param('mes', ParseIntPipe) mes: number,
-    @Query('pago') pago: boolean,
-  ) {
-    const data = await this.receitaService.retornaTodasReceitas(
-      ano,
-      mes,
-      pago,
+    @Query() params: FindEarningByQueryParamsDTO,
+  ): Promise<SuccessResponseData<GetEarningAmountGroupByWalletResponse[]>> {
+    const data = await this.getEarningService.getEarningValuesGroupByWallet(
       user.userId,
+      params.start,
+      params.end,
+      params.pago,
     );
-    return new SuccessResponseData(
+    return new SuccessResponseData<GetEarningAmountGroupByWalletResponse[]>(
       data,
       HttpStatus.OK,
       YIELD_SUCCESS_MESSAGES.GET_SUCCESS,
     );
   }
 
-  @Get('carteira/valor')
-  @ApiQuery({ name: 'pago', required: false, example: true })
-  async retornaValorReceitasAgrupadosPorCarteira(
+  @Get(':id')
+  async getEarningById(
     @User() user: UserPayloadInterface,
-    @Query('ano') ano?: number,
-    @Query('mes') mes?: number,
-    @Query('pago') pago?: boolean,
-  ) {
-    const data =
-      await this.receitaService.retornaValorReceitasAgrupadosPorCarteira(
-        ano,
-        mes,
-        pago,
-        user.userId,
-      );
-    return new SuccessResponseData(
-      data,
-      HttpStatus.OK,
-      YIELD_SUCCESS_MESSAGES.GET_SUCCESS,
-    );
-  }
-
-  @Get('/:ano/mes/:mes/total')
-  async getTotalReceitasAnoMes(
-    @User() user: UserPayloadInterface,
-    @Param('ano', ParseIntPipe) ano: number,
-    @Param('mes', ParseIntPipe) mes: number,
-  ) {
-    const data = await this.receitaService.retornaTotalReceitas(
-      user.userId,
-      ano,
-      mes,
-    );
-    return new SuccessResponseData(
-      data,
-      HttpStatus.OK,
-      YIELD_SUCCESS_MESSAGES.GET_SUCCESS,
-    );
-  }
-
-  @Get('/id/:id')
-  async getById(
     @Param('id', ParseIntPipe) id: number,
   ): Promise<SuccessResponseData<Receitas>> {
-    const data = await this.receitaService.getOne(id);
+    const data = await this.getEarningService.findOne({
+      id,
+      userId: user.userId,
+    });
     return new SuccessResponseData<Receitas>(
       data,
       HttpStatus.OK,
@@ -172,25 +144,17 @@ export class ReceitasController {
     );
   }
 
-  @Patch('flag/:id')
+  @Patch(':id')
   async alteraFlagPago(
     @Param('id', ParseIntPipe) id: number,
+    @User() user: UserPayloadInterface,
     @Body() receita: EarningPatchFlagPayedDTO,
-  ): Promise<SuccessResponseData<{ id: number; pago: boolean }>> {
-    const data = await this.receitaService.alteraFlagPago(receita, id);
-    return new SuccessResponseData<{ id: number; pago: boolean }>(
-      data,
-      HttpStatus.OK,
-      YIELD_SUCCESS_MESSAGES.YIELD_UPDATE_SUCCESS,
-    );
-  }
-
-  @Put('/:id')
-  async alteraReceita(
-    @Param('id', ParseIntPipe) id: number,
-    @Body() receita: ReceitasDTO,
   ): Promise<SuccessResponseData<Receitas>> {
-    const data = await this.receitaService.alteraReceita(receita, id);
+    const data = await this.updateEarningService.updateFlagPayed(
+      id,
+      user.userId,
+      receita,
+    );
     return new SuccessResponseData<Receitas>(
       data,
       HttpStatus.OK,
@@ -198,12 +162,31 @@ export class ReceitasController {
     );
   }
 
-  @Delete('/:id')
-  async deletaReceita(
+  @Put(':id')
+  async updateExpense(
     @Param('id', ParseIntPipe) id: number,
-  ): Promise<SuccessResponseData<{ deleted: boolean }>> {
-    const data = await this.receitaService.deletaReceita(id);
-    return new SuccessResponseData<{ deleted: boolean }>(
+    @User() user: UserPayloadInterface,
+    @Body() receita: ReceitasDTO,
+  ): Promise<SuccessResponseData<Receitas>> {
+    const data = await this.updateEarningService.update(
+      id,
+      user.userId,
+      receita,
+    );
+    return new SuccessResponseData<Receitas>(
+      data,
+      HttpStatus.OK,
+      YIELD_SUCCESS_MESSAGES.YIELD_UPDATE_SUCCESS,
+    );
+  }
+
+  @Delete(':id')
+  async deleteExpense(
+    @Param('id', ParseIntPipe) id: number,
+    @User() user: UserPayloadInterface,
+  ): Promise<SuccessResponseData<EarningDeleteResponseDTO>> {
+    const data = await this.deleteteEarningService.delete(id, user.userId);
+    return new SuccessResponseData<EarningDeleteResponseDTO>(
       data,
       HttpStatus.OK,
       YIELD_SUCCESS_MESSAGES.YIELD_DELETE_SUCCESS,
@@ -211,10 +194,11 @@ export class ReceitasController {
   }
 
   @Post()
-  async insereReceita(
+  async insertExpense(
     @Body() receita: ReceitasDTO,
+    @User() user: UserPayloadInterface,
   ): Promise<SuccessResponseData<Receitas>> {
-    const data = await this.receitaService.insereReceita(receita);
+    const data = await this.insertEarningService.insert(receita, user.userId);
     return new SuccessResponseData<Receitas>(
       data,
       HttpStatus.CREATED,

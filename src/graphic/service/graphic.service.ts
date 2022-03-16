@@ -3,7 +3,7 @@ import * as moment from 'moment';
 
 import 'moment/locale/pt-br';
 import { EarningsGroupMonthDTO } from '@receitas/dto';
-import { IEarningService } from '@receitas/service';
+import { IGetEarningService } from '@receitas/service';
 
 import { TYPES } from '@config/dependency-injection';
 
@@ -23,16 +23,14 @@ export class GraphicService implements IGraphicService {
   constructor(
     @Inject(TYPES.GetExpenseService)
     private getExpenseService: IGetExpenseService,
-    @Inject(TYPES.EarningService)
-    private receitasService: IEarningService,
+    @Inject(TYPES.GetEarningService)
+    private getEarningService: IGetEarningService,
   ) {}
   async generalGraphic(userId: string): Promise<GeneralGraphicResponseDTO> {
     const despesas = await this.getExpenseService.getExpensesGroupByMonth(
       userId,
     );
-    const receitas = await this.receitasService.retornaReceitasAgrupadasPorMes(
-      undefined,
-      undefined,
+    const receitas = await this.getEarningService.getEarningsGroupByMonth(
       userId,
     );
     const graphicData: GeneralGraphicResponseDTO =
@@ -80,7 +78,7 @@ export class GraphicService implements IGraphicService {
       graphicData.geral.expenses.quantity += expenses.quantity;
       graphicData.geral.expenses.total += expenses.total;
       graphicData.geral.expenses.totalOpen += expenses.totalOpen;
-      graphicData.geral.expenses.totalPayed += earnings.totalPayed;
+      graphicData.geral.expenses.totalPayed += expenses.totalPayed;
 
       graphicData.months.push(
         GeneralGraphicResponseDataDTO.build({

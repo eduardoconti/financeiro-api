@@ -25,7 +25,6 @@ export class HttpExceptionFilter implements ExceptionFilter {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse();
 
-    console.log(exception);
     Sentry.captureException(exception);
 
     if (exception instanceof CommonNotFoundException) {
@@ -55,13 +54,13 @@ export class HttpExceptionFilter implements ExceptionFilter {
     if (exception instanceof HttpBaseException) {
       const errorResponse = exception.getResponse();
       const status = exception.httpStatus;
-
+      const message = exception.reason;
       if (exception?.error?.constructor === QueryFailedError) {
         return response
           .status(status)
           .json(
             new ErrorResponseDTO(
-              exception.error.message,
+              message as string,
               exception.error.driverError.detail,
             ),
           );

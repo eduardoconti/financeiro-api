@@ -14,7 +14,7 @@ import { Users } from '@users/entity';
 @Entity({ schema: 'public', name: 'receitas' })
 export class Receitas {
   @PrimaryGeneratedColumn()
-  id!: number;
+  id?: number;
 
   @Column('text', { nullable: false })
   descricao!: string;
@@ -23,10 +23,10 @@ export class Receitas {
   valor!: number;
 
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
-  pagamento!: Date;
+  pagamento?: Date;
 
   @Column('boolean', { default: false })
-  pago!: boolean;
+  pago?: boolean;
 
   @Exclude()
   @Column({
@@ -45,10 +45,36 @@ export class Receitas {
 
   @ManyToOne(() => Carteiras, (carteiras) => carteiras.id, { nullable: false })
   @JoinColumn({ name: 'carteira_id', referencedColumnName: 'id' })
-  carteira!: Carteiras;
+  carteira?: Carteiras;
 
   @ManyToOne(() => Users, (users) => users.id, { nullable: false })
   @JoinColumn({ name: 'user_id', referencedColumnName: 'id' })
   @Exclude()
-  user!: Users;
+  user?: Users;
+
+  constructor(
+    userId: string,
+    descricao: string,
+    valor: number,
+    carteiraId: number,
+    pagamento?: Date,
+    pago?: boolean,
+  ) {
+    this.userId = userId;
+    this.descricao = descricao;
+    this.valor = valor;
+    this.carteiraId = carteiraId;
+    this.pagamento = pagamento;
+    this.pago = pago;
+  }
+  static build = ({
+    userId,
+    descricao,
+    valor,
+    carteiraId,
+    pagamento,
+    pago,
+  }: Receitas): Receitas => {
+    return new Receitas(userId, descricao, valor, carteiraId, pagamento, pago);
+  };
 }

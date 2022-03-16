@@ -8,6 +8,7 @@ export const YIELD_ERROR_MESSAGES = {
     'Ocorreu um erro ao consultar receitas agrupadas por categoria!',
   YIELD_UPDATE_ERROR: 'Ocorreu um erro ao alterar a receita!',
   YIELD_DELETE_ERROR: 'Ocorreu um erro ao deletar a receita!',
+  YIELD_NOT_FOUND: 'Receita não encontrada!',
 };
 
 export const YIELD_SUCCESS_MESSAGES = {

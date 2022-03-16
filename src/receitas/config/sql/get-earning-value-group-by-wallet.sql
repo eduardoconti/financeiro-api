@@ -1,17 +1,10 @@
 SELECT
-    SUM(r.valor) as total,
-    SUM(
-        CASE
-            WHEN r.pago = false THEN r.valor
-        END
-    ) as totalOpen,
-    SUM(
-        CASE
-            WHEN r.pago = true THEN r.valor
-        END
-    ) as totalPayed
+    SUM(r.valor) valor,
+    c.descricao descricao,
+    c.id id
 FROM
     receitas r
+    INNER JOIN carteiras c ON c.id = r.carteira_id
 WHERE
     r.user_id = $1
     AND CASE
@@ -22,3 +15,11 @@ WHERE
         AND (cast($3 as date)) IS NULL THEN r.pagamento >= $2
         ELSE true
     END
+    AND CASE
+        WHEN (cast ($4 as boolean)) IS NULL THEN true
+        ELSE r.pago = $4
+    END
+GROUP BY
+    c.id
+ORDER BY
+    valor DESC

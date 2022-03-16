@@ -1,12 +1,17 @@
+import { Transform } from 'class-transformer';
+
 import { Receitas } from '@receitas/entity';
 
 export class EarningsGroupMonthDTO {
   month: number;
+  data: Receitas[];
+  @Transform(({ value }) => Math.round(value * 100) / 100)
   total: number;
+  @Transform(({ value }) => Math.round(value * 100) / 100)
   totalPayed: number;
+  @Transform(({ value }) => Math.round(value * 100) / 100)
   totalOpen: number;
   quantity: number;
-  data: Receitas[];
 
   constructor(
     month: number,
@@ -23,4 +28,22 @@ export class EarningsGroupMonthDTO {
     this.quantity = quantity;
     this.data = data;
   }
+
+  static build = ({
+    month,
+    total,
+    totalPayed,
+    totalOpen,
+    quantity,
+    data,
+  }: EarningsGroupMonthDTO): EarningsGroupMonthDTO => {
+    return new EarningsGroupMonthDTO(
+      month,
+      data,
+      total,
+      totalPayed,
+      totalOpen,
+      quantity,
+    );
+  };
 }

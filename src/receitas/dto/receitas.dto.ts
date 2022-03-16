@@ -42,12 +42,12 @@ export class ReceitasDTO {
   })
   @IsDateString({}, { message: CONSTRAINTS_MESSAGES.IS_DATE })
   @IsOptional()
-  pagamento!: Date;
+  pagamento?: Date;
 
   @ApiPropertyOptional({ default: false })
   @IsBoolean({ message: CONSTRAINTS_MESSAGES.IS_BOOLEAN })
   @IsOptional()
-  pago!: boolean;
+  pago?: boolean;
 
   @ApiProperty()
   @IsNotEmpty({ message: CONSTRAINTS_MESSAGES.IS_NOT_EMPTY })

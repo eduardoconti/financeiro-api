@@ -1,4 +1,7 @@
 export const TYPES = {
-  EarningService: Symbol('EarningService'),
   EarningRepository: Symbol('EarningRepository'),
+  InsertEarningService: Symbol('InsertEarningService'),
+  UpdateEarningService: Symbol('UpdateEarningService'),
+  DeleteEarningService: Symbol('DeleteEarningService'),
+  GetEarningService: Symbol('GetEarningService'),
 };
