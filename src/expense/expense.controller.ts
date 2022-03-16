@@ -13,7 +13,7 @@ import {
   Inject,
 } from '@nestjs/common';
 import { HttpStatus } from '@nestjs/common';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { User } from 'src/user/decorator';
 
 import { JwtAuthGuard } from '@auth/guard';
@@ -45,7 +45,7 @@ import { ExpenseGroupMonth } from './types';
 @ApiTags('Expenses')
 @UseGuards(JwtAuthGuard)
 @ApiBearerAuth()
-export class DespesasController {
+export class ExpenseController {
   constructor(
     @Inject(TYPES.UpdateExpenseService)
     private readonly updateExpenseService: IUpdateExpenseService,
@@ -58,6 +58,10 @@ export class DespesasController {
   ) {}
 
   @Get()
+  @ApiOperation({
+    summary: 'Get all expenses.',
+    description: 'Return all user expenses.',
+  })
   async getAllExpenses(
     @User() user: UserPayloadInterface,
     @Query() params: FindExpenseByQueryParamsDTO,
@@ -78,6 +82,10 @@ export class DespesasController {
   }
 
   @Get('values')
+  @ApiOperation({
+    summary: 'Get expenses values.',
+    description: 'Return total amount of all expenses.',
+  })
   async getExpensesValues(
     @User() user: UserPayloadInterface,
     @Query() params: FindExpenseByQueryParamsDTO,
@@ -97,6 +105,10 @@ export class DespesasController {
   }
 
   @Get('values/category')
+  @ApiOperation({
+    summary: 'Get expenses values grouped by category.',
+    description: 'Return total amount of all expenses grouped by category.',
+  })
   async getExpensesValuesGroupByCategory(
     @User() user: UserPayloadInterface,
     @Query() params: FindExpenseByQueryParamsDTO,
@@ -117,6 +129,10 @@ export class DespesasController {
   }
 
   @Get('values/wallet')
+  @ApiOperation({
+    summary: 'Get expenses values grouped by wallet.',
+    description: 'Return total amount of all expenses grouped by wallet.',
+  })
   async getExpensesValuesGroupByWallet(
     @User() user: UserPayloadInterface,
     @Query() params: FindExpenseByQueryParamsDTO,
@@ -137,6 +153,10 @@ export class DespesasController {
   }
 
   @Get('month')
+  @ApiOperation({
+    summary: 'Get expenses values grouped by month.',
+    description: 'Return total amount of all expenses grouped by month.',
+  })
   async getExpensesValuesGroupByMonth(
     @User() user: UserPayloadInterface,
     @Query() params: FindExpenseByQueryParamsDTO,
@@ -156,6 +176,10 @@ export class DespesasController {
   }
 
   @Get(':id')
+  @ApiOperation({
+    summary: 'Get expenses by id.',
+    description: 'Return expense by id.',
+  })
   async getExpenseById(
     @User() userToken: UserPayloadInterface,
     @Param('id', ParseIntPipe) id: number,
@@ -170,7 +194,10 @@ export class DespesasController {
       SUCCESS_MESSAGES.GET_SUCCESS,
     );
   }
-
+  @ApiOperation({
+    summary: 'Update flag payed.',
+    description: 'Change flag payed if different from request.',
+  })
   @Patch('flag/:id')
   async updateFlagPayedById(
     @User() userToken: UserPayloadInterface,
@@ -188,7 +215,10 @@ export class DespesasController {
       SUCCESS_MESSAGES.EXPENSE_UPDATE_SUCCESS,
     );
   }
-
+  @ApiOperation({
+    summary: 'Update expense.',
+    description: 'Change expense.',
+  })
   @Put(':id')
   async updateById(
     @User() userToken: UserPayloadInterface,
@@ -206,7 +236,10 @@ export class DespesasController {
       SUCCESS_MESSAGES.EXPENSE_UPDATE_SUCCESS,
     );
   }
-
+  @ApiOperation({
+    summary: 'Delete expense.',
+    description: 'Remove expense.',
+  })
   @Delete(':id')
   async deletById(
     @User() userToken: UserPayloadInterface,
@@ -219,7 +252,10 @@ export class DespesasController {
       SUCCESS_MESSAGES.EXPENSE_DELETE_SUCCESS,
     );
   }
-
+  @ApiOperation({
+    summary: 'Insert expense.',
+    description: 'Create new expense.',
+  })
   @Post()
   async insertExpense(
     @Body() despesa: DespesasDTO,

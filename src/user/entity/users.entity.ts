@@ -6,7 +6,7 @@ import { Entity, Column, PrimaryColumn, OneToMany } from 'typeorm';
 
 import { Earning } from '@earning/entity';
 
-import { Categorias } from '@category/entity';
+import { Category } from '@category/entity';
 
 import { Carteiras } from '@wallet/entity';
 
@@ -47,6 +47,6 @@ export class Users {
   @OneToMany(() => Carteiras, (carteiras) => carteiras.user)
   userCarteiras?: Carteiras[];
 
-  @OneToMany(() => Categorias, (categorias) => categorias.user)
-  userCategorias?: Categorias[];
+  @OneToMany(() => Category, (categorias) => categorias.user)
+  userCategorias?: Category[];
 }

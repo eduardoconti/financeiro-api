@@ -29,7 +29,7 @@ import {
 import { Transferencias } from './entity';
 import { ITransferenceService } from './service';
 
-@Controller('transferencias')
+@Controller('transference')
 @ApiTags('Transference')
 @UseGuards(JwtAuthGuard)
 @ApiBearerAuth()

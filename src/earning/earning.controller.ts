@@ -23,7 +23,7 @@ import { TYPES } from '@config/dependency-injection';
 
 import { SuccessResponseData } from '@shared/dto';
 
-import { YIELD_SUCCESS_MESSAGES } from './constants';
+import { EARNING_SUCCESS_MESSAGES } from './constants';
 import {
   EarningDeleteResponseDTO,
   EarningPatchFlagPayedDTO,
@@ -41,7 +41,7 @@ import {
 } from './service';
 import { EarningGroupMonth } from './types';
 
-@Controller('earnings')
+@Controller('earning')
 @ApiTags('Earnings')
 @UseGuards(JwtAuthGuard)
 @ApiBearerAuth()
@@ -71,7 +71,7 @@ export class ReceitasController {
     return new SuccessResponseData<Earning[]>(
       data,
       HttpStatus.OK,
-      YIELD_SUCCESS_MESSAGES.GET_SUCCESS,
+      EARNING_SUCCESS_MESSAGES.GET_SUCCESS,
     );
   }
 
@@ -88,7 +88,7 @@ export class ReceitasController {
     return new SuccessResponseData<GetTotalEarningResponseDTO>(
       data,
       HttpStatus.OK,
-      YIELD_SUCCESS_MESSAGES.GET_SUCCESS,
+      EARNING_SUCCESS_MESSAGES.GET_SUCCESS,
     );
   }
 
@@ -105,7 +105,7 @@ export class ReceitasController {
     return new SuccessResponseData<EarningGroupMonth>(
       data,
       HttpStatus.OK,
-      YIELD_SUCCESS_MESSAGES.GET_SUCCESS,
+      EARNING_SUCCESS_MESSAGES.GET_SUCCESS,
     );
   }
 
@@ -123,7 +123,7 @@ export class ReceitasController {
     return new SuccessResponseData<GetEarningAmountGroupByWalletResponse[]>(
       data,
       HttpStatus.OK,
-      YIELD_SUCCESS_MESSAGES.GET_SUCCESS,
+      EARNING_SUCCESS_MESSAGES.GET_SUCCESS,
     );
   }
 
@@ -139,7 +139,7 @@ export class ReceitasController {
     return new SuccessResponseData<Earning>(
       data,
       HttpStatus.OK,
-      YIELD_SUCCESS_MESSAGES.GET_SUCCESS,
+      EARNING_SUCCESS_MESSAGES.GET_SUCCESS,
     );
   }
 
@@ -157,7 +157,7 @@ export class ReceitasController {
     return new SuccessResponseData<Earning>(
       data,
       HttpStatus.OK,
-      YIELD_SUCCESS_MESSAGES.YIELD_UPDATE_SUCCESS,
+      EARNING_SUCCESS_MESSAGES.EARNING_UPDATE_SUCCESS,
     );
   }
 
@@ -175,7 +175,7 @@ export class ReceitasController {
     return new SuccessResponseData<Earning>(
       data,
       HttpStatus.OK,
-      YIELD_SUCCESS_MESSAGES.YIELD_UPDATE_SUCCESS,
+      EARNING_SUCCESS_MESSAGES.EARNING_UPDATE_SUCCESS,
     );
   }
 
@@ -188,7 +188,7 @@ export class ReceitasController {
     return new SuccessResponseData<EarningDeleteResponseDTO>(
       data,
       HttpStatus.OK,
-      YIELD_SUCCESS_MESSAGES.YIELD_DELETE_SUCCESS,
+      EARNING_SUCCESS_MESSAGES.EARNING_DELETE_SUCCESS,
     );
   }
 
@@ -201,7 +201,7 @@ export class ReceitasController {
     return new SuccessResponseData<Earning>(
       data,
       HttpStatus.CREATED,
-      YIELD_SUCCESS_MESSAGES.YIELD_CREATE_SUCCESS,
+      EARNING_SUCCESS_MESSAGES.EARNING_CREATE_SUCCESS,
     );
   }
 }

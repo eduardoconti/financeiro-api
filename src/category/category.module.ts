@@ -5,7 +5,7 @@ import { UsersModule } from 'src/user/users.module';
 import { TYPES } from '@config/dependency-injection';
 
 import { CategoryController } from './category.controller';
-import { Categorias } from './entity';
+import { Category } from './entity';
 import { CategoryRepository } from './repository';
 import {
   DeleteCategoryService,
@@ -15,7 +15,7 @@ import {
 } from './service';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Categorias]), UsersModule],
+  imports: [TypeOrmModule.forFeature([Category]), UsersModule],
   controllers: [CategoryController],
   providers: [
     {

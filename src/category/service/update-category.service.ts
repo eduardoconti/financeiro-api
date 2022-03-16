@@ -1,7 +1,7 @@
 import { Inject } from '@nestjs/common';
 
 import { UpdateCategoryDTO } from '@category/dto';
-import { Categorias } from '@category/entity';
+import { Category } from '@category/entity';
 import { CategoryNotFoundException } from '@category/exception';
 import { CategoryMapper } from '@category/helpers';
 import { ICategoryRepository } from '@category/repository';
@@ -22,7 +22,7 @@ export class UpdateCategoryService implements IUpdateCategoryService {
     id: number,
     userId: string,
     categoryUpdateRequest: UpdateCategoryDTO,
-  ): Promise<Categorias> {
+  ): Promise<Category> {
     await this.getCategoryService.findCategoryUserById(id, userId);
     const entity = CategoryMapper.toEntity(categoryUpdateRequest, userId);
     const category = await this.categoryRepository.update(id, entity);

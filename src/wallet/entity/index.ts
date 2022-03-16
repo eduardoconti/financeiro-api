@@ -1,1 +1,1 @@
-export * from './carteiras.entity';
+export * from './wallet.entity';

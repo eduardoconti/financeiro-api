@@ -8,7 +8,7 @@ import {
   JoinColumn,
 } from 'typeorm';
 
-import { Categorias } from '@category/entity';
+import { Category } from '@category/entity';
 
 import { Carteiras } from '@wallet/entity';
 
@@ -61,11 +61,11 @@ export class Despesas {
   @JoinColumn({ name: 'carteira_id', referencedColumnName: 'id' })
   carteira?: Carteiras;
 
-  @ManyToOne(() => Categorias, (categorias) => categorias.id, {
+  @ManyToOne(() => Category, (categorias) => categorias.id, {
     nullable: false,
   })
   @JoinColumn({ name: 'categoria_id', referencedColumnName: 'id' })
-  categoria?: Categorias;
+  categoria?: Category;
 
   @ManyToOne(() => Users, (users) => users.id, { nullable: false })
   @Exclude()

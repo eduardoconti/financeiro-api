@@ -26,7 +26,7 @@ import {
   IUpdateWalletService,
 } from './service';
 
-@Controller('carteiras')
+@Controller('wallet')
 @ApiTags('Wallets')
 @UseGuards(JwtAuthGuard)
 @ApiBearerAuth()

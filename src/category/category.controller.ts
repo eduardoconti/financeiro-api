@@ -23,7 +23,7 @@ import {
   InsertCategoryRequestDTO,
   UpdateCategoryDTO,
 } from './dto';
-import { Categorias } from './entity/categorias.entity';
+import { Category } from './entity/categorias.entity';
 import {
   IDeleteCategoryService,
   IGetCategoryService,
@@ -31,7 +31,7 @@ import {
   IUpdateCategoryService,
 } from './service';
 
-@Controller('categorias')
+@Controller('category')
 @ApiTags('Categories')
 @UseGuards(JwtAuthGuard)
 @ApiBearerAuth()
@@ -52,7 +52,7 @@ export class CategoryController {
     description: 'Return all categories by id from logged user.',
   })
   @Get()
-  async getAll(@User() user: UserPayloadInterface): Promise<Categorias[]> {
+  async getAll(@User() user: UserPayloadInterface): Promise<Category[]> {
     return await this.getCategoryService.getAllCategories(user.userId);
   }
 
@@ -60,11 +60,11 @@ export class CategoryController {
     summary: 'Get category by id.',
     description: 'Return categories by id and logged user id.',
   })
-  @Get('/:id')
+  @Get(':id')
   async getOne(
     @Param('id', ParseIntPipe) id: number,
     @User() user: UserPayloadInterface,
-  ): Promise<Categorias> {
+  ): Promise<Category> {
     return await this.getCategoryService.findCategoryUserById(id, user.userId);
   }
 
@@ -76,7 +76,7 @@ export class CategoryController {
   async insert(
     @Body() categoryRequest: InsertCategoryRequestDTO,
     @User() user: UserPayloadInterface,
-  ): Promise<Categorias> {
+  ): Promise<Category> {
     return this.insertCategoryService.insertCategory(
       categoryRequest,
       user.userId,
@@ -87,7 +87,7 @@ export class CategoryController {
     summary: 'Delete category.',
     description: 'Remove category by id.',
   })
-  @Delete('/:id')
+  @Delete(':id')
   async delete(
     @Param('id', ParseIntPipe) id: number,
     @User() user: UserPayloadInterface,
@@ -95,7 +95,7 @@ export class CategoryController {
     return await this.deleteCategoryService.deleteCategory(id, user.userId);
   }
 
-  @Put('/:id')
+  @Put(':id')
   @ApiOperation({
     summary: 'Update category.',
     description: 'Update category by id.',
@@ -104,7 +104,7 @@ export class CategoryController {
     @Param('id', ParseIntPipe) id: number,
     @Body() categoryRequest: UpdateCategoryDTO,
     @User() user: UserPayloadInterface,
-  ): Promise<Categorias> {
+  ): Promise<Category> {
     return this.updateCategoryService.update(id, user.userId, categoryRequest);
   }
 }

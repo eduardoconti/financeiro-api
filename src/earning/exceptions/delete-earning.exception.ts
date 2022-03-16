@@ -1,9 +1,9 @@
-import { YIELD_ERROR_MESSAGES } from '@earning/constants';
+import { EARNING_ERROR_MESSAGES } from '@earning/constants';
 
 import { InternalServerErrorException } from '@config/exceptions';
 
 export class DeleteEarningException extends InternalServerErrorException {
   constructor(error?: any, data?: any) {
-    super(undefined, YIELD_ERROR_MESSAGES.YIELD_DELETE_ERROR, error, data);
+    super(undefined, EARNING_ERROR_MESSAGES.EARNING_DELETE_ERROR, error, data);
   }
 }

@@ -1,1 +1,1 @@
-export * from './despesas.middleware';
+export * from './expense.middleware';

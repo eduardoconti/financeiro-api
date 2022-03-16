@@ -10,10 +10,10 @@ import {
   JoinColumn,
 } from 'typeorm';
 
-import { Despesas } from '../../expense/entity/despesas.entity';
+import { Despesas } from '../../expense/entity/expense.entity';
 
 @Entity({ schema: 'public', name: 'categorias' })
-export class Categorias {
+export class Category {
   @PrimaryGeneratedColumn()
   @ApiProperty()
   id?: number;
@@ -49,7 +49,7 @@ export class Categorias {
     descricao,
     userId,
     id,
-  }: Omit<Categorias, 'id'> & { id?: number }): Categorias => {
-    return new Categorias(descricao, userId, id);
+  }: Omit<Category, 'id'> & { id?: number }): Category => {
+    return new Category(descricao, userId, id);
   };
 }

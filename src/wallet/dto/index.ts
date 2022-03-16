@@ -1,2 +1,2 @@
-export * from './carteiras.dto';
-export * from './carteiras-delete-response.dto';
+export * from './wallet-request.dto';
+export * from './wallet-delete-response.dto';
