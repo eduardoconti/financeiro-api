@@ -1,3 +1,3 @@
-import { Users } from '@users/entity';
+import { Users } from 'src/user/entity';
 
 export type FindUserByParams = Partial<Users>;

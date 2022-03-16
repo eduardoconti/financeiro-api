@@ -4,8 +4,8 @@ import { JwtService } from '@nestjs/jwt';
 import { SignDto, UserPayloadDto } from '@auth/dto';
 import { UserPayloadInterface } from '@auth/interfaces';
 
-import { Users } from '@users/entity';
-import { IGetUserService, PasswordManagerService } from '@users/service';
+import { Users } from 'src/user/entity';
+import { IGetUserService, PasswordManagerService } from 'src/user/service';
 
 import { TYPES } from '@config/dependency-injection';
 

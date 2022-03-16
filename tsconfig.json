@@ -14,7 +14,7 @@
     "strict": true,
     "paths": {
       "@app/*": ["src/app/*"],
-      "@users/*": ["src/users/*"],
+      "@users/*": ["src/user/*"],
       "@auth/*": ["src/auth/*"],
       "@wallet/*": ["src/wallet/*"],
       "@category/*": ["src/category/*"],
@@ -24,7 +24,7 @@
       "@graphic/*": ["src/graphic/*"],
       "@earning/*": ["src/earning/*"],
       "@shared/*": ["src/shared/*"],
-      "@transference/*": ["src/transferencias/*"],
+      "@transference/*": ["src/transference/*"],
     }
 
   }

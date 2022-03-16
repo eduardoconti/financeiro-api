@@ -5,7 +5,7 @@ import { Categorias } from '@category/entity';
 import { CategoryMapper } from '@category/helpers';
 import { ICategoryRepository } from '@category/repository';
 
-import { CheckUserRegisterInterceptor } from '@users/interceptor';
+import { CheckUserRegisterInterceptor } from 'src/user/interceptor';
 
 import { TYPES } from '@config/dependency-injection';
 

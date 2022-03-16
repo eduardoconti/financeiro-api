@@ -9,7 +9,7 @@ import { Categorias } from '@category/entity';
 
 import { Carteiras } from '@wallet/entity';
 
-import { Transferencias } from '@transference/entity';
+import { Transferencias } from 'src/transference/entity';
 
 @Entity({ schema: 'public', name: 'users' })
 export class Users {

@@ -9,7 +9,7 @@ import {
 
 import { Carteiras } from '@wallet/entity';
 
-import { Users } from '@users/entity';
+import { Users } from 'src/user/entity';
 
 @Entity({ schema: 'public', name: 'receitas' })
 export class Receitas {

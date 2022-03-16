@@ -7,8 +7,8 @@ import {
   TransferenceDeleteResponseDTO,
   TransferencePathFlagPayedDTO,
   TransferenciasDTO,
-} from '@transference/dto';
-import { Transferencias } from '@transference/entity';
+} from 'src/transference/dto';
+import { Transferencias } from 'src/transference/entity';
 
 import { ITransferenceService } from './transference.service.interface';
 

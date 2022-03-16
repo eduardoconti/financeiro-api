@@ -11,7 +11,7 @@ import { Categorias } from '@category/entity';
 
 import { Carteiras } from '@wallet/entity';
 
-import { Users } from '@users/entity';
+import { Users } from 'src/user/entity';
 
 @Entity({ schema: 'public', name: 'despesas' })
 export class Despesas {

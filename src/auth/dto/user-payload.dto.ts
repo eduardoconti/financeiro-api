@@ -1,4 +1,4 @@
-import { Users } from 'src/users/entity/users.entity';
+import { Users } from 'src/user/entity/users.entity';
 
 import { UserPayloadInterface } from '../interfaces/user-payload.interface';
 

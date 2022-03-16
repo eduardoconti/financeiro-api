@@ -1,15 +1,15 @@
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
-import { ERROR_MESSAGES } from '@users/constants';
-import { UserDeleteResponseDTO, UserDTO } from '@users/dto';
-import { Users } from '@users/entity';
+import { ERROR_MESSAGES } from 'src/user/constants';
+import { UserDeleteResponseDTO, UserDTO } from 'src/user/dto';
+import { Users } from 'src/user/entity';
 import {
   DeleteUserException,
   GetUserException,
   InsertUserException,
-} from '@users/exception';
-import { FindUserByParams } from '@users/types';
+} from 'src/user/exception';
+import { FindUserByParams } from 'src/user/types';
 
 import { IUserRepository } from './user.repository.interface';
 

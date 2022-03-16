@@ -15,7 +15,7 @@ import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from '@auth/guard/jwt-auth.guard';
 import { UserPayloadInterface } from '@auth/interfaces/user-payload.interface';
 
-import { User } from '@users/decorator/user.decorator';
+import { User } from 'src/user/decorator/user.decorator';
 
 import { TYPES } from '@config/dependency-injection';
 

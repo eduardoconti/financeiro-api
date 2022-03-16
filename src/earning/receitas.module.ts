@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
-import { UsersModule } from '@users/users.module';
+import { UsersModule } from 'src/user/users.module';
 
 import { TYPES } from '@config/dependency-injection';
 

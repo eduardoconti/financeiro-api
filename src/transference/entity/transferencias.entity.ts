@@ -3,7 +3,7 @@ import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
 
 import { Carteiras } from '@wallet/entity';
 
-import { Users } from '@users/entity';
+import { Users } from 'src/user/entity';
 
 @Entity({ schema: 'public', name: 'transferencias' })
 export class Transferencias {

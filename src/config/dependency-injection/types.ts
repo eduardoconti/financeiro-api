@@ -10,11 +10,11 @@ import { TYPES as CARTEIRA_TYPES } from '@wallet/config/dependency-injection';
 
 import { TYPES as APP_TYPES } from '@app/config/dependency-injection';
 
-import { TYPES as USER_TYPES } from '@users/config/dependency-injection';
+import { TYPES as USER_TYPES } from 'src/user/config/dependency-injection';
 
 import { TYPES as GRAPHIC_TYPES } from '@graphic/config/dependency-injection';
 
-import { TYPES as TRANSFERENCE_TYPES } from '@transference/config/dependency-injection';
+import { TYPES as TRANSFERENCE_TYPES } from 'src/transference/config/dependency-injection';
 
 export const TYPES: { [keys: string]: symbol } = {
   ...USER_TYPES,

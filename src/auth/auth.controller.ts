@@ -12,7 +12,7 @@ import { LocalAuthGuard } from '@auth/guard';
 import { UserPayloadInterface } from '@auth/interfaces';
 import { IAuthService } from '@auth/service';
 
-import { User } from '@users/decorator';
+import { User } from 'src/user/decorator';
 
 import { TYPES } from '@config/dependency-injection';
 

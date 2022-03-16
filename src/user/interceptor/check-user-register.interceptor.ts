@@ -7,7 +7,7 @@ import {
 import { Observable, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 
-import { ERROR_MESSAGES } from '@users/constants';
+import { ERROR_MESSAGES } from 'src/user/constants';
 
 import { UnauthorizedException } from '@config/exceptions';
 

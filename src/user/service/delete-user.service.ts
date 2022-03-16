@@ -1,7 +1,7 @@
 import { Inject } from '@nestjs/common';
 
-import { UserDeleteResponseDTO } from '@users/dto';
-import { IUserRepository } from '@users/repository';
+import { UserDeleteResponseDTO } from 'src/user/dto';
+import { IUserRepository } from 'src/user/repository';
 
 import { TYPES } from '@config/dependency-injection';
 

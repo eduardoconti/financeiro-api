@@ -3,7 +3,7 @@ import { Observable } from 'rxjs';
 
 import { UserPayloadInterface } from '@auth/interfaces';
 
-import { ERROR_MESSAGES } from '@users/constants';
+import { ERROR_MESSAGES } from 'src/user/constants';
 
 import { UnauthorizedException } from '@config/exceptions';
 
