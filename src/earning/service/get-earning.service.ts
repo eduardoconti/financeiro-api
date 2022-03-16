@@ -11,7 +11,7 @@ import {
   GetEarningAmountGroupByWalletResponse,
   GetTotalEarningResponseDTO,
 } from '@earning/dto';
-import { Receitas } from '@earning/entity';
+import { Earning } from '@earning/entity';
 import { EarningNotFoundException } from '@earning/exceptions';
 import { IEarningRepository } from '@earning/repository';
 import { EarningGroupMonth, FindEarningByParams } from '@earning/types';
@@ -21,7 +21,6 @@ import { TYPES } from '@config/dependency-injection';
 import { SqlFileManager } from '@shared/helpers';
 
 import { IGetEarningService } from './get-earning.service.interface';
-export type earning = { total: number; totalopen: number; totalpayed: number };
 export class GetEarningService implements IGetEarningService {
   constructor(
     @Inject(TYPES.EarningRepository)
@@ -32,7 +31,7 @@ export class GetEarningService implements IGetEarningService {
     start?: string,
     end?: string,
     pago?: boolean,
-  ): Promise<Receitas[]> {
+  ): Promise<Earning[]> {
     return await this.earningRepository.findByParams(
       this.buildParams(userId, pago, start, end),
     );
@@ -95,12 +94,11 @@ export class GetEarningService implements IGetEarningService {
       'get-earning-total-value.sql',
     );
 
-    const [{ total, totalopen: totalOpen, totalpayed: totalPayed }] =
-      await this.earningRepository.query<earning>(sqlString, [
-        userId,
-        start,
-        end,
-      ]);
+    const [{ total, totalOpen, totalPayed }] =
+      await this.earningRepository.query<GetTotalEarningResponseDTO>(
+        sqlString,
+        [userId, start, end],
+      );
 
     return GetTotalEarningResponseDTO.build({
       total,
@@ -109,7 +107,7 @@ export class GetEarningService implements IGetEarningService {
     });
   }
 
-  async findOne(params: FindEarningByParams): Promise<Receitas> {
+  async findOne(params: FindEarningByParams): Promise<Earning> {
     const earning = await this.earningRepository.findOneByParams(params);
     if (!earning) {
       throw new EarningNotFoundException();

@@ -1,4 +1,4 @@
-import { Receitas } from '../entity/receitas.entity';
+import { Earning } from '../entity/earning.entity';
 
 export class ReceitasResponseDTO {
   id?: number;
@@ -9,7 +9,7 @@ export class ReceitasResponseDTO {
   pago?: boolean;
   carteiraId: number;
 
-  constructor(receita: Receitas) {
+  constructor(receita: Earning) {
     this.id = receita.id;
     this.descricao = receita.descricao;
     this.valor = receita.valor;

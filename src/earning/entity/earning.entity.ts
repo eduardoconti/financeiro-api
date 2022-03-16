@@ -9,10 +9,10 @@ import {
 
 import { Carteiras } from '@wallet/entity';
 
-import { Users } from 'src/user/entity';
+import { Users } from '@users/entity';
 
 @Entity({ schema: 'public', name: 'receitas' })
-export class Receitas {
+export class Earning {
   @PrimaryGeneratedColumn()
   id?: number;
 
@@ -74,7 +74,7 @@ export class Receitas {
     carteiraId,
     pagamento,
     pago,
-  }: Receitas): Receitas => {
-    return new Receitas(userId, descricao, valor, carteiraId, pagamento, pago);
+  }: Earning): Earning => {
+    return new Earning(userId, descricao, valor, carteiraId, pagamento, pago);
   };
 }

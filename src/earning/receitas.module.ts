@@ -1,12 +1,11 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-
 import { UsersModule } from 'src/user/users.module';
 
 import { TYPES } from '@config/dependency-injection';
 
 import { DatabaseModule } from '../db/database.module';
-import { Receitas } from './entity';
+import { Earning } from './entity';
 import { ReceitasController } from './receitas.controller';
 import { EarningRepository } from './repository';
 import {
@@ -17,7 +16,7 @@ import {
 } from './service';
 
 @Module({
-  imports: [DatabaseModule, UsersModule, TypeOrmModule.forFeature([Receitas])],
+  imports: [DatabaseModule, UsersModule, TypeOrmModule.forFeature([Earning])],
   controllers: [ReceitasController],
   providers: [
     { provide: TYPES.InsertEarningService, useClass: InsertEarningService },

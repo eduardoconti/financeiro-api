@@ -5,7 +5,6 @@ import {
   Inject,
 } from '@nestjs/common';
 import { Observable } from 'rxjs';
-
 import { ERROR_MESSAGES } from 'src/user/constants';
 import { IGetUserService } from 'src/user/service';
 

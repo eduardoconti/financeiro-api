@@ -1,5 +1,4 @@
 import { Inject, Injectable } from '@nestjs/common';
-
 import { ERROR_MESSAGES } from 'src/user/constants';
 import { UserNotFoundException } from 'src/user/exception';
 import { IUserRepository } from 'src/user/repository';

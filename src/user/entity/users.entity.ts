@@ -1,15 +1,14 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Exclude } from 'class-transformer';
 import { Despesas } from 'src/expense/entity';
+import { Transferencias } from 'src/transference/entity';
 import { Entity, Column, PrimaryColumn, OneToMany } from 'typeorm';
 
-import { Receitas } from '@earning/entity';
+import { Earning } from '@earning/entity';
 
 import { Categorias } from '@category/entity';
 
 import { Carteiras } from '@wallet/entity';
-
-import { Transferencias } from 'src/transference/entity';
 
 @Entity({ schema: 'public', name: 'users' })
 export class Users {
@@ -39,8 +38,8 @@ export class Users {
   @OneToMany(() => Despesas, (despesas) => despesas.user)
   userDespesa?: Despesas[];
 
-  @OneToMany(() => Receitas, (receitas) => receitas.user)
-  userReceita?: Receitas[];
+  @OneToMany(() => Earning, (receitas) => receitas.user)
+  userReceita?: Earning[];
 
   @OneToMany(() => Transferencias, (transferencias) => transferencias.user)
   userTransferencia?: Transferencias[];

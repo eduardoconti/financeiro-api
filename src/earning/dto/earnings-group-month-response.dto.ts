@@ -1,10 +1,10 @@
 import { Transform } from 'class-transformer';
 
-import { Receitas } from '@earning/entity';
+import { Earning } from '@earning/entity';
 
 export class EarningsGroupMonthDTO {
   month: number;
-  data: Receitas[];
+  data: Earning[];
   @Transform(({ value }) => Math.round(value * 100) / 100)
   total: number;
   @Transform(({ value }) => Math.round(value * 100) / 100)
@@ -15,7 +15,7 @@ export class EarningsGroupMonthDTO {
 
   constructor(
     month: number,
-    data: Receitas[],
+    data: Earning[],
     total = 0,
     totalPayed = 0,
     totalOpen = 0,

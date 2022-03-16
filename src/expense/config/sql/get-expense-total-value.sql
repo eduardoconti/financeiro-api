@@ -4,12 +4,12 @@ SELECT
         CASE
             WHEN d.pago = false THEN d.valor
         END
-    ) as totalOpen,
+    ) as "totalOpen",
     SUM(
         CASE
             WHEN d.pago = true THEN d.valor
         END
-    ) as totalPayed
+    ) as "totalPayed"
 FROM
     despesas d
 WHERE

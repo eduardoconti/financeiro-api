@@ -43,9 +43,18 @@ export class UpdateExpenseService implements IUpdateExpenseService {
       throw new ExpenseNotFoundException();
     }
     if (expense.pago !== patchData.pago) {
-      await this.expenseRepository.update(id, patchData);
+      await this.expenseRepository.update(id, {
+        ...patchData,
+        pagamento: patchData.pago ? new Date() : undefined,
+      });
       expense.pago = patchData.pago;
     }
-    return expense;
+
+    const updated = await this.expenseRepository.findOneByParams({ id });
+
+    if (!updated) {
+      throw new ExpenseNotFoundException();
+    }
+    return updated;
   }
 }

@@ -1,4 +1,5 @@
 import { Exclude, Transform } from 'class-transformer';
+import { Users } from 'src/user/entity';
 import {
   Entity,
   Column,
@@ -10,8 +11,6 @@ import {
 import { Categorias } from '@category/entity';
 
 import { Carteiras } from '@wallet/entity';
-
-import { Users } from 'src/user/entity';
 
 @Entity({ schema: 'public', name: 'despesas' })
 export class Despesas {
@@ -28,7 +27,7 @@ export class Despesas {
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   vencimento?: Date;
 
-  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+  @Column({ type: 'timestamp', nullable: true })
   pagamento?: Date;
 
   @Column('boolean', { default: false })

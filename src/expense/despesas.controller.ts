@@ -14,11 +14,10 @@ import {
 } from '@nestjs/common';
 import { HttpStatus } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { User } from 'src/user/decorator';
 
 import { JwtAuthGuard } from '@auth/guard';
 import { UserPayloadInterface } from '@auth/interfaces';
-
-import { User } from 'src/user/decorator';
 
 import { TYPES } from '@config/dependency-injection';
 
@@ -42,7 +41,7 @@ import {
 import { IUpdateExpenseService } from './service/update-expense.service.interface';
 import { ExpenseGroupMonth } from './types';
 
-@Controller('expenses')
+@Controller('expense')
 @ApiTags('Expenses')
 @UseGuards(JwtAuthGuard)
 @ApiBearerAuth()
@@ -138,9 +137,15 @@ export class DespesasController {
   }
 
   @Get('month')
-  async getExpensesValuesGroupByMonth(@User() user: UserPayloadInterface) {
+  async getExpensesValuesGroupByMonth(
+    @User() user: UserPayloadInterface,
+    @Query() params: FindExpenseByQueryParamsDTO,
+  ) {
+    const { start, end } = params;
     const data = await this.getExpenseService.getExpensesGroupByMonth(
       user.userId,
+      start,
+      end,
     );
 
     return new SuccessResponseData<ExpenseGroupMonth>(

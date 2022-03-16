@@ -2,7 +2,7 @@ import {
   GetEarningAmountGroupByWalletResponse,
   GetTotalEarningResponseDTO,
 } from '@earning/dto';
-import { Receitas } from '@earning/entity';
+import { Earning } from '@earning/entity';
 import { EarningGroupMonth, FindEarningByParams } from '@earning/types';
 
 export interface IGetEarningService {
@@ -11,7 +11,7 @@ export interface IGetEarningService {
     start?: string,
     end?: string,
     pago?: boolean,
-  ): Promise<Receitas[]>;
+  ): Promise<Earning[]>;
 
   getEarningsGroupByMonth(
     userId: string,
@@ -26,7 +26,7 @@ export interface IGetEarningService {
     pago?: boolean,
   ): Promise<GetEarningAmountGroupByWalletResponse[]>;
 
-  findOne(params: FindEarningByParams): Promise<Receitas>;
+  findOne(params: FindEarningByParams): Promise<Earning>;
 
   getTotalEarnings(
     userId: string,

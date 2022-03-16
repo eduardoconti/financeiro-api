@@ -12,7 +12,7 @@ import {
   JoinColumn,
 } from 'typeorm';
 
-import { Receitas } from '@earning/entity/receitas.entity';
+import { Earning } from '@earning/entity/earning.entity';
 @Entity({ schema: 'public', name: 'carteiras' })
 export class Carteiras {
   @PrimaryGeneratedColumn()
@@ -35,10 +35,10 @@ export class Carteiras {
   })
   carteira!: Despesas[];
 
-  @OneToMany(() => Receitas, (receitas) => receitas.carteira, {
+  @OneToMany(() => Earning, (receitas) => receitas.carteira, {
     nullable: false,
   })
-  carteiraReceita!: Receitas[];
+  carteiraReceita!: Earning[];
 
   @OneToMany(
     () => Transferencias,

@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
-
 import { PasswordHashCompareException } from 'src/user/exception';
 
 import { InternalServerErrorException } from '@config/exceptions';

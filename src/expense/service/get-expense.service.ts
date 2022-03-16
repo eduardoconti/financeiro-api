@@ -33,40 +33,34 @@ export class GetExpenseService implements IGetExpenseService {
     end?: string,
     pago?: boolean,
   ): Promise<Despesas[]> {
-    const params: FindExpenseByParams = {};
-    if (pago !== undefined) {
-      params.pago = pago;
-    }
-
-    if (start || end) {
-      params.vencimento = this.buildDateWhere(start, end);
-    }
-
-    params.userId = userId;
-
-    return await this.expenseRepository.findByParams({
-      ...params,
-    });
+    return await this.expenseRepository.findByParams(
+      this.buildParams(userId, start, end, pago),
+    );
   }
 
-  async getExpensesGroupByMonth(userId: string): Promise<ExpenseGroupMonth> {
+  async getExpensesGroupByMonth(
+    userId: string,
+    start?: string,
+    end?: string,
+  ): Promise<ExpenseGroupMonth> {
     const sqlString = SqlFileManager.readFile(
       __dirname,
       'get-expense-group-by-month.sql',
     );
 
-    const despesas = await this.expenseRepository.query(sqlString, [userId]);
+    const despesas = await this.expenseRepository.query<{
+      month: string;
+      data: ExpensesGroupMonthDTO;
+    }>(sqlString, [userId, start, end]);
 
     const monthExpenses: ExpenseGroupMonth = {};
 
-    despesas.forEach(
-      (element: { month: string; data: ExpensesGroupMonthDTO }) => {
-        const { ...atributes }: ExpensesGroupMonthDTO = element.data;
-        monthExpenses[element.month] = ExpensesGroupMonthDTO.build({
-          ...atributes,
-        });
-      },
-    );
+    despesas.forEach((element) => {
+      const { ...atributes }: ExpensesGroupMonthDTO = element.data;
+      monthExpenses[element.month] = ExpensesGroupMonthDTO.build({
+        ...atributes,
+      });
+    });
 
     return monthExpenses;
   }
@@ -81,13 +75,12 @@ export class GetExpenseService implements IGetExpenseService {
       __dirname,
       'get-expense-value-group-by-wallet.sql',
     );
-    const despesas = await this.expenseRepository.query(sqlString, [
-      userId,
-      start,
-      end,
-      pago,
-    ]);
-    return despesas.map((element: GetExpenseAmountGroupByWalletResponse) => {
+    const despesas =
+      await this.expenseRepository.query<GetExpenseAmountGroupByWalletResponse>(
+        sqlString,
+        [userId, start, end, pago],
+      );
+    return despesas.map((element) => {
       const { valor, descricao, id }: GetExpenseAmountGroupByWalletResponse =
         element;
       return GetExpenseAmountGroupByWalletResponse.build({
@@ -109,20 +102,13 @@ export class GetExpenseService implements IGetExpenseService {
       'get-expense-value-group-by-category.sql',
     );
 
-    const despesas = await this.expenseRepository.query(sqlString, [
-      userId,
-      start,
-      end,
-      pago,
-    ]);
-    return despesas.map((element: GetExpenseAmountGroupByCategoryResponse) => {
-      const { valor, descricao, id }: GetExpenseAmountGroupByCategoryResponse =
-        element;
-      return GetExpenseAmountGroupByCategoryResponse.build({
-        valor,
-        descricao,
-        id,
-      });
+    const despesas =
+      await this.expenseRepository.query<GetExpenseAmountGroupByCategoryResponse>(
+        sqlString,
+        [userId, start, end, pago],
+      );
+    return despesas.map((element) => {
+      return GetExpenseAmountGroupByCategoryResponse.build({ ...element });
     });
   }
 
@@ -136,9 +122,11 @@ export class GetExpenseService implements IGetExpenseService {
       'get-expense-total-value.sql',
     );
 
-    const [{ total, totalopen: totalOpen, totalpayed: totalPayed }]: [
-      { total: number; totalopen: number; totalpayed: number },
-    ] = await this.expenseRepository.query(sqlString, [userId, start, end]);
+    const [{ total, totalOpen, totalPayed }] =
+      await this.expenseRepository.query<GetTotalExpenseResponseDTO>(
+        sqlString,
+        [userId, start, end],
+      );
 
     return GetTotalExpenseResponseDTO.build({
       total,
@@ -171,5 +159,24 @@ export class GetExpenseService implements IGetExpenseService {
     if (end) {
       return LessThanOrEqual(end);
     }
+  }
+
+  private buildParams(
+    userId: string,
+    start?: string,
+    end?: string,
+    pago?: boolean,
+  ): FindExpenseByParams {
+    const params: FindExpenseByParams = {};
+    if (pago !== undefined) {
+      params.pago = pago;
+    }
+
+    if (start || end) {
+      params.vencimento = this.buildDateWhere(start, end);
+    }
+
+    params.userId = userId;
+    return params;
   }
 }

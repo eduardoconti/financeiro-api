@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, SelectQueryBuilder } from 'typeorm';
 
 import { EarningDeleteResponseDTO } from '@earning/dto';
-import { Receitas } from '@earning/entity';
+import { Earning } from '@earning/entity';
 import {
   DeleteEarningException,
   FindEarningException,
@@ -18,14 +18,14 @@ import { IEarningRepository } from './earning.repository.interface';
 @Injectable()
 export class EarningRepository implements IEarningRepository {
   constructor(
-    @InjectRepository(Receitas)
-    private readonly repository: Repository<Receitas>,
+    @InjectRepository(Earning)
+    private readonly repository: Repository<Earning>,
   ) {}
 
-  queryBuilder(alias: string): SelectQueryBuilder<Receitas> {
+  queryBuilder(alias: string): SelectQueryBuilder<Earning> {
     return this.repository.createQueryBuilder(alias);
   }
-  async findByParams(params: FindEarningByParams): Promise<Receitas[]> {
+  async findByParams(params: FindEarningByParams): Promise<Earning[]> {
     return await this.repository
       .find({
         relations: ['carteira'],
@@ -39,7 +39,7 @@ export class EarningRepository implements IEarningRepository {
 
   async findOneByParams(
     params: FindEarningByParams,
-  ): Promise<Receitas | undefined> {
+  ): Promise<Earning | undefined> {
     return await this.repository
       .findOne({
         relations: ['carteira'],
@@ -55,7 +55,7 @@ export class EarningRepository implements IEarningRepository {
     });
   }
 
-  async insert(expense: Receitas): Promise<Receitas> {
+  async insert(expense: Earning): Promise<Earning> {
     const newEarning = await this.repository.create(expense);
     await this.repository.save(newEarning).catch((e) => {
       throw new InsertEarningException(e, expense);
@@ -71,7 +71,7 @@ export class EarningRepository implements IEarningRepository {
     return new EarningDeleteResponseDTO();
   }
 
-  async update(id: number, expense: Partial<Receitas>): Promise<Receitas> {
+  async update(id: number, expense: Partial<Earning>): Promise<Earning> {
     await this.repository.update({ id }, expense).catch((e) => {
       throw new UpdateEarningException(e, expense);
     });

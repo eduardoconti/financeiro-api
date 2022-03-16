@@ -1,7 +1,7 @@
 import { Injectable, Inject } from '@nestjs/common';
 
 import { EarningPatchFlagPayedDTO, ReceitasDTO } from '@earning/dto';
-import { Receitas } from '@earning/entity';
+import { Earning } from '@earning/entity';
 import { EarningNotFoundException } from '@earning/exceptions';
 import { IEarningRepository } from '@earning/repository';
 
@@ -20,7 +20,7 @@ export class UpdateEarningService implements IUpdateEarningService {
     id: number,
     userId: string,
     earning: Partial<ReceitasDTO>,
-  ): Promise<Receitas> {
+  ): Promise<Earning> {
     const findEarning = await this.earningRepository.findOneByParams({
       id,
       userId,
@@ -35,7 +35,7 @@ export class UpdateEarningService implements IUpdateEarningService {
     id: number,
     userId: string,
     patchData: EarningPatchFlagPayedDTO,
-  ): Promise<Receitas> {
+  ): Promise<Earning> {
     const earning = await this.earningRepository.findOneByParams({
       id,
       userId,

@@ -1,7 +1,7 @@
 import { Inject } from '@nestjs/common';
 
 import { ReceitasDTO } from '@earning/dto';
-import { Receitas } from '@earning/entity';
+import { Earning } from '@earning/entity';
 import { IEarningRepository } from '@earning/repository';
 
 import { TYPES } from '@config/dependency-injection';
@@ -14,8 +14,8 @@ export class InsertEarningService implements IInsertEarningService {
     private readonly earningRepository: IEarningRepository,
   ) {}
 
-  async insert(earning: ReceitasDTO, userId: string): Promise<Receitas> {
-    const entity = Receitas.build({ ...earning, userId });
+  async insert(earning: ReceitasDTO, userId: string): Promise<Earning> {
+    const entity = Earning.build({ ...earning, userId });
 
     return await this.earningRepository.insert(entity);
   }

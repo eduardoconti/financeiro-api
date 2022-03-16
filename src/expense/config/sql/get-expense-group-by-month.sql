@@ -23,13 +23,13 @@ INNER JOIN carteiras cr ON cr.id = d.carteira_id
 INNER JOIN categorias ct on ct.id = d.categoria_id
 WHERE
     d.user_id = $1
-    -- AND CASE
-    --     WHEN (cast ($2 as numeric)) IS NULL THEN true
-    --     ELSE date_part('year', d.vencimento) = $2
-    -- END
-    -- AND CASE
-    --     WHEN (cast ($3 as boolean)) IS NULL THEN true
-    --     ELSE d.pago = $3
-    -- END
+    AND CASE
+        WHEN (cast($2 as date)) IS NOT NULL
+        AND (cast($3 as date)) IS NOT NULL THEN d.vencimento BETWEEN $2
+        AND $3
+        WHEN(cast($2 as date)) IS NOT NULL
+        AND (cast($3 as date)) IS NULL THEN d.vencimento >= $2
+        ELSE true
+    END
     GROUP BY d.vencimento
     ORDER BY date_part('month', d.vencimento)

@@ -1,9 +1,9 @@
 import { FindConditions, ObjectLiteral } from 'typeorm';
 
-import { Receitas } from '@earning/entity';
+import { Earning } from '@earning/entity';
 
 export type FindEarningByParams =
-  | FindConditions<Receitas>[]
-  | (FindConditions<Receitas> & { user_id: string })
+  | FindConditions<Earning>[]
+  | (FindConditions<Earning> & { user_id: string })
   | ObjectLiteral
   | string;

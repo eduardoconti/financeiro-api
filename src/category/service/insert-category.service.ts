@@ -1,11 +1,10 @@
 import { Injectable, Inject, UseInterceptors } from '@nestjs/common';
+import { CheckUserRegisterInterceptor } from 'src/user/interceptor';
 
 import { InsertCategoryRequestDTO } from '@category/dto';
 import { Categorias } from '@category/entity';
 import { CategoryMapper } from '@category/helpers';
 import { ICategoryRepository } from '@category/repository';
-
-import { CheckUserRegisterInterceptor } from 'src/user/interceptor';
 
 import { TYPES } from '@config/dependency-injection';
 

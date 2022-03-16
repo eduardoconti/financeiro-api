@@ -14,11 +14,10 @@ import {
   Inject,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { User } from 'src/user/decorator';
 
 import { JwtAuthGuard } from '@auth/guard';
 import { UserPayloadInterface } from '@auth/interfaces';
-
-import { User } from 'src/user/decorator';
 
 import { TYPES } from '@config/dependency-injection';
 
@@ -33,7 +32,7 @@ import {
   GetTotalEarningResponseDTO,
   ReceitasDTO,
 } from './dto';
-import { Receitas } from './entity';
+import { Earning } from './entity';
 import {
   IDeleteEarningService,
   IGetEarningService,
@@ -62,14 +61,14 @@ export class ReceitasController {
   async retornaTodasReceitas(
     @User() user: UserPayloadInterface,
     @Query() params: FindEarningByQueryParamsDTO,
-  ): Promise<SuccessResponseData<Receitas[]>> {
+  ): Promise<SuccessResponseData<Earning[]>> {
     const data = await this.getEarningService.getAllEarningsByUser(
       user.userId,
       params.start,
       params.end,
       params.pago,
     );
-    return new SuccessResponseData<Receitas[]>(
+    return new SuccessResponseData<Earning[]>(
       data,
       HttpStatus.OK,
       YIELD_SUCCESS_MESSAGES.GET_SUCCESS,
@@ -132,12 +131,12 @@ export class ReceitasController {
   async getEarningById(
     @User() user: UserPayloadInterface,
     @Param('id', ParseIntPipe) id: number,
-  ): Promise<SuccessResponseData<Receitas>> {
+  ): Promise<SuccessResponseData<Earning>> {
     const data = await this.getEarningService.findOne({
       id,
       userId: user.userId,
     });
-    return new SuccessResponseData<Receitas>(
+    return new SuccessResponseData<Earning>(
       data,
       HttpStatus.OK,
       YIELD_SUCCESS_MESSAGES.GET_SUCCESS,
@@ -149,13 +148,13 @@ export class ReceitasController {
     @Param('id', ParseIntPipe) id: number,
     @User() user: UserPayloadInterface,
     @Body() receita: EarningPatchFlagPayedDTO,
-  ): Promise<SuccessResponseData<Receitas>> {
+  ): Promise<SuccessResponseData<Earning>> {
     const data = await this.updateEarningService.updateFlagPayed(
       id,
       user.userId,
       receita,
     );
-    return new SuccessResponseData<Receitas>(
+    return new SuccessResponseData<Earning>(
       data,
       HttpStatus.OK,
       YIELD_SUCCESS_MESSAGES.YIELD_UPDATE_SUCCESS,
@@ -167,13 +166,13 @@ export class ReceitasController {
     @Param('id', ParseIntPipe) id: number,
     @User() user: UserPayloadInterface,
     @Body() receita: ReceitasDTO,
-  ): Promise<SuccessResponseData<Receitas>> {
+  ): Promise<SuccessResponseData<Earning>> {
     const data = await this.updateEarningService.update(
       id,
       user.userId,
       receita,
     );
-    return new SuccessResponseData<Receitas>(
+    return new SuccessResponseData<Earning>(
       data,
       HttpStatus.OK,
       YIELD_SUCCESS_MESSAGES.YIELD_UPDATE_SUCCESS,
@@ -197,9 +196,9 @@ export class ReceitasController {
   async insertExpense(
     @Body() receita: ReceitasDTO,
     @User() user: UserPayloadInterface,
-  ): Promise<SuccessResponseData<Receitas>> {
+  ): Promise<SuccessResponseData<Earning>> {
     const data = await this.insertEarningService.insert(receita, user.userId);
-    return new SuccessResponseData<Receitas>(
+    return new SuccessResponseData<Earning>(
       data,
       HttpStatus.CREATED,
       YIELD_SUCCESS_MESSAGES.YIELD_CREATE_SUCCESS,

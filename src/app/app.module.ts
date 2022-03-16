@@ -2,6 +2,8 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { DespesasModule } from 'src/expense/despesas.module';
+import { TransferenciasModule } from 'src/transference/transferencias.module';
+import { UsersModule } from 'src/user/users.module';
 
 import { AuthModule } from '@auth/auth.module';
 
@@ -11,13 +13,9 @@ import { CategoryModule } from '@category/category.module';
 
 import { WalletModule } from '@wallet/wallet.module';
 
-import { UsersModule } from 'src/user/users.module';
-
 import { TYPES } from '@config/dependency-injection';
 
 import { GraphicModule } from '@graphic/graphic.module';
-
-import { TransferenciasModule } from 'src/transference/transferencias.module';
 
 import { AppController } from './app.controller';
 import { AppService } from './service';

@@ -1,15 +1,15 @@
 import { SelectQueryBuilder } from 'typeorm';
 
 import { EarningDeleteResponseDTO } from '@earning/dto';
-import { Receitas } from '@earning/entity';
+import { Earning } from '@earning/entity';
 import { FindEarningByParams } from '@earning/types';
 
 export interface IEarningRepository {
-  queryBuilder(alias: string): SelectQueryBuilder<Receitas>;
-  findOneByParams(params: FindEarningByParams): Promise<Receitas | undefined>;
-  findByParams(params: FindEarningByParams): Promise<Receitas[]>;
+  queryBuilder(alias: string): SelectQueryBuilder<Earning>;
+  findOneByParams(params: FindEarningByParams): Promise<Earning | undefined>;
+  findByParams(params: FindEarningByParams): Promise<Earning[]>;
   query<D>(query: string, parameters?: any[]): Promise<D[]>;
-  insert(expense: Receitas): Promise<Receitas>;
+  insert(expense: Earning): Promise<Earning>;
   delete(id: number): Promise<EarningDeleteResponseDTO>;
-  update(id: number, expense: Partial<Receitas>): Promise<Receitas>;
+  update(id: number, expense: Partial<Earning>): Promise<Earning>;
 }

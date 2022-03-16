@@ -1,6 +1,6 @@
 import { ReceitasDTO } from '@earning/dto';
-import { Receitas } from '@earning/entity';
+import { Earning } from '@earning/entity';
 
 export interface IInsertEarningService {
-  insert(earning: ReceitasDTO, userId: string): Promise<Receitas>;
+  insert(earning: ReceitasDTO, userId: string): Promise<Earning>;
 }

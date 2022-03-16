@@ -1,14 +1,13 @@
 import { Injectable, Inject, BadRequestException } from '@nestjs/common';
-import { Repository } from 'typeorm';
-
-import { TYPES } from '@config/dependency-injection';
-
 import {
   TransferenceDeleteResponseDTO,
   TransferencePathFlagPayedDTO,
   TransferenciasDTO,
 } from 'src/transference/dto';
 import { Transferencias } from 'src/transference/entity';
+import { Repository } from 'typeorm';
+
+import { TYPES } from '@config/dependency-injection';
 
 import { ITransferenceService } from './transference.service.interface';
 

@@ -14,7 +14,11 @@ export interface IGetExpenseService {
     pago?: boolean,
   ): Promise<Despesas[]>;
 
-  getExpensesGroupByMonth(userId: string): Promise<ExpenseGroupMonth>;
+  getExpensesGroupByMonth(
+    userId: string,
+    start?: string,
+    end?: string,
+  ): Promise<ExpenseGroupMonth>;
 
   getExpenseValuesGroupByWallet(
     userId: string,
