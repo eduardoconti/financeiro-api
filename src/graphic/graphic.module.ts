@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
+import { DespesasModule } from 'src/expense/despesas.module';
+
 import { ReceitasModule } from '@earning/receitas.module';
 
 import { TYPES } from '@config/dependency-injection';
-
-import { DespesasModule } from '@despesas/despesas.module';
 
 import { GraphicController } from './graphic.controller';
 import { GraphicService } from './service';

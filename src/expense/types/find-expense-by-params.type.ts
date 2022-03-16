@@ -1,6 +1,5 @@
+import { Despesas } from 'src/expense/entity';
 import { FindConditions, ObjectLiteral } from 'typeorm';
-
-import { Despesas } from '@despesas/entity';
 
 export type FindExpenseByParams =
   | FindConditions<Despesas>[]

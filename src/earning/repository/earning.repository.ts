@@ -1,5 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Repository, SelectQueryBuilder } from 'typeorm';
+
 import { EarningDeleteResponseDTO } from '@earning/dto';
 import { Receitas } from '@earning/entity';
 import {
@@ -10,7 +12,6 @@ import {
   UpdateEarningException,
 } from '@earning/exceptions';
 import { FindEarningByParams } from '@earning/types';
-import { Repository, SelectQueryBuilder } from 'typeorm';
 
 import { IEarningRepository } from './earning.repository.interface';
 

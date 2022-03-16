@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Exclude } from 'class-transformer';
-import { Despesas } from 'src/despesas/entity/despesas.entity';
+import { Despesas } from 'src/expense/entity/despesas.entity';
 import { Transferencias } from 'src/transferencias/entity/transferencias.entity';
 import { Users } from 'src/users/entity/users.entity';
 import {

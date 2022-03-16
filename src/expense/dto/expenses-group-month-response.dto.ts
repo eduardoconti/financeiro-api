@@ -1,6 +1,5 @@
 import { Transform } from 'class-transformer';
-
-import { Despesas } from '@despesas/entity';
+import { Despesas } from 'src/expense/entity';
 
 export class ExpensesGroupMonthDTO {
   month: number;

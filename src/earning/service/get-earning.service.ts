@@ -1,5 +1,12 @@
 import { Inject } from '@nestjs/common';
 import {
+  Between,
+  FindOperator,
+  LessThanOrEqual,
+  MoreThanOrEqual,
+} from 'typeorm';
+
+import {
   EarningsGroupMonthDTO,
   GetEarningAmountGroupByWalletResponse,
   GetTotalEarningResponseDTO,
@@ -8,12 +15,6 @@ import { Receitas } from '@earning/entity';
 import { EarningNotFoundException } from '@earning/exceptions';
 import { IEarningRepository } from '@earning/repository';
 import { EarningGroupMonth, FindEarningByParams } from '@earning/types';
-import {
-  Between,
-  FindOperator,
-  LessThanOrEqual,
-  MoreThanOrEqual,
-} from 'typeorm';
 
 import { TYPES } from '@config/dependency-injection';
 

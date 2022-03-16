@@ -42,7 +42,7 @@ module.exports = {
           '/^@users/',
           '/^@config/',
           '/^@db/',
-          '/^@despesas/',
+          '/^@expense/',
           '/^@graphic/',
           '/^@transference/',
           '/^@shared/',

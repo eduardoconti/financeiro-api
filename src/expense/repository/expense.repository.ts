@@ -1,17 +1,16 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, SelectQueryBuilder } from 'typeorm';
-
-import { ExpenseDeleteResponseDTO } from '@despesas/dto';
-import { Despesas } from '@despesas/entity';
+import { ExpenseDeleteResponseDTO } from 'src/expense/dto';
+import { Despesas } from 'src/expense/entity';
 import {
   DeleteExpenseException,
   FindExpenseException,
   GetByQueryException,
   InsertExpenseException,
   UpdateExpenseException,
-} from '@despesas/exceptions';
-import { FindExpenseByParams } from '@despesas/types';
+} from 'src/expense/exceptions';
+import { FindExpenseByParams } from 'src/expense/types';
+import { Repository, SelectQueryBuilder } from 'typeorm';
 
 import { IExpenseRepository } from './expense.repository.interface';
 

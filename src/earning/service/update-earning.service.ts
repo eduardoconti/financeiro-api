@@ -1,4 +1,5 @@
 import { Injectable, Inject } from '@nestjs/common';
+
 import { EarningPatchFlagPayedDTO, ReceitasDTO } from '@earning/dto';
 import { Receitas } from '@earning/entity';
 import { EarningNotFoundException } from '@earning/exceptions';

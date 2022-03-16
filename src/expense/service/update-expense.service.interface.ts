@@ -1,5 +1,5 @@
-import { DespesasDTO, ExpensePatchFlagPayedDTO } from '@despesas/dto';
-import { Despesas } from '@despesas/entity';
+import { DespesasDTO, ExpensePatchFlagPayedDTO } from 'src/expense/dto';
+import { Despesas } from 'src/expense/entity';
 
 export interface IUpdateExpenseService {
   update(

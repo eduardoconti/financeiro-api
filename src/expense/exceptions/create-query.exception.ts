@@ -1,6 +1,6 @@
-import { InternalServerErrorException } from '@config/exceptions';
+import { EXPENSE_ERROR_MESSAGES } from 'src/expense/constants';
 
-import { EXPENSE_ERROR_MESSAGES } from '@despesas/constants';
+import { InternalServerErrorException } from '@config/exceptions';
 
 export class CreateQueryException extends InternalServerErrorException {
   constructor(error?: any, data?: any) {

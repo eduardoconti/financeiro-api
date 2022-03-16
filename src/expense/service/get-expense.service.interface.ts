@@ -2,9 +2,9 @@ import {
   GetExpenseAmountGroupByCategoryResponse,
   GetExpenseAmountGroupByWalletResponse,
   GetTotalExpenseResponseDTO,
-} from '@despesas/dto';
-import { Despesas } from '@despesas/entity';
-import { ExpenseGroupMonth, FindExpenseByParams } from '@despesas/types';
+} from 'src/expense/dto';
+import { Despesas } from 'src/expense/entity';
+import { ExpenseGroupMonth, FindExpenseByParams } from 'src/expense/types';
 
 export interface IGetExpenseService {
   getAllExpensesByUser(

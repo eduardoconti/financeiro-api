@@ -1,8 +1,7 @@
+import { ExpenseDeleteResponseDTO } from 'src/expense/dto';
+import { Despesas } from 'src/expense/entity';
+import { FindExpenseByParams } from 'src/expense/types';
 import { SelectQueryBuilder } from 'typeorm';
-
-import { ExpenseDeleteResponseDTO } from '@despesas/dto';
-import { Despesas } from '@despesas/entity';
-import { FindExpenseByParams } from '@despesas/types';
 
 export interface IExpenseRepository {
   queryBuilder(alias: string): SelectQueryBuilder<Despesas>;

@@ -1,5 +1,6 @@
-import { Receitas } from '@earning/entity';
 import { Transform } from 'class-transformer';
+
+import { Receitas } from '@earning/entity';
 
 export class EarningsGroupMonthDTO {
   month: number;

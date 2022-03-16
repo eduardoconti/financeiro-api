@@ -1,10 +1,9 @@
 import { Inject } from '@nestjs/common';
+import { DespesasDTO } from 'src/expense/dto';
+import { Despesas } from 'src/expense/entity';
+import { IExpenseRepository } from 'src/expense/repository';
 
 import { TYPES } from '@config/dependency-injection';
-
-import { DespesasDTO } from '@despesas/dto';
-import { Despesas } from '@despesas/entity';
-import { IExpenseRepository } from '@despesas/repository';
 
 export class InsertExpenseService {
   constructor(

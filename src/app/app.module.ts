@@ -1,9 +1,11 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { ReceitasModule } from '@earning/receitas.module';
+import { DespesasModule } from 'src/expense/despesas.module';
 
 import { AuthModule } from '@auth/auth.module';
+
+import { ReceitasModule } from '@earning/receitas.module';
 
 import { CategoryModule } from '@category/category.module';
 
@@ -12,8 +14,6 @@ import { WalletModule } from '@wallet/wallet.module';
 import { UsersModule } from '@users/users.module';
 
 import { TYPES } from '@config/dependency-injection';
-
-import { DespesasModule } from '@despesas/despesas.module';
 
 import { GraphicModule } from '@graphic/graphic.module';
 

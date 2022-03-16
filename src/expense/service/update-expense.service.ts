@@ -1,11 +1,10 @@
 import { Injectable, Inject } from '@nestjs/common';
+import { DespesasDTO, ExpensePatchFlagPayedDTO } from 'src/expense/dto';
+import { Despesas } from 'src/expense/entity';
+import { ExpenseNotFoundException } from 'src/expense/exceptions';
+import { IExpenseRepository } from 'src/expense/repository';
 
 import { TYPES } from '@config/dependency-injection';
-
-import { DespesasDTO, ExpensePatchFlagPayedDTO } from '@despesas/dto';
-import { Despesas } from '@despesas/entity';
-import { ExpenseNotFoundException } from '@despesas/exceptions';
-import { IExpenseRepository } from '@despesas/repository';
 
 import { IUpdateExpenseService } from './update-expense.service.interface';
 

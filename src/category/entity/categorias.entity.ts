@@ -10,7 +10,7 @@ import {
   JoinColumn,
 } from 'typeorm';
 
-import { Despesas } from '../../despesas/entity/despesas.entity';
+import { Despesas } from '../../expense/entity/despesas.entity';
 
 @Entity({ schema: 'public', name: 'categorias' })
 export class Categorias {

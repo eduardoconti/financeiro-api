@@ -1,13 +1,13 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Receitas } from '@earning/entity';
 import { Exclude } from 'class-transformer';
+import { Despesas } from 'src/expense/entity';
 import { Entity, Column, PrimaryColumn, OneToMany } from 'typeorm';
+
+import { Receitas } from '@earning/entity';
 
 import { Categorias } from '@category/entity';
 
 import { Carteiras } from '@wallet/entity';
-
-import { Despesas } from '@despesas/entity';
 
 import { Transferencias } from '@transference/entity';
 

@@ -1,4 +1,5 @@
 import { Inject } from '@nestjs/common';
+
 import { ReceitasDTO } from '@earning/dto';
 import { Receitas } from '@earning/entity';
 import { IEarningRepository } from '@earning/repository';

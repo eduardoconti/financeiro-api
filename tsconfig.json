@@ -20,7 +20,7 @@
       "@category/*": ["src/category/*"],
       "@config/*": ["src/config/*"],
       "@db/*": ["src/db/*"],
-      "@despesas/*": ["src/despesas/*"],
+      "@expense/*": ["src/expense/*"],
       "@graphic/*": ["src/graphic/*"],
       "@earning/*": ["src/earning/*"],
       "@shared/*": ["src/shared/*"],
