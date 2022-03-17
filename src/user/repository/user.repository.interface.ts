@@ -1,6 +1,6 @@
-import { UserDeleteResponseDTO, UserDTO } from 'src/user/dto';
-import { Users } from 'src/user/entity';
-import { FindUserByParams } from 'src/user/types';
+import { UserDeleteResponseDTO, UserDTO } from '@users/dto';
+import { Users } from '@users/entity';
+import { FindUserByParams } from '@users/types';
 
 export interface IUserRepository {
   insert(userRequest: UserDTO): Promise<Users>;

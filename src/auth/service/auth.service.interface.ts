@@ -1,6 +1,6 @@
-import { Users } from 'src/user/entity';
-
 import { SignDto, UserPayloadDto } from '@auth/dto';
+
+import { Users } from '@users/entity';
 
 export interface IAuthService {
   validateUser(login: string, pass: string): Promise<Users | undefined>;

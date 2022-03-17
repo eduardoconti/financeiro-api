@@ -11,10 +11,11 @@ import {
   ParseIntPipe,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { User } from 'src/user/decorator/user.decorator';
 
 import { JwtAuthGuard } from '@auth/guard/jwt-auth.guard';
 import { UserPayloadInterface } from '@auth/interfaces/user-payload.interface';
+
+import { User } from '@users/decorator';
 
 import { TYPES } from '@config/dependency-injection';
 

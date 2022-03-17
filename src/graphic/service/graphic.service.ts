@@ -1,13 +1,14 @@
 import 'moment/locale/pt-br';
 import { Inject, Injectable } from '@nestjs/common';
 import * as moment from 'moment';
-import { ExpensesGroupMonthDTO } from 'src/expense/dto';
-import { IGetExpenseService } from 'src/expense/service';
 
 import { EarningsGroupMonthDTO } from '@earning/dto';
 import { IGetEarningService } from '@earning/service';
 
 import { TYPES } from '@config/dependency-injection';
+
+import { ExpensesGroupMonthDTO } from '@expense/dto';
+import { IGetExpenseService } from '@expense/service';
 
 import {
   GeneralGraphicDataDTO,

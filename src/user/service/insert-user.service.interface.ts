@@ -1,5 +1,5 @@
-import { UserDTO } from 'src/user/dto';
-import { Users } from 'src/user/entity';
+import { UserDTO } from '@users/dto';
+import { Users } from '@users/entity';
 
 export interface IInsertUserService {
   insert(userRequest: UserDTO): Promise<Users>;

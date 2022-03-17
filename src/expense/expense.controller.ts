@@ -14,10 +14,11 @@ import {
 } from '@nestjs/common';
 import { HttpStatus } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { User } from 'src/user/decorator';
 
 import { JwtAuthGuard } from '@auth/guard';
 import { UserPayloadInterface } from '@auth/interfaces';
+
+import { User } from '@users/decorator';
 
 import { TYPES } from '@config/dependency-injection';
 

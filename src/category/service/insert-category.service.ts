@@ -1,5 +1,4 @@
-import { Injectable, Inject, UseInterceptors } from '@nestjs/common';
-import { CheckUserRegisterInterceptor } from 'src/user/interceptor';
+import { Injectable, Inject } from '@nestjs/common';
 
 import { InsertCategoryRequestDTO } from '@category/dto';
 import { Category } from '@category/entity';
@@ -17,7 +16,6 @@ export class InsertCategoryService implements IInsertCategoryService {
     private categoryRepository: ICategoryRepository,
   ) {}
 
-  @UseInterceptors(CheckUserRegisterInterceptor)
   async insertCategory(
     category: InsertCategoryRequestDTO,
     userId: string,

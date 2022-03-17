@@ -1,5 +1,4 @@
 import { Exclude, Transform } from 'class-transformer';
-import { Users } from 'src/user/entity';
 import {
   Entity,
   Column,
@@ -11,6 +10,8 @@ import {
 import { Category } from '@category/entity';
 
 import { Carteiras } from '@wallet/entity';
+
+import { Users } from '@users/entity';
 
 @Entity({ schema: 'public', name: 'despesas' })
 export class Despesas {

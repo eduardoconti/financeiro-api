@@ -1,6 +1,6 @@
-import { EXPENSE_ERROR_MESSAGES } from 'src/expense/constants';
-
 import { NotFoundException } from '@config/exceptions';
+
+import { EXPENSE_ERROR_MESSAGES } from '@expense/constants';
 
 export class ExpenseNotFoundException extends NotFoundException {
   constructor(error?: any, data?: any) {

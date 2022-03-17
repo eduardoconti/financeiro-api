@@ -1,8 +1,9 @@
 import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common';
 import { Observable } from 'rxjs';
-import { ERROR_MESSAGES } from 'src/user/constants';
 
 import { UserPayloadInterface } from '@auth/interfaces';
+
+import { ERROR_MESSAGES } from '@users/constants';
 
 import { UnauthorizedException } from '@config/exceptions';
 

@@ -1,7 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { ERROR_MESSAGES } from 'src/user/constants';
-import { UserNotFoundException } from 'src/user/exception';
-import { IUserRepository } from 'src/user/repository';
+
+import { ERROR_MESSAGES } from '@users/constants';
+import { UserNotFoundException } from '@users/exception';
+import { IUserRepository } from '@users/repository';
 
 import { TYPES } from '@config/dependency-injection';
 

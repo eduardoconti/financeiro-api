@@ -6,12 +6,13 @@ import {
   Inject,
 } from '@nestjs/common';
 import { ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { User } from 'src/user/decorator';
 
 import { SignDto, LoginRequestDTO } from '@auth/dto';
 import { LocalAuthGuard } from '@auth/guard';
 import { UserPayloadInterface } from '@auth/interfaces';
 import { IAuthService } from '@auth/service';
+
+import { User } from '@users/decorator';
 
 import { TYPES } from '@config/dependency-injection';
 

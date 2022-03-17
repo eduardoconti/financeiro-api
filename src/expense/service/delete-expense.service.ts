@@ -1,12 +1,13 @@
 import { Inject } from '@nestjs/common';
-import { ExpenseDeleteResponseDTO } from 'src/expense/dto';
+
+import { TYPES } from '@config/dependency-injection';
+
+import { ExpenseDeleteResponseDTO } from '@expense/dto';
 import {
   DeleteExpenseException,
   ExpenseNotFoundException,
-} from 'src/expense/exceptions';
-import { IExpenseRepository } from 'src/expense/repository';
-
-import { TYPES } from '@config/dependency-injection';
+} from '@expense/exceptions';
+import { IExpenseRepository } from '@expense/repository';
 
 import { IDeleteExpenseService } from './delete-expense.service.interface';
 

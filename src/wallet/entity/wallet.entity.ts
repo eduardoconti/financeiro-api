@@ -1,7 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Exclude } from 'class-transformer';
 import { Transferencias } from 'src/transference/entity/transferencias.entity';
-import { Users } from 'src/user/entity/users.entity';
 import {
   Entity,
   Column,
@@ -12,6 +11,8 @@ import {
 } from 'typeorm';
 
 import { Earning } from '@earning/entity/earning.entity';
+
+import { Users } from '@users/entity/users.entity';
 
 import { Despesas } from '@expense/entity/expense.entity';
 @Entity({ schema: 'public', name: 'carteiras' })

@@ -1,10 +1,11 @@
 import { Inject } from '@nestjs/common';
-import { ERROR_MESSAGES } from 'src/user/constants';
-import { UserDTO } from 'src/user/dto';
-import { Users } from 'src/user/entity';
-import { UserLoginAlreadyExistsException } from 'src/user/exception';
-import { IUserRepository } from 'src/user/repository';
 import { v4 as uuidv4 } from 'uuid';
+
+import { ERROR_MESSAGES } from '@users/constants';
+import { UserDTO } from '@users/dto';
+import { Users } from '@users/entity';
+import { UserLoginAlreadyExistsException } from '@users/exception';
+import { IUserRepository } from '@users/repository';
 
 import { TYPES } from '@config/dependency-injection';
 

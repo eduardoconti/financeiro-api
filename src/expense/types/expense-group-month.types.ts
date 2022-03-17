@@ -1,4 +1,4 @@
-import { ExpensesGroupMonthDTO } from 'src/expense/dto';
+import { ExpensesGroupMonthDTO } from '@expense/dto';
 
 export type ExpenseGroupMonth = {
   [key: string]: ExpensesGroupMonthDTO;

@@ -1,6 +1,6 @@
-import { EXPENSE_ERROR_MESSAGES } from 'src/expense/constants';
-
 import { InternalServerErrorException } from '@config/exceptions';
+
+import { EXPENSE_ERROR_MESSAGES } from '@expense/constants';
 
 export class InsertExpenseException extends InternalServerErrorException {
   constructor(error?: any, data?: any) {

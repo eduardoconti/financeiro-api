@@ -1,6 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Exclude } from 'class-transformer';
-import { Users } from 'src/user/entity/users.entity';
 import {
   Entity,
   Column,
@@ -9,6 +8,8 @@ import {
   ManyToOne,
   JoinColumn,
 } from 'typeorm';
+
+import { Users } from '@users/entity';
 
 import { Despesas } from '../../expense/entity/expense.entity';
 
