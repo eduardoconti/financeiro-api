@@ -3,7 +3,7 @@ SELECT
     c.descricao descricao,
     c.id id
 FROM
-    receitas t
+    transferencias t
     INNER JOIN carteiras c ON c.id = t.carteira_origem_id
 WHERE
     t.user_id = $1

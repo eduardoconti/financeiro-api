@@ -40,6 +40,7 @@ export class Transferencias {
     nullable: false,
     name: 'carteira_origem_id',
   })
+  @Exclude()
   carteiraOrigemId!: number;
 
   @Column({
@@ -47,6 +48,7 @@ export class Transferencias {
     nullable: false,
     name: 'carteira_destino_id',
   })
+  @Exclude()
   carteiraDestinoId!: number;
 
   @ManyToOne(() => Carteiras, (carteiras) => carteiras.transferenciaOrigem, {

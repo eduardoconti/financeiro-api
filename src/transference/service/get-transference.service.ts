@@ -77,7 +77,7 @@ export class GetTransferenceService implements IGetTransferenceService {
   ): Promise<GetTransferenceAmountGroupByWalletResponse[]> {
     const sqlString = SqlFileManager.readFile(
       __dirname,
-      'get-transference-value-group-by-wallet' + type + '.sql',
+      'get-transference-value-group-by-wallet-' + type + '.sql',
     );
     const earnings =
       await this.earningRepository.query<GetTransferenceAmountGroupByWalletResponse>(

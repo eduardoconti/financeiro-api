@@ -27,7 +27,7 @@ export class TransferenceRepository implements ITransferenceRepository {
   ): Promise<Transferencias[]> {
     return await this.repository
       .find({
-        relations: ['user', 'carteira'],
+        relations: ['user', 'carteiraOrigem', 'carteiraDestino'],
         where: params,
         order: { transferencia: 'ASC' },
       })
@@ -41,7 +41,7 @@ export class TransferenceRepository implements ITransferenceRepository {
   ): Promise<Transferencias | undefined> {
     return await this.repository
       .findOne({
-        relations: ['user', 'categoria', 'carteira'],
+        relations: ['user', 'carteiraOrigem', 'carteiraDestino'],
         where: params,
         order: { valor: 'DESC' },
       })
