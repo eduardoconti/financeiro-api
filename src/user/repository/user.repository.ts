@@ -30,7 +30,7 @@ export class UserRepository implements IUserRepository {
     }
   }
 
-  async findOneByParams(params: FindUserByParams): Promise<Users | undefined> {
+  async findOneByParams(params: FindUserByParams): Promise<Users | null> {
     try {
       return await this.userRepository.findOne({ where: params });
     } catch (error) {

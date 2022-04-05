@@ -37,9 +37,7 @@ export class EarningRepository implements IEarningRepository {
       });
   }
 
-  async findOneByParams(
-    params: FindEarningByParams,
-  ): Promise<Earning | undefined> {
+  async findOneByParams(params: FindEarningByParams): Promise<Earning | null> {
     return await this.repository
       .findOne({
         relations: ['carteira'],

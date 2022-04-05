@@ -37,9 +37,7 @@ export class ExpenseRepository implements IExpenseRepository {
       });
   }
 
-  async findOneByParams(
-    params: FindExpenseByParams,
-  ): Promise<Despesas | undefined> {
+  async findOneByParams(params: FindExpenseByParams): Promise<Despesas | null> {
     return await this.repository
       .findOne({
         relations: ['user', 'categoria', 'carteira'],

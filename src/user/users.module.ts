@@ -4,7 +4,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { TYPES } from '@config/dependency-injection';
 
 import { Users } from './entity';
-import { CheckUserRegisterInterceptor } from './interceptor';
 import { UserRepository } from './repository';
 import {
   DeleteUserService,
@@ -38,10 +37,6 @@ import { UsersController } from './users.controller';
       provide: TYPES.PasswordManagerService,
       useClass: PasswordManagerService,
     },
-    {
-      provide: TYPES.CheckUserRegisterInterceptor,
-      useClass: CheckUserRegisterInterceptor,
-    },
   ],
   exports: [
     {
@@ -51,10 +46,6 @@ import { UsersController } from './users.controller';
     {
       provide: TYPES.PasswordManagerService,
       useClass: PasswordManagerService,
-    },
-    {
-      provide: TYPES.CheckUserRegisterInterceptor,
-      useClass: CheckUserRegisterInterceptor,
     },
   ],
 })

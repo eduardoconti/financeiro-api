@@ -123,18 +123,18 @@ export class GetTransferenceService implements IGetTransferenceService {
   private buildDateWhere(
     start?: string,
     end?: string,
-  ): FindOperator<string> | undefined {
+  ): FindOperator<Date> | undefined {
     if (!start && !end) {
       return;
     }
     if (start && end) {
-      return Between(start, end);
-    }
-    if (start) {
-      return MoreThanOrEqual(start);
-    }
-    if (end) {
-      return LessThanOrEqual(end);
+      return Between(new Date(start), new Date(end));
+    } else if (start) {
+      return MoreThanOrEqual(new Date(start));
+    } else if (end) {
+      return LessThanOrEqual(new Date(end));
+    } else {
+      return;
     }
   }
 

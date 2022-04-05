@@ -38,7 +38,7 @@ export class TransferenceRepository implements ITransferenceRepository {
 
   async findOneByParams(
     params: FindTransferenceByParams,
-  ): Promise<Transferencias | undefined> {
+  ): Promise<Transferencias | null> {
     return await this.repository
       .findOne({
         relations: ['user', 'carteiraOrigem', 'carteiraDestino'],

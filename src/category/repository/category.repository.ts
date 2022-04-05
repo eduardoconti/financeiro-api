@@ -31,18 +31,19 @@ export class CategoryRepository implements ICategoryRepository {
     }
   }
 
-  async update(id: number, category: Category): Promise<Category | undefined> {
+  async update(id: number, category: Category): Promise<Category | null> {
     try {
       await this.repository.update({ id }, category);
-      return await this.repository.findOne(id);
+      return await this.repository.findOne({ where: { id: id } });
     } catch (error) {
       throw new UpdateCategoryException(error);
     }
   }
 
-  async findById(id: number): Promise<Category | undefined> {
+  async findById(id: number): Promise<Category | null> {
     try {
-      return await this.repository.findOne(id, {
+      return await this.repository.findOne({
+        where: { id: id },
         relations: ['user'],
       });
     } catch (error) {
@@ -50,9 +51,7 @@ export class CategoryRepository implements ICategoryRepository {
     }
   }
 
-  async findByParams(
-    params: FindCategoryByParams,
-  ): Promise<Category[] | undefined> {
+  async findByParams(params: FindCategoryByParams): Promise<Category[] | null> {
     try {
       return await this.repository.find({
         relations: ['user'],

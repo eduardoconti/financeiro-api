@@ -2,6 +2,7 @@ import { ClassSerializerInterceptor } from '@nestjs/common';
 import { NestFactory, Reflector } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import * as Sentry from '@sentry/node';
+import * as Tracing from '@sentry/tracing';
 import * as helmet from 'helmet';
 
 import { BaseException } from '@config/exceptions';
@@ -13,7 +14,7 @@ import { ValidationPipe } from './shared/pipes/validation.pipe';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, { cors: true });
 
-  app.use(helmet());
+  //app.use(helmet());
   app.useGlobalFilters(new HttpExceptionFilter());
   app.useGlobalPipes(new ValidationPipe());
   app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
@@ -40,7 +41,10 @@ async function bootstrap() {
   Sentry.init({
     dsn: process.env.SENTRY_DSN,
     tracesSampleRate: 1.0,
-    integrations: [new Sentry.Integrations.Http({ tracing: true })],
+    integrations: [
+      new Sentry.Integrations.Http({ tracing: true }),
+      new Tracing.Integrations.Express(),
+    ],
     attachStacktrace: true,
     environment: process.env.ENVIRONMENT,
     beforeSend(event, hint) {

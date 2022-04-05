@@ -147,18 +147,18 @@ export class GetExpenseService implements IGetExpenseService {
   private buildDateWhere(
     start?: string,
     end?: string,
-  ): FindOperator<string> | undefined {
+  ): FindOperator<Date> | undefined {
     if (!start && !end) {
       return;
     }
     if (start && end) {
-      return Between(start, end);
+      return Between(new Date(start), new Date(end));
     }
     if (start) {
-      return MoreThanOrEqual(start);
+      return MoreThanOrEqual(new Date(start));
     }
     if (end) {
-      return LessThanOrEqual(end);
+      return LessThanOrEqual(new Date(end));
     }
   }
 
