@@ -15,17 +15,17 @@ export class TransferenciasDTO {
   })
   @IsUUID('4')
   @IsNotEmpty({ message: CONSTRAINTS_MESSAGES.IS_NOT_EMPTY })
-  user!: string;
+  userId!: string;
 
   @ApiProperty()
   @IsNumber({}, { message: CONSTRAINTS_MESSAGES.IS_NUMBER })
   @IsNotEmpty({ message: CONSTRAINTS_MESSAGES.IS_NOT_EMPTY })
-  carteiraOrigem!: number;
+  carteiraOrigemId!: number;
 
   @ApiProperty()
   @IsNotEmpty({ message: CONSTRAINTS_MESSAGES.IS_NOT_EMPTY })
   @IsNumber({}, { message: CONSTRAINTS_MESSAGES.IS_NUMBER })
-  carteiraDestino!: number;
+  carteiraDestinoId!: number;
 
   @ApiPropertyOptional({ default: new Date() })
   @IsOptional()

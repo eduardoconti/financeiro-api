@@ -1,5 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
+import { Exclude } from 'class-transformer';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  ManyToOne,
+  JoinColumn,
+} from 'typeorm';
 
 import { Carteiras } from '@wallet/entity';
 
@@ -9,29 +16,90 @@ import { Users } from '@users/entity';
 export class Transferencias {
   @PrimaryGeneratedColumn()
   @ApiProperty()
-  id!: number;
+  id?: number;
 
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
-  transferencia!: Date;
+  transferencia?: Date;
 
   @Column('boolean', { default: false })
-  pago!: boolean;
+  pago?: boolean;
 
   @Column('float', { default: 0 })
   valor!: number;
 
+  @Column({
+    type: 'uuid',
+    nullable: false,
+    name: 'user_id',
+  })
+  @Exclude()
+  userId!: string;
+
+  @Column({
+    type: 'int',
+    nullable: false,
+    name: 'carteira_origem_id',
+  })
+  @Exclude()
+  carteiraOrigemId!: number;
+
+  @Column({
+    type: 'int',
+    nullable: false,
+    name: 'carteira_destino_id',
+  })
+  @Exclude()
+  carteiraDestinoId!: number;
+
   @ManyToOne(() => Carteiras, (carteiras) => carteiras.transferenciaOrigem, {
     nullable: false,
   })
-  carteiraOrigem!: number;
+  @JoinColumn({ name: 'carteira_origem_id', referencedColumnName: 'id' })
+  carteiraOrigem?: Carteiras;
 
   @ManyToOne(() => Carteiras, (carteiras) => carteiras.transferenciaDestino, {
     nullable: false,
   })
-  carteiraDestino!: number;
+  @JoinColumn({ name: 'carteira_destino_id', referencedColumnName: 'id' })
+  carteiraDestino?: Carteiras;
 
   @ManyToOne(() => Users, (users) => users.userTransferencia, {
     nullable: false,
   })
-  user!: string;
+  @Exclude()
+  @JoinColumn({ name: 'user_id', referencedColumnName: 'id' })
+  user?: Users;
+
+  constructor(
+    userId: string,
+    valor: number,
+    carteiraOrigemId: number,
+    carteiraDestinoId: number,
+    transferencia?: Date,
+    pago?: boolean,
+  ) {
+    this.userId = userId;
+    this.valor = valor;
+    this.carteiraOrigemId = carteiraOrigemId;
+    this.carteiraDestinoId = carteiraDestinoId;
+    this.transferencia = transferencia;
+    this.pago = pago;
+  }
+  static build = ({
+    userId,
+    valor,
+    carteiraDestinoId,
+    carteiraOrigemId,
+    transferencia,
+    pago,
+  }: Transferencias): Transferencias => {
+    return new Transferencias(
+      userId,
+      valor,
+      carteiraDestinoId,
+      carteiraOrigemId,
+      transferencia,
+      pago,
+    );
+  };
 }
