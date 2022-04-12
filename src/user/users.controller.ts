@@ -25,7 +25,7 @@ import {
 
 @ApiTags('Users')
 @Controller('users')
-@UseGuards(JwtAuthGuard)
+//@UseGuards(JwtAuthGuard)
 @ApiBearerAuth()
 export class UsersController {
   constructor(
@@ -53,7 +53,7 @@ export class UsersController {
     summary: 'Insert user.',
     description: 'Create an user. This endpoint is authorized for admin user.',
   })
-  @UseGuards(MasterUserGuard)
+  //@UseGuards(MasterUserGuard)
   async createUser(@Body() user: UserDTO): Promise<Users> {
     return await this.insertUserService.insert(user);
   }

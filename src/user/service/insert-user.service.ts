@@ -32,7 +32,8 @@ export class InsertUserService implements IInsertUserService {
     );
 
     userRequest.password = passwordHash;
-    userRequest.id ?? uuidv4();
+    userRequest.id = uuidv4();
+    console.log(userRequest);
     return await this.userRepository.insert(userRequest);
   }
 }

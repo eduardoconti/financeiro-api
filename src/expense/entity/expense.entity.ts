@@ -28,6 +28,9 @@ export class Despesas {
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   vencimento?: Date;
 
+  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+  created_at?: Date;
+
   @Column({ type: 'timestamp', nullable: true })
   pagamento?: Date;
 
@@ -82,6 +85,8 @@ export class Despesas {
     vencimento?: Date,
     pagamento?: Date,
     pago?: boolean,
+    created_at?: Date,
+
   ) {
     this.userId = userId;
     this.descricao = descricao;
@@ -91,6 +96,7 @@ export class Despesas {
     this.vencimento = vencimento;
     this.pagamento = pagamento;
     this.pago = pago;
+    this.created_at = created_at;
   }
 
   static build = ({
@@ -102,6 +108,7 @@ export class Despesas {
     vencimento,
     pagamento,
     pago,
+    created_at
   }: Despesas): Despesas => {
     return new Despesas(
       userId,
@@ -112,6 +119,7 @@ export class Despesas {
       vencimento,
       pagamento,
       pago,
+      created_at
     );
   };
 }

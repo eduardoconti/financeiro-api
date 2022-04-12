@@ -6,10 +6,11 @@ import * as Tracing from '@sentry/tracing';
 import * as helmet from 'helmet';
 
 import { BaseException } from '@config/exceptions';
+import { AppModule } from '@app/app.module';
+import { HttpExceptionFilter } from '@shared/exceptions';
+import { ValidationPipe } from '@shared/pipes';
 
-import { AppModule } from './app/app.module';
-import { HttpExceptionFilter } from './shared/exceptions/http-exception.filter';
-import { ValidationPipe } from './shared/pipes/validation.pipe';
+
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, { cors: true });
@@ -67,6 +68,6 @@ async function bootstrap() {
   app.use(Sentry.Handlers.tracingHandler());
   app.use(Sentry.Handlers.errorHandler());
 
-  await app.listen(parseInt(process.env.PORT as string));
+  await app.listen(parseInt(process.env.SERVER_PORT as string));
 }
 bootstrap();

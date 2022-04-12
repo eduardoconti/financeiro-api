@@ -30,6 +30,7 @@
     "@nestjs/platform-express": "^8.4.1",
     "@nestjs/swagger": "^5.2.0",
     "@nestjs/typeorm": "^9.0.0-next.1",
+    "@ntegral/nestjs-sentry": "^3.0.7",
     "@sentry/browser": "^6.17.2",
     "@sentry/node": "^6.18.2",
     "@sentry/tracing": "^6.17.2",

@@ -3,8 +3,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { TYPES } from '@config/dependency-injection';
 
-import { DatabaseModule } from '@db/database.module';
-
 import { Transferencias } from './entity';
 import { TransferenceRepository } from './repository';
 import {
@@ -16,7 +14,7 @@ import {
 import { TransferenciasController } from './transferencias.controller';
 
 @Module({
-  imports: [DatabaseModule, TypeOrmModule.forFeature([Transferencias])],
+  imports: [TypeOrmModule.forFeature([Transferencias])],
   controllers: [TransferenciasController],
   providers: [
     { provide: TYPES.GetTransferenceService, useClass: GetTransferenceService },

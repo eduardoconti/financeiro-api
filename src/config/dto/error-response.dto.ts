@@ -10,10 +10,10 @@ export class ErrorResponseDTO extends ResponseDTO {
   constructor(
     message: string,
     reason?: string,
-    httpStatus: HttpStatus = HttpStatus.INTERNAL_SERVER_ERROR,
+    status: HttpStatus = HttpStatus.INTERNAL_SERVER_ERROR,
     validationErrors?: ValidationErrorDTO[],
   ) {
-    super(httpStatus, message);
+    super(status, message);
     this.reason = reason;
     this.validationErrors = validationErrors;
   }

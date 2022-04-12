@@ -6,9 +6,11 @@ import {
   NotFoundException as CommonNotFoundException,
   BadRequestException as CommonBadRequestException,
   HttpStatus,
+  Injectable,
 } from '@nestjs/common';
 import * as Sentry from '@sentry/node';
 import { QueryFailedError } from 'typeorm';
+import { InjectSentry, SentryService } from '@ntegral/nestjs-sentry';
 
 import { ErrorResponseDTO } from '@config/dto';
 import {
@@ -18,9 +20,9 @@ import {
   MethodNotAllowedException,
   NotImplementedException,
 } from '@config/exceptions';
-
 @Catch()
 export class HttpExceptionFilter implements ExceptionFilter {
+
   catch(exception: unknown, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse();
@@ -30,14 +32,14 @@ export class HttpExceptionFilter implements ExceptionFilter {
     if (exception instanceof CommonNotFoundException) {
       const notFoundException = new NotImplementedException();
       return response
-        .status(notFoundException.httpStatus)
+        .status(notFoundException.status)
         .json(notFoundException.getResponse());
     }
 
     if (exception instanceof CommonMethodNotAllowedException) {
       const methodNotAllowedException = new MethodNotAllowedException();
       return response
-        .status(methodNotAllowedException.httpStatus)
+        .status(methodNotAllowedException.status)
         .json(methodNotAllowedException.getResponse());
     }
 
@@ -47,13 +49,13 @@ export class HttpExceptionFilter implements ExceptionFilter {
         exception?.message,
       );
       return response
-        .status(badRequestException.httpStatus)
+        .status(badRequestException.status)
         .json(badRequestException.getResponse());
     }
 
     if (exception instanceof HttpBaseException) {
       const errorResponse = exception.getResponse();
-      const status = exception.httpStatus;
+      const status = exception.status;
       const message = exception.reason;
       if (exception?.error?.constructor === QueryFailedError) {
         return response
