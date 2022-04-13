@@ -9,7 +9,7 @@ import { BaseException } from '@config/exceptions';
 import { AppModule } from './app/app.module';
 import { HttpExceptionFilter } from './shared/exceptions/http-exception.filter';
 import { ValidationPipe } from './shared/pipes/validation.pipe';
-import 'dd-trace/init';
+import tracer from 'dd-trace';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, { cors: true });
@@ -27,7 +27,7 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, options);
 
   SwaggerModule.setup('docs', app, document);
-
+  tracer.init();
   Sentry.init({
     dsn: process.env.SENTRY_DSN,
     tracesSampleRate: 1.0,
