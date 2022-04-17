@@ -1,5 +1,5 @@
 import { Controller, Get, Inject, UseGuards } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
 import { JwtAuthGuard } from '@auth/guard';
 import { UserPayloadInterface } from '@auth/interfaces';
@@ -16,6 +16,7 @@ import { IGraphicService } from './service';
 @Controller('graphic')
 @ApiTags('Graphic')
 @UseGuards(JwtAuthGuard)
+@ApiBearerAuth()
 export class GraphicController {
   constructor(
     @Inject(TYPES.GraphicService)

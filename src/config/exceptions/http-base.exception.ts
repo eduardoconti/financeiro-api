@@ -9,13 +9,13 @@ export class HttpBaseException extends BaseException {
   private response: ErrorResponseDTO;
 
   constructor(
-    message: string,
-    reason?: string,
-    httpStatus: HttpStatus = HttpStatus.INTERNAL_SERVER_ERROR,
+    title: string,
+    detail?: string,
+    status: HttpStatus = HttpStatus.INTERNAL_SERVER_ERROR,
     error?: any,
     data?: any,
   ) {
-    super(httpStatus, message, reason, error, data);
+    super(status, title, detail, error, data);
     this.response = this.createResponse(error);
   }
 
@@ -25,19 +25,19 @@ export class HttpBaseException extends BaseException {
       !Array.isArray(error) &&
       error instanceof ValidationErrorDTO
     ) {
-      return new ErrorResponseDTO(this.message, this.reason, this.httpStatus, [
+      return new ErrorResponseDTO(this.title, this.detail, this.status, [
         error,
       ]);
     } else if (Array.isArray(error) && error[0] instanceof ValidationErrorDTO) {
       return new ErrorResponseDTO(
-        this.message,
-        this.reason,
-        this.httpStatus,
+        this.title,
+        this.detail,
+        this.status,
         error,
       );
     }
 
-    return new ErrorResponseDTO(this.message, this.reason, this.httpStatus);
+    return new ErrorResponseDTO(this.title, this.detail, this.status);
   };
 
   public getResponse = () => {

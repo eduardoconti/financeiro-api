@@ -9,13 +9,12 @@ import {
   UseGuards,
   Inject,
 } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
 import { JwtAuthGuard } from '@auth/guard';
 import { UserPayloadInterface } from '@auth/interfaces';
 
 import { User } from '@users/decorator';
-import { UserLoggedGuard } from '@users/guard';
 
 import { TYPES } from '@config/dependency-injection';
 
@@ -28,9 +27,10 @@ import {
   IUpdateWalletService,
 } from './service';
 
-@Controller('carteiras')
-@ApiTags('carteiras')
+@Controller('wallet')
+@ApiTags('Wallets')
 @UseGuards(JwtAuthGuard)
+@ApiBearerAuth()
 export class WalletController {
   constructor(
     @Inject(TYPES.CarteiraService)
@@ -41,7 +41,7 @@ export class WalletController {
     private readonly updateWalletService: IUpdateWalletService,
     @Inject(TYPES.DeleteWalletService)
     private readonly deleteWalletService: IDeleteWalletService,
-  ) {}
+  ) { }
 
   @Get()
   async getAll(@User() user: UserPayloadInterface): Promise<Carteiras[]> {
@@ -49,16 +49,16 @@ export class WalletController {
   }
 
   @Post()
-  async insert(@Body() wallet: CarteirasDTO): Promise<Carteiras> {
-    return this.insertWalletService.insertWallet(wallet);
+  async insert(@Body() wallet: CarteirasDTO, @User() user: UserPayloadInterface,): Promise<Carteiras> {
+    return this.insertWalletService.insertWallet({ ...wallet, userId: user.userId });
   }
 
-  @Delete('/:id')
+  @Delete(':id')
   async delete(@Param('id') id: number): Promise<{ deleted: boolean }> {
     return this.deleteWalletService.deleteWallet(id);
   }
 
-  @Put('/:id')
+  @Put(':id')
   async update(
     @Param('id') id: number,
     @Body() wallet: CarteirasDTO,

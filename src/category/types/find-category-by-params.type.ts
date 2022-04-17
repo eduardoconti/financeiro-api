@@ -1,3 +1,3 @@
-import { Categorias } from '@category/entity';
+import { Category } from '@category/entity';
 
-export type FindCategoryByParams = Partial<Categorias>;
+export type FindCategoryByParams = Partial<Category>;

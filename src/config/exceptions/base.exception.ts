@@ -2,9 +2,9 @@ import { HttpStatus } from '@nestjs/common';
 
 export class BaseException extends Error {
   constructor(
-    public readonly httpStatus: HttpStatus,
-    public readonly message: string,
-    public readonly reason?: string,
+    public readonly status: HttpStatus,
+    public readonly title: string,
+    public readonly detail?: string,
     public readonly error?: any,
     public readonly data?: any,
   ) {

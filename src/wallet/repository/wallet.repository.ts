@@ -36,10 +36,10 @@ export class WalletRepository implements IWalletRepository {
 
   async findById(id: number): Promise<Carteiras> {
     try {
-      const wallet = await this.repository.findOneOrFail(
-        { id },
-        { relations: ['user'] },
-      );
+      const wallet = await this.repository.findOneOrFail({
+        relations: ['user'],
+        where: { id: id },
+      });
 
       return wallet;
     } catch (error) {

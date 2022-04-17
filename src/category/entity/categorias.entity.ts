@@ -10,11 +10,11 @@ import {
 } from 'typeorm';
 
 import { Users } from '@users/entity';
+import { Despesas } from '@expense/entity';
 
-import { Despesas } from '@despesas/entity';
 
 @Entity({ schema: 'public', name: 'categorias' })
-export class Categorias {
+export class Category {
   @PrimaryGeneratedColumn()
   @ApiProperty()
   id?: number;
@@ -24,6 +24,7 @@ export class Categorias {
     nullable: false,
     name: 'user_id',
   })
+  @Exclude()
   userId!: string;
 
   @Column('text', { nullable: false })
@@ -49,7 +50,7 @@ export class Categorias {
     descricao,
     userId,
     id,
-  }: Omit<Categorias, 'id'> & { id?: number }): Categorias => {
-    return new Categorias(descricao, userId, id);
+  }: Omit<Category, 'id'> & { id?: number }): Category => {
+    return new Category(descricao, userId, id);
   };
 }

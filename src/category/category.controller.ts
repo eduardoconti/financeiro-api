@@ -10,12 +10,12 @@ import {
   Inject,
   ParseIntPipe,
 } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 
 import { JwtAuthGuard } from '@auth/guard/jwt-auth.guard';
 import { UserPayloadInterface } from '@auth/interfaces/user-payload.interface';
 
-import { User } from '@users/decorator/user.decorator';
+import { User } from '@users/decorator';
 
 import { TYPES } from '@config/dependency-injection';
 
@@ -24,7 +24,7 @@ import {
   InsertCategoryRequestDTO,
   UpdateCategoryDTO,
 } from './dto';
-import { Categorias } from './entity/categorias.entity';
+import { Category } from './entity/categorias.entity';
 import {
   IDeleteCategoryService,
   IGetCategoryService,
@@ -32,9 +32,10 @@ import {
   IUpdateCategoryService,
 } from './service';
 
-@Controller('categorias')
-@ApiTags('Category')
+@Controller('category')
+@ApiTags('Categories')
 @UseGuards(JwtAuthGuard)
+@ApiBearerAuth()
 export class CategoryController {
   constructor(
     @Inject(TYPES.GetCategoryService)
@@ -47,31 +48,47 @@ export class CategoryController {
     private readonly deleteCategoryService: IDeleteCategoryService,
   ) {}
 
+  @ApiOperation({
+    summary: 'Gel all categories.',
+    description: 'Return all categories by id from logged user.',
+  })
   @Get()
-  async getAll(@User() user: UserPayloadInterface): Promise<Categorias[]> {
+  async getAll(@User() user: UserPayloadInterface): Promise<Category[]> {
     return await this.getCategoryService.getAllCategories(user.userId);
   }
 
-  @Get('/:id')
+  @ApiOperation({
+    summary: 'Get category by id.',
+    description: 'Return categories by id and logged user id.',
+  })
+  @Get(':id')
   async getOne(
     @Param('id', ParseIntPipe) id: number,
     @User() user: UserPayloadInterface,
-  ): Promise<Categorias> {
+  ): Promise<Category> {
     return await this.getCategoryService.findCategoryUserById(id, user.userId);
   }
 
+  @ApiOperation({
+    summary: 'Insert category.',
+    description: 'Create an category for use in expense.',
+  })
   @Post()
   async insert(
     @Body() categoryRequest: InsertCategoryRequestDTO,
     @User() user: UserPayloadInterface,
-  ): Promise<Categorias> {
+  ): Promise<Category> {
     return this.insertCategoryService.insertCategory(
       categoryRequest,
       user.userId,
     );
   }
 
-  @Delete('/:id')
+  @ApiOperation({
+    summary: 'Delete category.',
+    description: 'Remove category by id.',
+  })
+  @Delete(':id')
   async delete(
     @Param('id', ParseIntPipe) id: number,
     @User() user: UserPayloadInterface,
@@ -79,12 +96,16 @@ export class CategoryController {
     return await this.deleteCategoryService.deleteCategory(id, user.userId);
   }
 
-  @Put('/:id')
+  @Put(':id')
+  @ApiOperation({
+    summary: 'Update category.',
+    description: 'Update category by id.',
+  })
   async update(
     @Param('id', ParseIntPipe) id: number,
     @Body() categoryRequest: UpdateCategoryDTO,
     @User() user: UserPayloadInterface,
-  ): Promise<Categorias> {
+  ): Promise<Category> {
     return this.updateCategoryService.update(id, user.userId, categoryRequest);
   }
 }

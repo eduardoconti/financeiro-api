@@ -1,6 +1,6 @@
 import { Injectable, Inject } from '@nestjs/common';
 
-import { Categorias } from '@category/entity';
+import { Category } from '@category/entity';
 import {
   CategoryNotFoundException,
   ForbiddenCategoryException,
@@ -18,7 +18,7 @@ export class GetCategoryService implements IGetCategoryService {
     private readonly categoriaRepository: ICategoryRepository,
   ) {}
 
-  async findById(id: number): Promise<Categorias> {
+  async findById(id: number): Promise<Category> {
     const category = await this.categoriaRepository.findById(id);
 
     if (!category) {
@@ -27,7 +27,7 @@ export class GetCategoryService implements IGetCategoryService {
     return category;
   }
 
-  async findCategoryUserById(id: number, userId: string): Promise<Categorias> {
+  async findCategoryUserById(id: number, userId: string): Promise<Category> {
     const category = await this.categoriaRepository.findById(id);
 
     if (!category) {
@@ -39,7 +39,7 @@ export class GetCategoryService implements IGetCategoryService {
     return category;
   }
 
-  async getAllCategories(userId: string): Promise<Categorias[]> {
+  async getAllCategories(userId: string): Promise<Category[]> {
     return await this.categoriaRepository.findAll(userId);
   }
 }

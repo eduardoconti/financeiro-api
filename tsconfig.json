@@ -15,19 +15,17 @@
     "strict": true,
     "paths": {
       "@app/*": ["src/app/*"],
-      "@users/*": ["src/users/*"],
+      "@users/*": ["src/user/*"],
       "@auth/*": ["src/auth/*"],
       "@wallet/*": ["src/wallet/*"],
       "@category/*": ["src/category/*"],
       "@config/*": ["src/config/*"],
       "@db/*": ["src/db/*"],
-      "@despesas/*": ["src/despesas/*"],
+      "@expense/*": ["src/expense/*"],
       "@graphic/*": ["src/graphic/*"],
-      "@receitas/*": ["src/receitas/*"],
+      "@earning/*": ["src/earning/*"],
       "@shared/*": ["src/shared/*"],
-      "@transference/*": ["src/transferencias/*"],
-    },
-    "forceConsistentCasingInFileNames": true
-  },
-  "exclude": ["jest.ts"]
+      "@transference/*": ["src/transference/*"],
+    }
+  }
 }
