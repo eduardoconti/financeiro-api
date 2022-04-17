@@ -8,13 +8,14 @@ import { IEarningRepository } from '@earning/repository';
 import { TYPES } from '@config/dependency-injection';
 
 import { IUpdateEarningService } from './update-earning.service.interface';
+import { DateHelper } from '@shared/helpers';
 
 @Injectable()
 export class UpdateEarningService implements IUpdateEarningService {
   constructor(
     @Inject(TYPES.EarningRepository)
     private earningRepository: IEarningRepository,
-  ) {}
+  ) { }
 
   async update(
     id: number,
@@ -28,7 +29,7 @@ export class UpdateEarningService implements IUpdateEarningService {
     if (!findEarning) {
       throw new EarningNotFoundException();
     }
-    return await this.earningRepository.update(id, earning);
+    return await this.earningRepository.update(id, { ...earning, updatedAt: DateHelper.dateNow() });
   }
 
   async updateFlagPayed(

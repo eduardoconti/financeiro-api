@@ -11,13 +11,14 @@ import { TransferenceNotFoundException } from '@transference/exceptions';
 import { ITransferenceRepository } from '@transference/repository';
 
 import { IUpdateTransferenceService } from './update-transference.service.interface';
+import { DateHelper } from '@shared/helpers';
 
 @Injectable()
 export class UpdateTransferenceService implements IUpdateTransferenceService {
   constructor(
     @Inject(TYPES.TransferenceRepository)
     private transferenceRepository: ITransferenceRepository,
-  ) {}
+  ) { }
 
   async update(
     id: number,
@@ -49,7 +50,7 @@ export class UpdateTransferenceService implements IUpdateTransferenceService {
     if (transference.pago !== patchData.pago) {
       await this.transferenceRepository.update(id, {
         ...patchData,
-        transferencia: patchData.pago ? new Date() : undefined,
+        transferencia: patchData.pago ? DateHelper.dateNow() : undefined,
       });
       transference.pago = patchData.pago;
     }

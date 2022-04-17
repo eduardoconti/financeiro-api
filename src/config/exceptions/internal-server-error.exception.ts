@@ -11,17 +11,17 @@ export class InternalServerErrorException extends HttpBaseException {
    * @example
    * `throw new InternalServerErrorException()`
    *
-   * @param message string to inform error message.
-   * @param reason string to inform error reason.
+   * @param title string to inform error title.
+   * @param detail string to inform error detail.
    * @param error error object.
    * @param data data that throw the error.
    */
   constructor(
-    message: string = HttpInternalMessages.INTERNAL_SERVER_ERROR,
-    reason?: string,
+    title: string = HttpInternalMessages.INTERNAL_SERVER_ERROR,
+    detail?: string,
     error?: any,
     data?: any,
   ) {
-    super(message, reason, HttpStatus.INTERNAL_SERVER_ERROR, error, data);
+    super(title, detail, HttpStatus.INTERNAL_SERVER_ERROR, error, data);
   }
 }

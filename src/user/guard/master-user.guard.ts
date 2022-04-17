@@ -6,6 +6,7 @@ import { UserPayloadInterface } from '@auth/interfaces';
 import { ERROR_MESSAGES } from '@users/constants';
 
 import { UnauthorizedException } from '@config/exceptions';
+import { UserProfile } from '@users/enums';
 
 @Injectable()
 export class MasterUserGuard implements CanActivate {
@@ -17,7 +18,7 @@ export class MasterUserGuard implements CanActivate {
   }
 
   async validateRequest(user: UserPayloadInterface) {
-    if (user?.userProfile !== 2) {
+    if (user?.userProfile !== UserProfile.MASTER) {
       throw new UnauthorizedException(
         undefined,
         ERROR_MESSAGES.NOT_IS_MASTER_USER,

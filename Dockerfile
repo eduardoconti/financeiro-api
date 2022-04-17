@@ -1,6 +1,6 @@
 ARG PORT=3000
 
-FROM node:14.15.0 As development
+FROM node:14.17.0 As development
 
 ENV NODE_ENV=development
 

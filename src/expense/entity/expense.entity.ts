@@ -1,4 +1,4 @@
-import { Exclude, Transform } from 'class-transformer';
+import { Exclude, Expose, Transform } from 'class-transformer';
 import {
   Entity,
   Column,
@@ -28,8 +28,11 @@ export class Despesas {
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   vencimento?: Date;
 
-  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
-  created_at?: Date;
+  @Column({ name: 'created_at', type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+  createdAt?: Date;
+
+  @Column({ name: 'updated_at', type: 'timestamp', nullable: true })
+  updatedAt?: Date;
 
   @Column({ type: 'timestamp', nullable: true })
   pagamento?: Date;
@@ -85,7 +88,8 @@ export class Despesas {
     vencimento?: Date,
     pagamento?: Date,
     pago?: boolean,
-    created_at?: Date,
+    createdAt?: Date,
+    updatedAt?: Date,
 
   ) {
     this.userId = userId;
@@ -96,7 +100,8 @@ export class Despesas {
     this.vencimento = vencimento;
     this.pagamento = pagamento;
     this.pago = pago;
-    this.created_at = created_at;
+    this.createdAt = createdAt;
+    this.updatedAt = updatedAt;
   }
 
   static build = ({
@@ -108,7 +113,8 @@ export class Despesas {
     vencimento,
     pagamento,
     pago,
-    created_at
+    createdAt,
+    updatedAt
   }: Despesas): Despesas => {
     return new Despesas(
       userId,
@@ -119,7 +125,8 @@ export class Despesas {
       vencimento,
       pagamento,
       pago,
-      created_at
+      createdAt,
+      updatedAt
     );
   };
 }

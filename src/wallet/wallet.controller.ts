@@ -41,7 +41,7 @@ export class WalletController {
     private readonly updateWalletService: IUpdateWalletService,
     @Inject(TYPES.DeleteWalletService)
     private readonly deleteWalletService: IDeleteWalletService,
-  ) {}
+  ) { }
 
   @Get()
   async getAll(@User() user: UserPayloadInterface): Promise<Carteiras[]> {
@@ -49,8 +49,8 @@ export class WalletController {
   }
 
   @Post()
-  async insert(@Body() wallet: CarteirasDTO): Promise<Carteiras> {
-    return this.insertWalletService.insertWallet(wallet);
+  async insert(@Body() wallet: CarteirasDTO, @User() user: UserPayloadInterface,): Promise<Carteiras> {
+    return this.insertWalletService.insertWallet({ ...wallet, userId: user.userId });
   }
 
   @Delete(':id')

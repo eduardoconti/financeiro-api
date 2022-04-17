@@ -5,7 +5,6 @@ import {
 } from '@expense/dto';
 import { Despesas } from '@expense/entity';
 import { ExpenseGroupMonth, FindExpenseByParams } from '@expense/types';
-
 export interface IGetExpenseService {
   getAllExpensesByUser(
     userId: string,

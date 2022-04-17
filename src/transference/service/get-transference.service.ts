@@ -21,7 +21,7 @@ import {
   TransferenceGroupMonth,
 } from '@transference/types';
 
-import { SqlFileManager } from '@shared/helpers';
+import { DateHelper, SqlFileManager } from '@shared/helpers';
 
 import { IGetTransferenceService } from './get-transference.service.interface';
 
@@ -29,7 +29,7 @@ export class GetTransferenceService implements IGetTransferenceService {
   constructor(
     @Inject(TYPES.TransferenceRepository)
     private earningRepository: ITransferenceRepository,
-  ) {}
+  ) { }
   async getAllTransferencesByUser(
     userId: string,
     start?: string,
@@ -128,11 +128,11 @@ export class GetTransferenceService implements IGetTransferenceService {
       return;
     }
     if (start && end) {
-      return Between(new Date(start), new Date(end));
+      return Between(DateHelper.date(start), DateHelper.date(end));
     } else if (start) {
-      return MoreThanOrEqual(new Date(start));
+      return MoreThanOrEqual(DateHelper.date(start));
     } else if (end) {
-      return LessThanOrEqual(new Date(end));
+      return LessThanOrEqual(DateHelper.date(end));
     } else {
       return;
     }

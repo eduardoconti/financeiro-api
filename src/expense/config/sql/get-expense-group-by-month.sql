@@ -46,7 +46,11 @@ SELECT
                 'carteira',
                 json_build_object('id', cr.id, 'descricao', cr.descricao),
                 'categoria',
-                json_build_object('id', ct.id, 'descricao', ct.descricao)
+                json_build_object('id', ct.id, 'descricao', ct.descricao),
+                'createdAt',
+                d.created_at,
+                'updatedAt',
+                d.updated_at
             )
         )
     ) as data

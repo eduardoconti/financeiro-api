@@ -18,7 +18,7 @@ import { EarningGroupMonth, FindEarningByParams } from '@earning/types';
 
 import { TYPES } from '@config/dependency-injection';
 
-import { SqlFileManager } from '@shared/helpers';
+import { DateHelper, SqlFileManager } from '@shared/helpers';
 
 import { IGetEarningService } from './get-earning.service.interface';
 export class GetEarningService implements IGetEarningService {
@@ -123,13 +123,13 @@ export class GetEarningService implements IGetEarningService {
       return;
     }
     if (start && end) {
-      return Between(new Date(start), new Date(end));
+      return Between(DateHelper.date(start), DateHelper.date(end));
     }
     if (start) {
-      return MoreThanOrEqual(new Date(start));
+      return MoreThanOrEqual(DateHelper.date(start));
     }
     if (end) {
-      return LessThanOrEqual(new Date(end));
+      return LessThanOrEqual(DateHelper.date(end));
     }
   }
 

@@ -28,8 +28,11 @@ export class Earning {
   @Column('boolean', { default: false })
   pago?: boolean;
 
-  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
-  created_at?: Date;
+  @Column({ name: 'created_at', type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+  createdAt?: Date;
+
+  @Column({ name: 'updated_at', type: 'timestamp', nullable: true })
+  updatedAt?: Date;
 
   @Exclude()
   @Column({
@@ -62,7 +65,8 @@ export class Earning {
     carteiraId: number,
     pagamento?: Date,
     pago?: boolean,
-    created_at?: Date,
+    createdAt?: Date,
+    updatedAt?: Date,
   ) {
     this.userId = userId;
     this.descricao = descricao;
@@ -70,7 +74,8 @@ export class Earning {
     this.carteiraId = carteiraId;
     this.pagamento = pagamento;
     this.pago = pago;
-    this.created_at = created_at;
+    this.createdAt = createdAt;
+    this.updatedAt = updatedAt;
   }
   static build = ({
     userId,
@@ -79,8 +84,9 @@ export class Earning {
     carteiraId,
     pagamento,
     pago,
-    created_at
+    createdAt,
+    updatedAt
   }: Earning): Earning => {
-    return new Earning(userId, descricao, valor, carteiraId, pagamento, pago, created_at);
+    return new Earning(userId, descricao, valor, carteiraId, pagamento, pago, createdAt, updatedAt);
   };
 }

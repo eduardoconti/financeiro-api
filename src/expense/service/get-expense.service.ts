@@ -1,10 +1,4 @@
 import { Inject } from '@nestjs/common';
-import {
-  Between,
-  FindOperator,
-  LessThanOrEqual,
-  MoreThanOrEqual,
-} from 'typeorm';
 
 import { TYPES } from '@config/dependency-injection';
 
@@ -19,7 +13,7 @@ import { ExpenseNotFoundException } from '@expense/exceptions';
 import { IExpenseRepository } from '@expense/repository';
 import { ExpenseGroupMonth, FindExpenseByParams } from '@expense/types';
 
-import { SqlFileManager } from '@shared/helpers';
+import { OrmHelper, SqlFileManager } from '@shared/helpers';
 
 import { IGetExpenseService } from './get-expense.service.interface';
 
@@ -27,7 +21,7 @@ export class GetExpenseService implements IGetExpenseService {
   constructor(
     @Inject(TYPES.ExpenseRepository)
     private expenseRepository: IExpenseRepository,
-  ) {}
+  ) { }
   async getAllExpensesByUser(
     userId: string,
     start?: string,
@@ -62,7 +56,7 @@ export class GetExpenseService implements IGetExpenseService {
         ...atributes,
       });
     });
-
+    
     return monthExpenses;
   }
 
@@ -82,13 +76,7 @@ export class GetExpenseService implements IGetExpenseService {
         [userId, start, end, pago],
       );
     return despesas.map((element) => {
-      const { valor, descricao, id }: GetExpenseAmountGroupByWalletResponse =
-        element;
-      return GetExpenseAmountGroupByWalletResponse.build({
-        valor,
-        descricao,
-        id,
-      });
+      return GetExpenseAmountGroupByWalletResponse.build(element);
     });
   }
 
@@ -109,7 +97,7 @@ export class GetExpenseService implements IGetExpenseService {
         [userId, start, end, pago],
       );
     return despesas.map((element) => {
-      return GetExpenseAmountGroupByCategoryResponse.build({ ...element });
+      return GetExpenseAmountGroupByCategoryResponse.build(element);
     });
   }
 
@@ -123,17 +111,13 @@ export class GetExpenseService implements IGetExpenseService {
       'get-expense-total-value.sql',
     );
 
-    const [{ total, totalOpen, totalPayed }] =
+    const [{ ...data }] =
       await this.expenseRepository.query<GetTotalExpenseResponseDTO>(
         sqlString,
         [userId, start, end],
       );
 
-    return GetTotalExpenseResponseDTO.build({
-      total,
-      totalOpen,
-      totalPayed,
-    });
+    return GetTotalExpenseResponseDTO.build(data);
   }
 
   async findOne(params: FindExpenseByParams): Promise<Despesas> {
@@ -142,24 +126,6 @@ export class GetExpenseService implements IGetExpenseService {
       throw new ExpenseNotFoundException();
     }
     return expense;
-  }
-
-  private buildDateWhere(
-    start?: string,
-    end?: string,
-  ): FindOperator<Date> | undefined {
-    if (!start && !end) {
-      return;
-    }
-    if (start && end) {
-      return Between(new Date(start), new Date(end));
-    }
-    if (start) {
-      return MoreThanOrEqual(new Date(start));
-    }
-    if (end) {
-      return LessThanOrEqual(new Date(end));
-    }
   }
 
   private buildParams(
@@ -174,7 +140,7 @@ export class GetExpenseService implements IGetExpenseService {
     }
 
     if (start || end) {
-      params.vencimento = this.buildDateWhere(start, end);
+      params.vencimento = OrmHelper.buildDateWhere(start, end);
     }
 
     params.userId = userId;

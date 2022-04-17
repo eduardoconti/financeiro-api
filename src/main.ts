@@ -8,9 +8,7 @@ import * as helmet from 'helmet';
 import { BaseException } from '@config/exceptions';
 import { AppModule } from '@app/app.module';
 import { HttpExceptionFilter } from '@shared/exceptions';
-import { ValidationPipe } from '@shared/pipes';
-
-
+import { TransformInterceptor, ValidationPipe } from '@shared/pipes';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, { cors: true });
@@ -18,7 +16,7 @@ async function bootstrap() {
   //app.use(helmet());
   app.useGlobalFilters(new HttpExceptionFilter());
   app.useGlobalPipes(new ValidationPipe());
-  app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
+  app.useGlobalInterceptors(new TransformInterceptor());
 
   const options = new DocumentBuilder()
     .setTitle(process.env.API_NAME as string)
@@ -53,8 +51,8 @@ async function bootstrap() {
 
       if (exception instanceof BaseException) {
         event.extra = {
-          message: exception.message,
-          reason: exception.reason,
+          title: exception.title,
+          detail: exception.detail,
           error: exception.error,
           data: exception.data,
         };

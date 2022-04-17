@@ -1,7 +1,7 @@
 import { UnauthorizedException } from '@config/exceptions';
 
 export class PasswordHashCompareException extends UnauthorizedException {
-  constructor(reason: string) {
-    super(undefined, reason);
+  constructor(detail: string) {
+    super(undefined, detail);
   }
 }

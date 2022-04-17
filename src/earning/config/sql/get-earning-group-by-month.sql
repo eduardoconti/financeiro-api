@@ -41,6 +41,10 @@ SELECT
                 r.pagamento,
                 'pago',
                 r.pago,
+                'createdAt',
+                r.created_at,
+                'updatedAt',
+                r.updated_at,
                 'carteira',
                 json_build_object('id', cr.id, 'descricao', cr.descricao)
             )

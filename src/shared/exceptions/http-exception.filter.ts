@@ -10,7 +10,6 @@ import {
 } from '@nestjs/common';
 import * as Sentry from '@sentry/node';
 import { QueryFailedError } from 'typeorm';
-import { InjectSentry, SentryService } from '@ntegral/nestjs-sentry';
 
 import { ErrorResponseDTO } from '@config/dto';
 import {
@@ -18,6 +17,7 @@ import {
   HttpBaseException,
   InternalServerErrorException,
   MethodNotAllowedException,
+  NotFoundException,
   NotImplementedException,
 } from '@config/exceptions';
 @Catch()
@@ -26,11 +26,11 @@ export class HttpExceptionFilter implements ExceptionFilter {
   catch(exception: unknown, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse();
-
+    console.log(exception);
     Sentry.captureException(exception);
 
     if (exception instanceof CommonNotFoundException) {
-      const notFoundException = new NotImplementedException();
+      const notFoundException = new NotFoundException();
       return response
         .status(notFoundException.status)
         .json(notFoundException.getResponse());
@@ -56,14 +56,14 @@ export class HttpExceptionFilter implements ExceptionFilter {
     if (exception instanceof HttpBaseException) {
       const errorResponse = exception.getResponse();
       const status = exception.status;
-      const message = exception.reason;
+      const title = exception.detail;
       if (exception?.error?.constructor === QueryFailedError) {
         return response
           .status(status)
           .json(
             new ErrorResponseDTO(
-              message as string,
-              exception.error.driverError.detail,
+              title as string,
+              exception?.error?.driverError?.detail ?? exception?.detail,
             ),
           );
       } else {

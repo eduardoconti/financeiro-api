@@ -11,17 +11,17 @@ export class UnauthorizedException extends HttpBaseException {
    * @example
    * `throw new UnauthorizedException()`
    *
-   * @param message string to inform error message.
-   * @param reason string to inform error reason.
+   * @param title string to inform error title.
+   * @param detail string to inform error detail.
    * @param error error object.
    * @param data data that throw the error.
    */
   constructor(
-    message: string = HttpInternalMessages.UNAUTHORIZED,
-    reason?: string,
+    title: string = HttpInternalMessages.UNAUTHORIZED,
+    detail?: string,
     error?: any,
     data?: any,
   ) {
-    super(message, reason, HttpStatus.UNAUTHORIZED, error, data);
+    super(title, detail, HttpStatus.UNAUTHORIZED, error, data);
   }
 }

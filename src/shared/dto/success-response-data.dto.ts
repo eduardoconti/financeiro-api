@@ -8,11 +8,11 @@ export class SuccessResponseData<D> extends ResponseDataDto {
 
   constructor(
     data: D,
-    statusCode: HttpStatus = HttpStatus.OK,
+    status: HttpStatus = HttpStatus.OK,
     message?: string,
     internalMessage: string = HttpInternalMessages.OK,
   ) {
-    super(statusCode, internalMessage, message);
+    super(status, internalMessage, message);
     this.data = data;
   }
 }

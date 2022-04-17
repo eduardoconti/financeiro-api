@@ -8,6 +8,7 @@ import {
 } from 'class-validator';
 
 import { CONSTRAINTS_MESSAGES } from '@shared/constants';
+import { DateHelper } from '@shared/helpers';
 
 export class TransferenciasDTO {
   @ApiProperty()
@@ -20,7 +21,7 @@ export class TransferenciasDTO {
   @IsNumber({}, { message: CONSTRAINTS_MESSAGES.IS_NUMBER })
   carteiraDestinoId!: number;
 
-  @ApiPropertyOptional({ default: new Date() })
+  @ApiPropertyOptional({ default: DateHelper.dateNow() })
   @IsOptional()
   @IsDateString({}, { message: CONSTRAINTS_MESSAGES.IS_DATE })
   transferencia?: Date;

@@ -4,17 +4,17 @@ import { ResponseDTO } from './response.dto';
 import { ValidationErrorDTO } from './validation-error.dto';
 
 export class ErrorResponseDTO extends ResponseDTO {
-  public readonly reason?: string;
-  public readonly validationErrors?: ValidationErrorDTO[];
+  public readonly detail?: string;
+  public readonly invalidFields?: ValidationErrorDTO[];
 
   constructor(
-    message: string,
-    reason?: string,
+    title: string,
+    detail?: string,
     status: HttpStatus = HttpStatus.INTERNAL_SERVER_ERROR,
-    validationErrors?: ValidationErrorDTO[],
+    invalidFields?: ValidationErrorDTO[],
   ) {
-    super(status, message);
-    this.reason = reason;
-    this.validationErrors = validationErrors;
+    super(status, title);
+    this.detail = detail;
+    this.invalidFields = invalidFields;
   }
 }

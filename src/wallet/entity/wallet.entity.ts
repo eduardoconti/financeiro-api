@@ -19,7 +19,7 @@ import { Despesas } from '@expense/entity/expense.entity';
 export class Carteiras {
   @PrimaryGeneratedColumn()
   @ApiProperty()
-  id!: number;
+  id?: number;
 
   @Column('text', { nullable: false })
   descricao!: string;
@@ -35,29 +35,29 @@ export class Carteiras {
   @OneToMany(() => Despesas, (despesas) => despesas.carteira, {
     nullable: false,
   })
-  carteira!: Despesas[];
+  carteira?: Despesas[];
 
   @OneToMany(() => Earning, (receitas) => receitas.carteira, {
     nullable: false,
   })
-  carteiraReceita!: Earning[];
+  carteiraReceita?: Earning[];
 
   @OneToMany(
     () => Transferencias,
     (transferencia) => transferencia.carteiraOrigem,
     { nullable: false },
   )
-  transferenciaOrigem!: Transferencias[];
+  transferenciaOrigem?: Transferencias[];
 
   @OneToMany(
     () => Transferencias,
     (transferencia) => transferencia.carteiraDestino,
     { nullable: false },
   )
-  transferenciaDestino!: Transferencias[];
+  transferenciaDestino?: Transferencias[];
 
   @ManyToOne(() => Users, (users) => users.id, { nullable: false })
   @JoinColumn({ name: 'user_id', referencedColumnName: 'id' })
   @Exclude()
-  user!: Users;
+  user?: Users;
 }

@@ -11,17 +11,17 @@ export class ConflictException extends HttpBaseException {
    * @example
    * `throw new ConflictException()`
    *
-   * @param message string to inform error message.
-   * @param reason string to inform error reason.
+   * @param title string to inform error title.
+   * @param detail string to inform error detail.
    * @param error error object.
    * @param data data that throw the error.
    */
   constructor(
-    message: string = HttpInternalMessages.CONFLICT,
-    reason?: string,
+    title: string = HttpInternalMessages.CONFLICT,
+    detail?: string,
     error?: any,
     data?: any,
   ) {
-    super(message, reason, HttpStatus.CONFLICT, error, data);
+    super(title, detail, HttpStatus.CONFLICT, error, data);
   }
 }

@@ -1,4 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { DateHelper } from '@shared/helpers';
 import {
   IsBoolean,
   IsDateString,
@@ -13,6 +14,7 @@ import { CONSTRAINTS_LIMITS, CONSTRAINTS_MESSAGES } from 'src/shared/constants';
 export class DespesasDTO {
   @ApiProperty({
     description: 'Descrição da despesa',
+    example: 'Mercado',
     minLength: CONSTRAINTS_LIMITS.DESCRICAO.min,
     maxLength: CONSTRAINTS_LIMITS.DESCRICAO.max,
   })
@@ -23,24 +25,24 @@ export class DespesasDTO {
   @IsNotEmpty({ message: CONSTRAINTS_MESSAGES.IS_NOT_EMPTY })
   descricao!: string;
 
-  @ApiProperty({ description: 'Id da categoria' })
+  @ApiProperty({ description: 'Id da categoria',example: 1 })
   @IsNotEmpty({ message: CONSTRAINTS_MESSAGES.IS_NOT_EMPTY })
-  //@IsNumber({}, { message: CONSTRAINTS_MESSAGES.IS_NUMBER })
+  @IsNumber({}, { message: CONSTRAINTS_MESSAGES.IS_NUMBER })
   categoriaId!: number;
 
-  @ApiProperty({ description: 'Id da carteira' })
+  @ApiProperty({ description: 'Id da carteira', example: 1 })
   @IsNotEmpty({ message: CONSTRAINTS_MESSAGES.IS_NOT_EMPTY })
-  //@IsNumber({}, { message: CONSTRAINTS_MESSAGES.IS_NUMBER })
+  @IsNumber({}, { message: CONSTRAINTS_MESSAGES.IS_NUMBER })
   carteiraId!: number;
 
-  @ApiProperty({ description: 'Valor da despesa', default: 0 })
+  @ApiProperty({ description: 'Valor da despesa', default: 10 })
   @IsNumber({}, { message: CONSTRAINTS_MESSAGES.IS_NUMBER })
   @IsNotEmpty({ message: CONSTRAINTS_MESSAGES.IS_NOT_EMPTY })
   valor!: number;
 
   @ApiPropertyOptional({
     description: 'Data de vencimento',
-    default: new Date(),
+    default: DateHelper.dateNow(),
   })
   @IsDateString(undefined, { message: CONSTRAINTS_MESSAGES.IS_DATE })
   @IsOptional()
@@ -48,7 +50,7 @@ export class DespesasDTO {
 
   @ApiPropertyOptional({
     description: 'Data de pagamento',
-    default: new Date(),
+    default: DateHelper.dateNow(),
   })
   @IsDateString(undefined, { message: CONSTRAINTS_MESSAGES.IS_DATE })
   @IsOptional()
@@ -57,4 +59,5 @@ export class DespesasDTO {
   @ApiPropertyOptional({ description: 'Flag Pago', default: false })
   @IsBoolean({ message: CONSTRAINTS_MESSAGES.IS_BOOLEAN })
   pago?: boolean;
+
 }

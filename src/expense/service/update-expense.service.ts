@@ -8,13 +8,14 @@ import { ExpenseNotFoundException } from '@expense/exceptions';
 import { IExpenseRepository } from '@expense/repository';
 
 import { IUpdateExpenseService } from './update-expense.service.interface';
+import { DateHelper } from '@shared/helpers';
 
 @Injectable()
 export class UpdateExpenseService implements IUpdateExpenseService {
   constructor(
     @Inject(TYPES.ExpenseRepository)
     private expenseRepository: IExpenseRepository,
-  ) {}
+  ) { }
 
   async update(
     id: number,
@@ -28,7 +29,8 @@ export class UpdateExpenseService implements IUpdateExpenseService {
     if (!expense) {
       throw new ExpenseNotFoundException();
     }
-    return await this.expenseRepository.update(id, despesa);
+
+    return await this.expenseRepository.update(id, { ...despesa, updatedAt: DateHelper.dateNow() });
   }
 
   async updateFlagPayed(
@@ -46,7 +48,7 @@ export class UpdateExpenseService implements IUpdateExpenseService {
     if (expense.pago !== patchData.pago) {
       await this.expenseRepository.update(id, {
         ...patchData,
-        pagamento: patchData.pago ? new Date() : undefined,
+        pagamento: patchData.pago ? DateHelper.dateNow() : undefined,
       });
       expense.pago = patchData.pago;
     }

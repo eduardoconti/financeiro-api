@@ -10,6 +10,7 @@ import {
 } from 'class-validator';
 
 import { CONSTRAINTS_LIMITS, CONSTRAINTS_MESSAGES } from '@shared/constants';
+import { DateHelper } from '@shared/helpers';
 
 export class ReceitasDTO {
   @ApiProperty({
@@ -38,7 +39,7 @@ export class ReceitasDTO {
 
   @ApiPropertyOptional({
     description: 'Data de vencimento',
-    default: new Date(),
+    default: DateHelper.dateNow(),
   })
   @IsDateString({}, { message: CONSTRAINTS_MESSAGES.IS_DATE })
   @IsOptional()
