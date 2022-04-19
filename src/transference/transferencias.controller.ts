@@ -10,6 +10,7 @@ import {
   Post,
   UseGuards,
   Inject,
+  HttpStatus,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
@@ -35,6 +36,7 @@ import {
   IInsertTransferenceService,
   IUpdateTransferenceService,
 } from './service';
+import { SUCCESS_MESSAGES } from './constants';
 
 @Controller('transference')
 @ApiTags('Transference')
@@ -50,7 +52,7 @@ export class TransferenciasController {
     private readonly updateTransferenceService: IUpdateTransferenceService,
     @Inject(TYPES.DeleteTransferenceService)
     private readonly deleteTransferenceService: IDeleteTransferenceService,
-  ) {}
+  ) { }
 
   @Get()
   async retornaTodasTransferencias(
@@ -63,7 +65,7 @@ export class TransferenciasController {
       params.end,
       params.pago,
     );
-    return new SuccessResponseData<Transferencias[]>(data);
+    return new SuccessResponseData<Transferencias[]>(data, HttpStatus.OK, SUCCESS_MESSAGES.GET_SUCCESS);
   }
 
   @Get(':id')
@@ -75,7 +77,7 @@ export class TransferenciasController {
       id,
       userId: user.userId,
     });
-    return new SuccessResponseData<Transferencias>(data);
+    return new SuccessResponseData<Transferencias>(data, HttpStatus.OK, SUCCESS_MESSAGES.GET_SUCCESS);
   }
 
   @Get('values/origin')
@@ -91,7 +93,7 @@ export class TransferenciasController {
         params.end,
         params.pago,
       );
-    return new SuccessResponseData(data);
+    return new SuccessResponseData(data, HttpStatus.OK, SUCCESS_MESSAGES.GET_SUCCESS);
   }
 
   @Get('values/destiny')
@@ -107,7 +109,7 @@ export class TransferenciasController {
         params.end,
         params.pago,
       );
-    return new SuccessResponseData(data);
+    return new SuccessResponseData(data, HttpStatus.OK, SUCCESS_MESSAGES.GET_SUCCESS);
   }
 
   @Patch('flag/:id')
@@ -121,7 +123,7 @@ export class TransferenciasController {
       user.userId,
       transference,
     );
-    return new SuccessResponseData<Transferencias>(data);
+    return new SuccessResponseData<Transferencias>(data, HttpStatus.OK, SUCCESS_MESSAGES.TRANSFERENCE_UPDATE_SUCCESS);
   }
 
   @Put(':id')
@@ -135,7 +137,7 @@ export class TransferenciasController {
       user.userId,
       transference,
     );
-    return new SuccessResponseData<Transferencias>(data);
+    return new SuccessResponseData<Transferencias>(data, HttpStatus.OK, SUCCESS_MESSAGES.TRANSFERENCE_UPDATE_SUCCESS);
   }
 
   @Delete(':id')
@@ -144,7 +146,7 @@ export class TransferenciasController {
     @User() user: UserPayloadInterface,
   ): Promise<SuccessResponseData<TransferenceDeleteResponseDTO>> {
     const data = await this.deleteTransferenceService.delete(id, user.userId);
-    return new SuccessResponseData<TransferenceDeleteResponseDTO>(data);
+    return new SuccessResponseData<TransferenceDeleteResponseDTO>(data, HttpStatus.OK, SUCCESS_MESSAGES.TRANSFERENCE_DELETE_SUCCESS);
   }
 
   @Post()
@@ -156,6 +158,6 @@ export class TransferenciasController {
       transference,
       user.userId,
     );
-    return new SuccessResponseData<Transferencias>(data);
+    return new SuccessResponseData<Transferencias>(data, HttpStatus.OK, SUCCESS_MESSAGES.TRANSFERENCE_CREATE_SUCCESS);
   }
 }
