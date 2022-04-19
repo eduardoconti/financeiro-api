@@ -21,7 +21,7 @@ export class GetExpenseService implements IGetExpenseService {
   constructor(
     @Inject(TYPES.ExpenseRepository)
     private expenseRepository: IExpenseRepository,
-  ) { }
+  ) {}
   async getAllExpensesByUser(
     userId: string,
     start?: string,
@@ -56,7 +56,7 @@ export class GetExpenseService implements IGetExpenseService {
         ...atributes,
       });
     });
-    
+
     return monthExpenses;
   }
 

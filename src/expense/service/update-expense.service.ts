@@ -7,15 +7,16 @@ import { Despesas } from '@expense/entity';
 import { ExpenseNotFoundException } from '@expense/exceptions';
 import { IExpenseRepository } from '@expense/repository';
 
-import { IUpdateExpenseService } from './update-expense.service.interface';
 import { DateHelper } from '@shared/helpers';
+
+import { IUpdateExpenseService } from './update-expense.service.interface';
 
 @Injectable()
 export class UpdateExpenseService implements IUpdateExpenseService {
   constructor(
     @Inject(TYPES.ExpenseRepository)
     private expenseRepository: IExpenseRepository,
-  ) { }
+  ) {}
 
   async update(
     id: number,
@@ -30,7 +31,10 @@ export class UpdateExpenseService implements IUpdateExpenseService {
       throw new ExpenseNotFoundException();
     }
 
-    return await this.expenseRepository.update(id, { ...despesa, updatedAt: DateHelper.dateNow() });
+    return await this.expenseRepository.update(id, {
+      ...despesa,
+      updatedAt: DateHelper.dateNow(),
+    });
   }
 
   async updateFlagPayed(

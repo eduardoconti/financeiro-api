@@ -10,8 +10,8 @@ import {
 } from 'typeorm';
 
 import { Users } from '@users/entity';
-import { Despesas } from '@expense/entity';
 
+import { Despesas } from '@expense/entity';
 
 @Entity({ schema: 'public', name: 'categorias' })
 export class Category {

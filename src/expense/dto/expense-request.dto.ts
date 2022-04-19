@@ -1,5 +1,4 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { DateHelper } from '@shared/helpers';
 import {
   IsBoolean,
   IsDateString,
@@ -10,6 +9,8 @@ import {
   Length,
 } from 'class-validator';
 import { CONSTRAINTS_LIMITS, CONSTRAINTS_MESSAGES } from 'src/shared/constants';
+
+import { DateHelper } from '@shared/helpers';
 
 export class DespesasDTO {
   @ApiProperty({
@@ -25,7 +26,7 @@ export class DespesasDTO {
   @IsNotEmpty({ message: CONSTRAINTS_MESSAGES.IS_NOT_EMPTY })
   descricao!: string;
 
-  @ApiProperty({ description: 'Id da categoria',example: 1 })
+  @ApiProperty({ description: 'Id da categoria', example: 1 })
   @IsNotEmpty({ message: CONSTRAINTS_MESSAGES.IS_NOT_EMPTY })
   @IsNumber({}, { message: CONSTRAINTS_MESSAGES.IS_NUMBER })
   categoriaId!: number;
@@ -59,5 +60,4 @@ export class DespesasDTO {
   @ApiPropertyOptional({ description: 'Flag Pago', default: false })
   @IsBoolean({ message: CONSTRAINTS_MESSAGES.IS_BOOLEAN })
   pago?: boolean;
-
 }

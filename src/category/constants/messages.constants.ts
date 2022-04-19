@@ -13,4 +13,5 @@ export const SUCCESS_MESSAGES = {
   GET_SUCCESS: 'Resposta retornada com sucesso.',
   CATEGORY_CREATE_SUCCESS: 'Categoria criada com sucesso!',
   CATEGORY_UPDATE_SUCCESS: 'Categoria atualizada com sucesso!',
+  CATEGORY_DELETE_SUCCESS: 'Categoria excluída com sucesso!',
 };

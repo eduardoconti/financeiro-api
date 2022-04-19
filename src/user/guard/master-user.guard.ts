@@ -4,9 +4,9 @@ import { Observable } from 'rxjs';
 import { UserPayloadInterface } from '@auth/interfaces';
 
 import { ERROR_MESSAGES } from '@users/constants';
+import { UserProfile } from '@users/enums';
 
 import { UnauthorizedException } from '@config/exceptions';
-import { UserProfile } from '@users/enums';
 
 @Injectable()
 export class MasterUserGuard implements CanActivate {

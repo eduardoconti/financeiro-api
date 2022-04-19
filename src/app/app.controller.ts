@@ -22,6 +22,6 @@ export class AppController {
     description: 'Get Health API information',
   })
   getHello(): SuccessResponseData<HomeDTO> {
-    return new SuccessResponseData(this.appService.getHello());
+    return new SuccessResponseData<HomeDTO>(this.appService.getHello());
   }
 }

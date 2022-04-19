@@ -1,4 +1,4 @@
 export enum UserProfile {
-    MASTER = 2,
-    USER = 1
+  MASTER = 2,
+  USER = 1,
 }

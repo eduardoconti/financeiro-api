@@ -6,7 +6,6 @@ import {
   NotFoundException as CommonNotFoundException,
   BadRequestException as CommonBadRequestException,
   HttpStatus,
-  Injectable,
 } from '@nestjs/common';
 import * as Sentry from '@sentry/node';
 import { QueryFailedError } from 'typeorm';
@@ -18,11 +17,9 @@ import {
   InternalServerErrorException,
   MethodNotAllowedException,
   NotFoundException,
-  NotImplementedException,
 } from '@config/exceptions';
 @Catch()
 export class HttpExceptionFilter implements ExceptionFilter {
-
   catch(exception: unknown, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse();

@@ -29,12 +29,7 @@ export class HttpBaseException extends BaseException {
         error,
       ]);
     } else if (Array.isArray(error) && error[0] instanceof ValidationErrorDTO) {
-      return new ErrorResponseDTO(
-        this.title,
-        this.detail,
-        this.status,
-        error,
-      );
+      return new ErrorResponseDTO(this.title, this.detail, this.status, error);
     }
 
     return new ErrorResponseDTO(this.title, this.detail, this.status);

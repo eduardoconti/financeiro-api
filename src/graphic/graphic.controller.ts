@@ -1,4 +1,4 @@
-import { Controller, Get, Inject, UseGuards } from '@nestjs/common';
+import { Controller, Get, HttpStatus, Inject, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
 import { JwtAuthGuard } from '@auth/guard';
@@ -24,8 +24,10 @@ export class GraphicController {
   ) {}
   @Get('general')
   async getGeneralGraphicData(@User() user: UserPayloadInterface) {
+    const data = await this.graphicService.generalGraphic(user.userId);
     return new SuccessResponseData<GeneralGraphicResponseDTO>(
-      await this.graphicService.generalGraphic(user.userId),
+      data,
+      HttpStatus.OK,
     );
   }
 }

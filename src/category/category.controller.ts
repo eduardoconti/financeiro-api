@@ -9,6 +9,7 @@ import {
   UseGuards,
   Inject,
   ParseIntPipe,
+  HttpStatus,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 
@@ -19,6 +20,9 @@ import { User } from '@users/decorator';
 
 import { TYPES } from '@config/dependency-injection';
 
+import { SuccessResponseData } from '@shared/dto';
+
+import { SUCCESS_MESSAGES } from './constants';
 import {
   CategoryDeleteResponseDTO,
   InsertCategoryRequestDTO,
@@ -65,8 +69,16 @@ export class CategoryController {
   async getOne(
     @Param('id', ParseIntPipe) id: number,
     @User() user: UserPayloadInterface,
-  ): Promise<Category> {
-    return await this.getCategoryService.findCategoryUserById(id, user.userId);
+  ): Promise<SuccessResponseData<Category>> {
+    const data = await this.getCategoryService.findCategoryUserById(
+      id,
+      user.userId,
+    );
+    return new SuccessResponseData(
+      data,
+      HttpStatus.OK,
+      SUCCESS_MESSAGES.GET_SUCCESS,
+    );
   }
 
   @ApiOperation({
@@ -77,10 +89,15 @@ export class CategoryController {
   async insert(
     @Body() categoryRequest: InsertCategoryRequestDTO,
     @User() user: UserPayloadInterface,
-  ): Promise<Category> {
-    return this.insertCategoryService.insertCategory(
+  ): Promise<SuccessResponseData<Category>> {
+    const data = await this.insertCategoryService.insertCategory(
       categoryRequest,
       user.userId,
+    );
+    return new SuccessResponseData(
+      data,
+      HttpStatus.CREATED,
+      SUCCESS_MESSAGES.CATEGORY_CREATE_SUCCESS,
     );
   }
 
@@ -92,8 +109,16 @@ export class CategoryController {
   async delete(
     @Param('id', ParseIntPipe) id: number,
     @User() user: UserPayloadInterface,
-  ): Promise<CategoryDeleteResponseDTO> {
-    return await this.deleteCategoryService.deleteCategory(id, user.userId);
+  ): Promise<SuccessResponseData<CategoryDeleteResponseDTO>> {
+    const data = await this.deleteCategoryService.deleteCategory(
+      id,
+      user.userId,
+    );
+    return new SuccessResponseData(
+      data,
+      HttpStatus.OK,
+      SUCCESS_MESSAGES.CATEGORY_DELETE_SUCCESS,
+    );
   }
 
   @Put(':id')
@@ -105,7 +130,16 @@ export class CategoryController {
     @Param('id', ParseIntPipe) id: number,
     @Body() categoryRequest: UpdateCategoryDTO,
     @User() user: UserPayloadInterface,
-  ): Promise<Category> {
-    return this.updateCategoryService.update(id, user.userId, categoryRequest);
+  ): Promise<SuccessResponseData<Category>> {
+    const data = await this.updateCategoryService.update(
+      id,
+      user.userId,
+      categoryRequest,
+    );
+    return new SuccessResponseData(
+      data,
+      HttpStatus.OK,
+      SUCCESS_MESSAGES.CATEGORY_UPDATE_SUCCESS,
+    );
   }
 }

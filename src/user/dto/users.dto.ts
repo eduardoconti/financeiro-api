@@ -1,7 +1,14 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { UserProfile, UserStatus } from '@users/enums';
-import { IsEnum, IsNotEmpty, IsNumber, IsString, Length } from 'class-validator';
+import {
+  IsEnum,
+  IsNotEmpty,
+  IsNumber,
+  IsString,
+  Length,
+} from 'class-validator';
 import { CONSTRAINTS_LIMITS, CONSTRAINTS_MESSAGES } from 'src/shared/constants';
+
+import { UserProfile, UserStatus } from '@users/enums';
 
 export class UserDTO {
   id!: string;
@@ -42,7 +49,7 @@ export class UserDTO {
 
   @ApiProperty({
     description: 'Status id',
-    enum: UserStatus
+    enum: UserStatus,
   })
   @IsNumber({}, { message: CONSTRAINTS_MESSAGES.IS_NUMBER })
   @IsEnum(UserStatus)
@@ -50,7 +57,7 @@ export class UserDTO {
 
   @ApiProperty({
     description: 'Profile id',
-    enum: UserProfile
+    enum: UserProfile,
   })
   @IsNumber({}, { message: CONSTRAINTS_MESSAGES.IS_NUMBER })
   @IsEnum(UserProfile)

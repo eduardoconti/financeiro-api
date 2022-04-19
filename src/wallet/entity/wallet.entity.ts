@@ -1,6 +1,4 @@
-
 import { ApiProperty } from '@nestjs/swagger';
-import { Transferencias } from '@transference/entity';
 import { Exclude } from 'class-transformer';
 import {
   Entity,
@@ -16,6 +14,8 @@ import { Earning } from '@earning/entity/earning.entity';
 import { Users } from '@users/entity/users.entity';
 
 import { Despesas } from '@expense/entity/expense.entity';
+
+import { Transferencias } from '@transference/entity';
 @Entity({ schema: 'public', name: 'carteiras' })
 export class Carteiras {
   @PrimaryGeneratedColumn()

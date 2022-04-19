@@ -29,7 +29,7 @@ export class GetTransferenceService implements IGetTransferenceService {
   constructor(
     @Inject(TYPES.TransferenceRepository)
     private earningRepository: ITransferenceRepository,
-  ) { }
+  ) {}
   async getAllTransferencesByUser(
     userId: string,
     start?: string,

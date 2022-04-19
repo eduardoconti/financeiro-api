@@ -1,11 +1,13 @@
-import { NestFactory, Reflector } from '@nestjs/core';
+import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import * as Sentry from '@sentry/node';
 import * as Tracing from '@sentry/tracing';
+import tracer from 'dd-trace';
+
+import { AppModule } from '@app/app.module';
 
 import { BaseException } from '@config/exceptions';
-import tracer from 'dd-trace';
-import { AppModule } from '@app/app.module';
+
 import { HttpExceptionFilter } from '@shared/exceptions';
 import { TransformInterceptor, ValidationPipe } from '@shared/pipes';
 
