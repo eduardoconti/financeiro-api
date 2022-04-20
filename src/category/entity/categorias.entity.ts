@@ -46,11 +46,7 @@ export class Category {
     this.id = id;
   }
 
-  static build = ({
-    descricao,
-    userId,
-    id,
-  }: Omit<Category, 'id'> & { id?: number }): Category => {
+  static build = ({ descricao, userId, id }: Category): Category => {
     return new Category(descricao, userId, id);
   };
 }

@@ -20,7 +20,7 @@ export class InsertCategoryService implements IInsertCategoryService {
     category: InsertCategoryRequestDTO,
     userId: string,
   ): Promise<Category> {
-    const entity = CategoryMapper.toEntity(category, userId);
+    const entity = Category.build({ ...category, userId });
     return await this.categoryRepository.insert(entity);
   }
 }

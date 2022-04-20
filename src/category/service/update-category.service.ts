@@ -24,7 +24,11 @@ export class UpdateCategoryService implements IUpdateCategoryService {
     categoryUpdateRequest: UpdateCategoryDTO,
   ): Promise<Category> {
     await this.getCategoryService.findCategoryUserById(id, userId);
-    const entity = CategoryMapper.toEntity(categoryUpdateRequest, userId);
+    const entity = Category.build({
+      userId,
+      id,
+      descricao: categoryUpdateRequest.descricao,
+    });
     const category = await this.categoryRepository.update(id, entity);
     if (!category) {
       throw new CategoryNotFoundException(null, categoryUpdateRequest);
