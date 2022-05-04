@@ -48,15 +48,15 @@ export class WalletRepository implements IWalletRepository {
   }
 
   async find(userId: string): Promise<Carteiras[]> {
-    try {
-      return await this.repository.find({
-        order: { id: 'ASC' },
+    return await this.repository
+      .find({
+        order: { descricao: 'ASC' },
         relations: ['user'],
         where: { userId: userId },
+      })
+      .catch((error) => {
+        throw new BadRequestException(error);
       });
-    } catch (error) {
-      throw new BadRequestException(error);
-    }
   }
 
   async delete(id: number): Promise<CarteirasDeleteResponseDTO> {

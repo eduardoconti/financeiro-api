@@ -56,6 +56,7 @@ export class CategoryRepository implements ICategoryRepository {
       return await this.repository.find({
         relations: ['user'],
         where: params,
+        order: { descricao: 'ASC' },
       });
     } catch (error) {
       throw new FindCategoryException(error, { params: params });
