@@ -66,7 +66,7 @@ export class CategoryRepository implements ICategoryRepository {
   async findAll(userId: string): Promise<Category[]> {
     try {
       return await this.repository.find({
-        order: { id: 'ASC' },
+        order: { descricao: 'ASC' },
         relations: ['user'],
         where: { userId: userId },
       });

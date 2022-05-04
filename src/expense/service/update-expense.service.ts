@@ -34,6 +34,7 @@ export class UpdateExpenseService implements IUpdateExpenseService {
     return await this.expenseRepository.update(id, {
       ...despesa,
       updatedAt: DateHelper.dateNow(),
+      pagamento: despesa.pago ? DateHelper.dateNow() : undefined,
     });
   }
 
@@ -50,18 +51,11 @@ export class UpdateExpenseService implements IUpdateExpenseService {
       throw new ExpenseNotFoundException();
     }
     if (expense.pago !== patchData.pago) {
-      await this.expenseRepository.update(id, {
+      return await this.expenseRepository.update(id, {
         ...patchData,
         pagamento: patchData.pago ? DateHelper.dateNow() : undefined,
       });
-      expense.pago = patchData.pago;
     }
-
-    const updated = await this.expenseRepository.findOneByParams({ id });
-
-    if (!updated) {
-      throw new ExpenseNotFoundException();
-    }
-    return updated;
+    return expense;
   }
 }

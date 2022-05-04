@@ -29,7 +29,7 @@ export class TransferenceRepository implements ITransferenceRepository {
       .find({
         relations: ['user', 'carteiraOrigem', 'carteiraDestino'],
         where: params,
-        order: { transferencia: 'ASC' },
+        order: { valor: 'DESC' },
       })
       .catch((e) => {
         throw new FindTransferenceException(e);
