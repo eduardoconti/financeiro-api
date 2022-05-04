@@ -66,6 +66,9 @@ async function bootstrap() {
   app.use(Sentry.Handlers.tracingHandler());
   app.use(Sentry.Handlers.errorHandler());
 
-  await app.listen(parseInt(process.env.PORT as string));
+  await app.listen(parseInt(process.env.PORT as string) || 3001);
+  console.log(
+    'listening in port: ' + parseInt(process.env.PORT as string) || 3001,
+  );
 }
 bootstrap();

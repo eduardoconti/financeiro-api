@@ -11,7 +11,7 @@ services:
       - .:/usr/src/app
       - /usr/src/app/node_modules
     ports:
-      - ${SERVER_PORT}:3001
+      - ${PORT}:3001
     command: yarn start:dev
     env_file:
       - .env

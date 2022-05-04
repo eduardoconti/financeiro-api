@@ -30,7 +30,7 @@ export class EarningRepository implements IEarningRepository {
       .find({
         relations: ['carteira'],
         where: params,
-        order: { pagamento: 'ASC' },
+        order: { valor: 'DESC' },
       })
       .catch((e) => {
         throw new FindEarningException(e);
@@ -73,7 +73,7 @@ export class EarningRepository implements IEarningRepository {
     await this.repository.update({ id }, expense).catch((e) => {
       throw new UpdateEarningException(e, expense);
     });
-    const updated = this.repository
+    const updated = await this.repository
       .findOneOrFail({ where: { id: id } })
       .catch((e) => {
         throw new UpdateEarningException(e, expense);

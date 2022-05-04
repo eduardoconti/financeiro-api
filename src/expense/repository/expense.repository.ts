@@ -30,7 +30,7 @@ export class ExpenseRepository implements IExpenseRepository {
       .find({
         relations: ['user', 'categoria', 'carteira'],
         where: params,
-        order: { vencimento: 'ASC' },
+        order: { valor: 'DESC' },
       })
       .catch((e) => {
         throw new FindExpenseException(e);
@@ -76,7 +76,7 @@ export class ExpenseRepository implements IExpenseRepository {
     await this.repository.update({ id }, expense).catch((e) => {
       throw new UpdateExpenseException(e, expense);
     });
-    const updated = this.repository
+    const updated = await this.repository
       .findOneOrFail({ where: { id: id } })
       .catch((e) => {
         throw new UpdateExpenseException(e, expense);
