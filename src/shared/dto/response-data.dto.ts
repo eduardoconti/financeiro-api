@@ -2,7 +2,7 @@ import { HttpStatus } from '@nestjs/common';
 
 export class ResponseDataDto {
   constructor(
-    protected statusCode: HttpStatus,
+    protected status: HttpStatus,
     protected internalMessage?: string,
     protected message?: string,
   ) {}

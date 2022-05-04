@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 import { CategoryDeleteResponseDTO } from '@category/dto';
-import { Categorias } from '@category/entity';
+import { Category } from '@category/entity';
 import {
   DeleteCategoryException,
   FindCategoryException,
@@ -17,11 +17,11 @@ import { ICategoryRepository } from './category.repository.interface';
 @Injectable()
 export class CategoryRepository implements ICategoryRepository {
   constructor(
-    @InjectRepository(Categorias)
-    private readonly repository: Repository<Categorias>,
+    @InjectRepository(Category)
+    private readonly repository: Repository<Category>,
   ) {}
 
-  async insert(category: Categorias): Promise<Categorias> {
+  async insert(category: Category): Promise<Category> {
     try {
       const newCategory = this.repository.create(category);
       await this.repository.save(newCategory);
@@ -31,21 +31,19 @@ export class CategoryRepository implements ICategoryRepository {
     }
   }
 
-  async update(
-    id: number,
-    category: Categorias,
-  ): Promise<Categorias | undefined> {
+  async update(id: number, category: Category): Promise<Category | null> {
     try {
       await this.repository.update({ id }, category);
-      return await this.repository.findOne(id);
+      return await this.repository.findOne({ where: { id: id } });
     } catch (error) {
       throw new UpdateCategoryException(error);
     }
   }
 
-  async findById(id: number): Promise<Categorias | undefined> {
+  async findById(id: number): Promise<Category | null> {
     try {
-      return await this.repository.findOne(id, {
+      return await this.repository.findOne({
+        where: { id: id },
         relations: ['user'],
       });
     } catch (error) {
@@ -53,23 +51,22 @@ export class CategoryRepository implements ICategoryRepository {
     }
   }
 
-  async findByParams(
-    params: FindCategoryByParams,
-  ): Promise<Categorias[] | undefined> {
+  async findByParams(params: FindCategoryByParams): Promise<Category[] | null> {
     try {
       return await this.repository.find({
         relations: ['user'],
         where: params,
+        order: { descricao: 'ASC' },
       });
     } catch (error) {
       throw new FindCategoryException(error, { params: params });
     }
   }
 
-  async findAll(userId: string): Promise<Categorias[]> {
+  async findAll(userId: string): Promise<Category[]> {
     try {
       return await this.repository.find({
-        order: { id: 'ASC' },
+        order: { descricao: 'ASC' },
         relations: ['user'],
         where: { userId: userId },
       });

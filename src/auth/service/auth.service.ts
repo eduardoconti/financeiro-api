@@ -2,7 +2,6 @@ import { Inject, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 
 import { SignDto, UserPayloadDto } from '@auth/dto';
-import { UserPayloadInterface } from '@auth/interfaces';
 
 import { Users } from '@users/entity';
 import { IGetUserService, PasswordManagerService } from '@users/service';
@@ -30,25 +29,8 @@ export class AuthService implements IAuthService {
   }
 
   async login(user: UserPayloadDto): Promise<SignDto> {
-    const payload = {
-      userName: user.userName,
-      userId: user.userId,
-      userProfile: user.userProfile,
-    } as UserPayloadInterface;
     return {
-      accessToken: this.jwtService.sign(payload),
+      accessToken: await this.jwtService.signAsync({ ...user }),
     };
   }
-
-  // private decodeToken(token: string) {
-  //   try {
-  //     const decodedToken = this.jwtService.decode(token);
-  //     if (!decodedToken) {
-  //       throw new UnauthorizedException(ERROR_MESSAGES.TOKEN_DECODE_ERROR);
-  //     }
-  //     return decodedToken;
-  //   } catch (error) {
-  //     throw new UnauthorizedException(ERROR_MESSAGES.TOKEN_DECODE_ERROR);
-  //   }
-  // }
 }

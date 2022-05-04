@@ -1,6 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Exclude } from 'class-transformer';
-import { Users } from 'src/users/entity/users.entity';
 import {
   Entity,
   Column,
@@ -10,10 +9,12 @@ import {
   JoinColumn,
 } from 'typeorm';
 
-import { Despesas } from '../../despesas/entity/despesas.entity';
+import { Users } from '@users/entity';
+
+import { Despesas } from '@expense/entity';
 
 @Entity({ schema: 'public', name: 'categorias' })
-export class Categorias {
+export class Category {
   @PrimaryGeneratedColumn()
   @ApiProperty()
   id?: number;
@@ -23,6 +24,7 @@ export class Categorias {
     nullable: false,
     name: 'user_id',
   })
+  @Exclude()
   userId!: string;
 
   @Column('text', { nullable: false })
@@ -44,11 +46,7 @@ export class Categorias {
     this.id = id;
   }
 
-  static build = ({
-    descricao,
-    userId,
-    id,
-  }: Omit<Categorias, 'id'> & { id?: number }): Categorias => {
-    return new Categorias(descricao, userId, id);
+  static build = ({ descricao, userId, id }: Category): Category => {
+    return new Category(descricao, userId, id);
   };
 }

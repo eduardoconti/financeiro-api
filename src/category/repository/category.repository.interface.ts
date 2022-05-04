@@ -1,12 +1,12 @@
 import { CategoryDeleteResponseDTO } from '@category/dto';
-import { Categorias } from '@category/entity';
+import { Category } from '@category/entity';
 import { FindCategoryByParams } from '@category/types';
 
 export interface ICategoryRepository {
-  insert(category: Categorias): Promise<Categorias>;
-  update(id: number, category: Categorias): Promise<Categorias | undefined>;
-  findById(id: number): Promise<Categorias | undefined>;
-  findByParams(params: FindCategoryByParams): Promise<Categorias[] | undefined>;
-  findAll(userId: string): Promise<Categorias[]>;
+  insert(category: Category): Promise<Category>;
+  update(id: number, category: Category): Promise<Category | null>;
+  findById(id: number): Promise<Category | null>;
+  findByParams(params: FindCategoryByParams): Promise<Category[] | null>;
+  findAll(userId: string): Promise<Category[]>;
   delete(id: number): Promise<CategoryDeleteResponseDTO>;
 }

@@ -1,0 +1,43 @@
+version: '3.7'
+
+services:
+  financeiro:
+    container_name: financeiro
+    restart: on-failure
+    build:
+      context: .
+      target: development
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    ports:
+      - ${PORT}:3001
+    command: yarn start:dev
+    env_file:
+      - .env
+    networks:
+      - financeiro
+    depends_on:
+      - financeiro-db
+  financeiro-db:
+    container_name: financeiro-db
+    image: postgres:13.0
+    networks:
+      - financeiro
+    restart: always
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - TZ=GMT
+      - PG_DATA=/var/lib/postgresql/data
+    ports:
+      - ${POSTGRES_EXTERNAL_PORT}:${POSTGRES_PORT}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+networks:
+  financeiro:
+
+volumes:
+  pgdata:

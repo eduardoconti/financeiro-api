@@ -11,17 +11,17 @@ export class NotImplementedException extends HttpBaseException {
    * @example
    * `throw new NotImplementedException()`
    *
-   * @param message string to inform error message.
-   * @param reason string to inform error reason.
+   * @param title string to inform error title.
+   * @param detail string to inform error detail.
    * @param error error object.
    * @param data data that throw the error.
    */
   constructor(
-    message: string = HttpInternalMessages.NOT_IMPLEMENTED,
-    reason?: string,
+    title: string = HttpInternalMessages.NOT_IMPLEMENTED,
+    detail?: string,
     error?: any,
     data?: any,
   ) {
-    super(message, reason, HttpStatus.NOT_IMPLEMENTED, error, data);
+    super(title, detail, HttpStatus.NOT_IMPLEMENTED, error, data);
   }
 }

@@ -8,18 +8,21 @@ import {
   Put,
   UseGuards,
   Inject,
+  HttpStatus,
 } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
 import { JwtAuthGuard } from '@auth/guard';
 import { UserPayloadInterface } from '@auth/interfaces';
 
 import { User } from '@users/decorator';
-import { UserLoggedGuard } from '@users/guard';
 
 import { TYPES } from '@config/dependency-injection';
 
-import { CarteirasDTO } from './dto';
+import { SuccessResponseData } from '@shared/dto';
+
+import { SUCCESS_MESSAGES } from './constants';
+import { CarteirasDeleteResponseDTO, CarteirasDTO } from './dto';
 import { Carteiras } from './entity';
 import {
   IDeleteWalletService,
@@ -28,9 +31,10 @@ import {
   IUpdateWalletService,
 } from './service';
 
-@Controller('carteiras')
-@ApiTags('carteiras')
+@Controller('wallet')
+@ApiTags('Wallets')
 @UseGuards(JwtAuthGuard)
+@ApiBearerAuth()
 export class WalletController {
   constructor(
     @Inject(TYPES.CarteiraService)
@@ -44,25 +48,55 @@ export class WalletController {
   ) {}
 
   @Get()
-  async getAll(@User() user: UserPayloadInterface): Promise<Carteiras[]> {
-    return await this.getWalletService.getAllByUserId(user.userId);
+  async getAll(
+    @User() user: UserPayloadInterface,
+  ): Promise<SuccessResponseData<Carteiras[]>> {
+    const data = await this.getWalletService.getAllByUserId(user.userId);
+    return new SuccessResponseData<Carteiras[]>(
+      data,
+      HttpStatus.OK,
+      SUCCESS_MESSAGES.GET_SUCCESS,
+    );
   }
 
   @Post()
-  async insert(@Body() wallet: CarteirasDTO): Promise<Carteiras> {
-    return this.insertWalletService.insertWallet(wallet);
+  async insert(
+    @Body() wallet: CarteirasDTO,
+    @User() user: UserPayloadInterface,
+  ): Promise<SuccessResponseData<Carteiras>> {
+    const data = await this.insertWalletService.insertWallet({
+      ...wallet,
+      userId: user.userId,
+    });
+    return new SuccessResponseData<Carteiras>(
+      data,
+      HttpStatus.CREATED,
+      SUCCESS_MESSAGES.WALLET_CREATE_SUCCESS,
+    );
   }
 
-  @Delete('/:id')
-  async delete(@Param('id') id: number): Promise<{ deleted: boolean }> {
-    return this.deleteWalletService.deleteWallet(id);
+  @Delete(':id')
+  async delete(
+    @Param('id') id: number,
+  ): Promise<SuccessResponseData<CarteirasDeleteResponseDTO>> {
+    const data = await this.deleteWalletService.deleteWallet(id);
+    return new SuccessResponseData<CarteirasDeleteResponseDTO>(
+      data,
+      HttpStatus.OK,
+      SUCCESS_MESSAGES.WALLET_DELETE_SUCCESS,
+    );
   }
 
-  @Put('/:id')
+  @Put(':id')
   async update(
     @Param('id') id: number,
     @Body() wallet: CarteirasDTO,
-  ): Promise<Carteiras> {
-    return this.updateWalletService.updateWallet(id, wallet);
+  ): Promise<SuccessResponseData<Carteiras>> {
+    const data = await this.updateWalletService.updateWallet(id, wallet);
+    return new SuccessResponseData<Carteiras>(
+      data,
+      HttpStatus.OK,
+      SUCCESS_MESSAGES.WALLET_UPDATE_SUCCESS,
+    );
   }
 }

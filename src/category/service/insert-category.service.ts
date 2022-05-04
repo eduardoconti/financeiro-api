@@ -1,7 +1,7 @@
 import { Injectable, Inject } from '@nestjs/common';
 
 import { InsertCategoryRequestDTO } from '@category/dto';
-import { Categorias } from '@category/entity';
+import { Category } from '@category/entity';
 import { CategoryMapper } from '@category/helpers';
 import { ICategoryRepository } from '@category/repository';
 
@@ -19,8 +19,8 @@ export class InsertCategoryService implements IInsertCategoryService {
   async insertCategory(
     category: InsertCategoryRequestDTO,
     userId: string,
-  ): Promise<Categorias> {
-    const entity = CategoryMapper.toEntity(category, userId);
+  ): Promise<Category> {
+    const entity = Category.build({ ...category, userId });
     return await this.categoryRepository.insert(entity);
   }
 }

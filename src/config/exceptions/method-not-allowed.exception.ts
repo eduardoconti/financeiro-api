@@ -11,17 +11,17 @@ export class MethodNotAllowedException extends HttpBaseException {
    * @example
    * `throw new MethodNotAllowedException()`
    *
-   * @param message string to inform error message.
-   * @param reason string to inform error reason.
+   * @param title string to inform error title.
+   * @param detail string to inform error detail.
    * @param error error object.
    * @param data data that throw the error.
    */
   constructor(
-    message: string = HttpInternalMessages.METHOD_NOT_ALLOWED,
-    reason?: string,
+    title: string = HttpInternalMessages.METHOD_NOT_ALLOWED,
+    detail?: string,
     error?: any,
     data?: any,
   ) {
-    super(message, reason, HttpStatus.METHOD_NOT_ALLOWED, error, data);
+    super(title, detail, HttpStatus.METHOD_NOT_ALLOWED, error, data);
   }
 }

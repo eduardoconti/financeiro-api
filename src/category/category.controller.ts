@@ -9,22 +9,26 @@ import {
   UseGuards,
   Inject,
   ParseIntPipe,
+  HttpStatus,
 } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 
 import { JwtAuthGuard } from '@auth/guard/jwt-auth.guard';
 import { UserPayloadInterface } from '@auth/interfaces/user-payload.interface';
 
-import { User } from '@users/decorator/user.decorator';
+import { User } from '@users/decorator';
 
 import { TYPES } from '@config/dependency-injection';
 
+import { SuccessResponseData } from '@shared/dto';
+
+import { SUCCESS_MESSAGES } from './constants';
 import {
   CategoryDeleteResponseDTO,
   InsertCategoryRequestDTO,
   UpdateCategoryDTO,
 } from './dto';
-import { Categorias } from './entity/categorias.entity';
+import { Category } from './entity/categorias.entity';
 import {
   IDeleteCategoryService,
   IGetCategoryService,
@@ -32,9 +36,10 @@ import {
   IUpdateCategoryService,
 } from './service';
 
-@Controller('categorias')
-@ApiTags('Category')
+@Controller('category')
+@ApiTags('Categories')
 @UseGuards(JwtAuthGuard)
+@ApiBearerAuth()
 export class CategoryController {
   constructor(
     @Inject(TYPES.GetCategoryService)
@@ -47,44 +52,94 @@ export class CategoryController {
     private readonly deleteCategoryService: IDeleteCategoryService,
   ) {}
 
+  @ApiOperation({
+    summary: 'Gel all categories.',
+    description: 'Return all categories by id from logged user.',
+  })
   @Get()
-  async getAll(@User() user: UserPayloadInterface): Promise<Categorias[]> {
+  async getAll(@User() user: UserPayloadInterface): Promise<Category[]> {
     return await this.getCategoryService.getAllCategories(user.userId);
   }
 
-  @Get('/:id')
+  @ApiOperation({
+    summary: 'Get category by id.',
+    description: 'Return categories by id and logged user id.',
+  })
+  @Get(':id')
   async getOne(
     @Param('id', ParseIntPipe) id: number,
     @User() user: UserPayloadInterface,
-  ): Promise<Categorias> {
-    return await this.getCategoryService.findCategoryUserById(id, user.userId);
+  ): Promise<SuccessResponseData<Category>> {
+    const data = await this.getCategoryService.findCategoryUserById(
+      id,
+      user.userId,
+    );
+    return new SuccessResponseData(
+      data,
+      HttpStatus.OK,
+      SUCCESS_MESSAGES.GET_SUCCESS,
+    );
   }
 
+  @ApiOperation({
+    summary: 'Insert category.',
+    description: 'Create an category for use in expense.',
+  })
   @Post()
   async insert(
     @Body() categoryRequest: InsertCategoryRequestDTO,
     @User() user: UserPayloadInterface,
-  ): Promise<Categorias> {
-    return this.insertCategoryService.insertCategory(
+  ): Promise<SuccessResponseData<Category>> {
+    const data = await this.insertCategoryService.insertCategory(
       categoryRequest,
       user.userId,
     );
+    return new SuccessResponseData(
+      data,
+      HttpStatus.CREATED,
+      SUCCESS_MESSAGES.CATEGORY_CREATE_SUCCESS,
+    );
   }
 
-  @Delete('/:id')
+  @ApiOperation({
+    summary: 'Delete category.',
+    description: 'Remove category by id.',
+  })
+  @Delete(':id')
   async delete(
     @Param('id', ParseIntPipe) id: number,
     @User() user: UserPayloadInterface,
-  ): Promise<CategoryDeleteResponseDTO> {
-    return await this.deleteCategoryService.deleteCategory(id, user.userId);
+  ): Promise<SuccessResponseData<CategoryDeleteResponseDTO>> {
+    const data = await this.deleteCategoryService.deleteCategory(
+      id,
+      user.userId,
+    );
+    return new SuccessResponseData(
+      data,
+      HttpStatus.OK,
+      SUCCESS_MESSAGES.CATEGORY_DELETE_SUCCESS,
+    );
   }
 
-  @Put('/:id')
+  @Put(':id')
+  @ApiOperation({
+    summary: 'Update category.',
+    description: 'Update category by id.',
+  })
   async update(
     @Param('id', ParseIntPipe) id: number,
     @Body() categoryRequest: UpdateCategoryDTO,
     @User() user: UserPayloadInterface,
-  ): Promise<Categorias> {
-    return this.updateCategoryService.update(id, user.userId, categoryRequest);
+  ): Promise<SuccessResponseData<Category>> {
+    const data = await this.updateCategoryService.update(
+      id,
+      user.userId,
+      categoryRequest,
+    );
+    return new SuccessResponseData(
+      data,
+      HttpStatus.OK,
+      SUCCESS_MESSAGES.CATEGORY_UPDATE_SUCCESS,
+    );
   }
 }
