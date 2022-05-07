@@ -96,8 +96,8 @@ export class Transferencias {
     return new Transferencias(
       userId,
       valor,
-      carteiraDestinoId,
       carteiraOrigemId,
+      carteiraDestinoId,
       transferencia,
       pago,
     );
