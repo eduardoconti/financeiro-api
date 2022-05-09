@@ -25,6 +25,7 @@ export class ExpenseRepository implements IExpenseRepository {
   queryBuilder(alias: string): SelectQueryBuilder<Despesas> {
     return this.repository.createQueryBuilder(alias);
   }
+
   async findByParams(params: FindExpenseByParams): Promise<Despesas[]> {
     return await this.repository
       .find({

@@ -19,4 +19,8 @@ export class DateHelper {
   static date(date: string | Date): Date {
     return moment(date).toDate();
   }
+
+  static addMonth(months: number) {
+    return moment().add(months, 'M').toDate();
+  }
 }

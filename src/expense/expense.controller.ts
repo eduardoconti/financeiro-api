@@ -261,12 +261,12 @@ export class ExpenseController {
   async insertExpense(
     @Body() despesa: DespesasDTO,
     @User() userToken: UserPayloadInterface,
-  ): Promise<SuccessResponseData<Despesas>> {
+  ): Promise<SuccessResponseData<Despesas | Despesas[]>> {
     const data = await this.insertExpenseService.insert(
       despesa,
       userToken.userId,
     );
-    return new SuccessResponseData<Despesas>(
+    return new SuccessResponseData<Despesas | Despesas[]>(
       data,
       HttpStatus.CREATED,
       SUCCESS_MESSAGES.EXPENSE_CREATE_SUCCESS,

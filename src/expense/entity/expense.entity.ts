@@ -68,6 +68,21 @@ export class Despesas {
   @Exclude()
   categoriaId!: number;
 
+  @Column({
+    type: 'uuid',
+    nullable: true,
+    name: 'instalment_id',
+  })
+  instalmentId?: string;
+
+  @Column({
+    type: 'int',
+    nullable: false,
+    name: 'instalment',
+    default: 1,
+  })
+  instalment!: number;
+
   @ManyToOne(() => Carteiras, (carteiras) => carteiras.id, { nullable: false })
   @JoinColumn({ name: 'carteira_id', referencedColumnName: 'id' })
   carteira?: Carteiras;
@@ -89,6 +104,8 @@ export class Despesas {
     valor: number,
     categoriaId: number,
     carteiraId: number,
+    instalment: number,
+    instalmentId?: string,
     vencimento?: Date,
     pagamento?: Date,
     pago?: boolean,
@@ -100,6 +117,8 @@ export class Despesas {
     this.valor = valor;
     this.categoriaId = categoriaId;
     this.carteiraId = carteiraId;
+    this.instalment = instalment;
+    this.instalmentId = instalmentId;
     this.vencimento = vencimento;
     this.pagamento = pagamento;
     this.pago = pago;
@@ -113,6 +132,8 @@ export class Despesas {
     valor,
     categoriaId,
     carteiraId,
+    instalment,
+    instalmentId,
     vencimento,
     pagamento,
     pago,
@@ -125,6 +146,8 @@ export class Despesas {
       valor,
       categoriaId,
       carteiraId,
+      instalment,
+      instalmentId,
       vencimento,
       pagamento,
       pago,

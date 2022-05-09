@@ -36,7 +36,12 @@ export class DespesasDTO {
   @IsNumber({}, { message: CONSTRAINTS_MESSAGES.IS_NUMBER })
   carteiraId!: number;
 
-  @ApiProperty({ description: 'Valor da despesa', default: 10 })
+  @ApiProperty({ description: 'Numero de parcelas', default: 1, example: 1 })
+  @IsNumber({}, { message: CONSTRAINTS_MESSAGES.IS_NUMBER })
+  @IsNotEmpty({ message: CONSTRAINTS_MESSAGES.IS_NOT_EMPTY })
+  instalment!: number;
+
+  @ApiProperty({ description: 'Valor da despesa', default: 0, example: 12.99 })
   @IsNumber({}, { message: CONSTRAINTS_MESSAGES.IS_NUMBER })
   @IsNotEmpty({ message: CONSTRAINTS_MESSAGES.IS_NOT_EMPTY })
   valor!: number;

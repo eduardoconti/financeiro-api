@@ -4,3 +4,4 @@ export * from './find-expense.exception';
 export * from './insert-expense.exception';
 export * from './update-expense.exception';
 export * from './expense-not-found.exception';
+export * from './update-instalment.exception';
