@@ -69,6 +69,7 @@ export class UpdateExpenseService implements IUpdateExpenseService {
         pagamento: patchData.pago ? DateHelper.dateNow() : undefined,
       });
     }
+
     return expense;
   }
 }
