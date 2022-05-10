@@ -75,12 +75,12 @@ export class ExpenseRepository implements IExpenseRepository {
 
   async update(id: number, expense: Partial<Despesas>): Promise<Despesas> {
     await this.repository.update({ id }, expense).catch((e) => {
-      throw new UpdateExpenseException(e, expense);
+      throw new UpdateExpenseException(undefined, e, expense);
     });
     const updated = await this.repository
       .findOneOrFail({ where: { id: id } })
       .catch((e) => {
-        throw new UpdateExpenseException(e, expense);
+        throw new UpdateExpenseException(undefined, e, expense);
       });
     return updated;
   }

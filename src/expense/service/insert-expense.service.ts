@@ -58,7 +58,7 @@ export class InsertExpenseService implements IInsertExpenseService {
           valor: value,
           userId,
           instalment: index,
-          vencimento: DateHelper.addMonth(index - 1),
+          vencimento: DateHelper.addMonth(index - 1, expense.vencimento),
           instalmentId,
           createdAt: DateHelper.dateNow(),
         });

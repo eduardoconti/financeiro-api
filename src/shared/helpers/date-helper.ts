@@ -20,7 +20,7 @@ export class DateHelper {
     return moment(date).toDate();
   }
 
-  static addMonth(months: number) {
-    return moment().add(months, 'M').toDate();
+  static addMonth(months: number, date?: string | Date) {
+    return moment(date).add(months, 'M').toDate();
   }
 }

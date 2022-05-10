@@ -10,6 +10,7 @@ export const EXPENSE_ERROR_MESSAGES = {
   EXPENSE_DELETE_ERROR: 'Ocorreu um erro ao deletar a despesa!',
   EXPENSE_NOT_FOUND: 'Despesa não encontrada!',
   UPDATE_INSTALMENT: 'Não é possivel atualizar despesa com parcelamento!',
+  UPDATE_INSTALMENT_NUMBER: 'Não é possível alterar parcela!',
 };
 
 export const SUCCESS_MESSAGES = {

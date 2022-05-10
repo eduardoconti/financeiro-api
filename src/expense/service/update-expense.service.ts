@@ -1,12 +1,13 @@
-import { UpdateExpenseException } from './../exceptions/update-expense.exception';
 import { Injectable, Inject } from '@nestjs/common';
 
 import { TYPES } from '@config/dependency-injection';
 
+import { EXPENSE_ERROR_MESSAGES } from '@expense/constants';
 import { DespesasDTO, ExpensePatchFlagPayedDTO } from '@expense/dto';
 import { Despesas } from '@expense/entity';
 import {
   ExpenseNotFoundException,
+  UpdateExpenseException,
   UpdateInstalmentException,
 } from '@expense/exceptions';
 import { IExpenseRepository } from '@expense/repository';
@@ -41,6 +42,12 @@ export class UpdateExpenseService implements IUpdateExpenseService {
 
     if (despesa.pagamento && !despesa.pago) {
       despesa.pago = true;
+    }
+
+    if (despesa.instalment !== expense.instalment) {
+      throw new UpdateExpenseException(
+        EXPENSE_ERROR_MESSAGES.UPDATE_INSTALMENT_NUMBER,
+      );
     }
 
     return await this.expenseRepository.update(id, {
