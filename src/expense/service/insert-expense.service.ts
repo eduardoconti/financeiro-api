@@ -45,6 +45,7 @@ export class InsertExpenseService implements IInsertExpenseService {
     const instalmentId = uuidv4();
     const data = [];
     const value = expense.valor / expense.instalment;
+    const residual = expense.valor - value;
     const queryRunner = this.dataSource.createQueryRunner();
     try {
       await queryRunner.connect();
@@ -55,7 +56,7 @@ export class InsertExpenseService implements IInsertExpenseService {
           descricao: `${index}${'/'}${expense.instalment}${' '}${
             expense.descricao
           }`,
-          valor: value,
+          valor: index === 1 ? value + residual : value,
           userId,
           instalment: index,
           vencimento: DateHelper.addMonth(index - 1, expense.vencimento),
