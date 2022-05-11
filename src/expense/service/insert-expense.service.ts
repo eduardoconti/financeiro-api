@@ -45,7 +45,7 @@ export class InsertExpenseService implements IInsertExpenseService {
     const instalmentId = uuidv4();
     const data = [];
     const value = expense.valor / expense.instalment;
-    const residual = expense.valor - value;
+    const residual = expense.valor - value * expense.instalment;
     const queryRunner = this.dataSource.createQueryRunner();
     try {
       await queryRunner.connect();
