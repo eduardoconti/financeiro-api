@@ -43,16 +43,18 @@ export class InsertExpenseService implements IInsertExpenseService {
     userId: string,
   ): Promise<Despesas[]> {
     const instalmentId = uuidv4();
+    const { valor, instalment, ...rest } = expense;
     const data = [];
-    const value = expense.valor / expense.instalment;
-    const residual = expense.valor - value * expense.instalment;
+    const value = valor / instalment;
+    const residual = ((valor * 100) % instalment) / 100;
+
     const queryRunner = this.dataSource.createQueryRunner();
     try {
       await queryRunner.connect();
       await queryRunner.startTransaction();
       for (let index = 1; index <= expense.instalment; index++) {
         const entity = Despesas.build({
-          ...expense,
+          ...rest,
           descricao: `${index}${'/'}${expense.instalment}${' '}${
             expense.descricao
           }`,
