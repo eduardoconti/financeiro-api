@@ -42,26 +42,30 @@ export class InsertExpenseService implements IInsertExpenseService {
     expense: DespesasDTO,
     userId: string,
   ): Promise<Despesas[]> {
-    const instalmentId = uuidv4();
     const { valor, instalment, ...rest } = expense;
-    const data = [];
-    const value = valor / instalment;
-    const residual = ((valor * 100) % instalment) / 100;
-
+    const instalmentId = uuidv4();
+    const instalmentValue = valor / instalment;
+    const residual = this.calculateResidual(valor, instalment);
+    const { residualPerInstalment, instalmentsToReceivResidual } =
+      this.calculateResidualPerInstalment(residual, instalment);
+    const data: Despesas[] = [];
     const queryRunner = this.dataSource.createQueryRunner();
     try {
       await queryRunner.connect();
       await queryRunner.startTransaction();
-      for (let index = 1; index <= expense.instalment; index++) {
+      for (let instalment = 1; instalment <= expense.instalment; instalment++) {
         const entity = Despesas.build({
           ...rest,
-          descricao: `${index}${'/'}${expense.instalment}${' '}${
+          descricao: `${instalment}${'/'}${expense.instalment}${' '}${
             expense.descricao
           }`,
-          valor: index === 1 ? value + residual : value,
+          valor:
+            instalment <= instalmentsToReceivResidual
+              ? instalmentValue + residualPerInstalment
+              : instalmentValue,
           userId,
-          instalment: index,
-          vencimento: DateHelper.addMonth(index - 1, expense.vencimento),
+          instalment: instalment,
+          vencimento: DateHelper.addMonth(instalment - 1, expense.vencimento),
           instalmentId,
           createdAt: DateHelper.dateNow(),
         });
@@ -78,5 +82,29 @@ export class InsertExpenseService implements IInsertExpenseService {
     } finally {
       await queryRunner.release();
     }
+  }
+
+  private calculateResidual(value: number, instalment: number): number {
+    return ((value * 100) % instalment) / 100;
+  }
+
+  private calculateResidualPerInstalment(
+    residual: number,
+    instalments: number,
+  ): { residualPerInstalment: number; instalmentsToReceivResidual: number } {
+    let instalmentsToReceivResidual = 1;
+    let residualPerInstalment = residual;
+    if (residual > 0.01) {
+      do {
+        instalmentsToReceivResidual++;
+      } while (
+        (residual * 100) % instalmentsToReceivResidual !== 0 &&
+        instalmentsToReceivResidual <= instalments
+      );
+      residualPerInstalment =
+        (residual * 100) / instalmentsToReceivResidual / 100;
+    }
+
+    return { residualPerInstalment, instalmentsToReceivResidual };
   }
 }
