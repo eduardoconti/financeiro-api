@@ -5,6 +5,7 @@ import { UserPayloadDto } from '@auth/dto';
 
 import { UserDTO } from '@users/dto';
 import { Users } from '@users/entity';
+import { UserNotFoundException } from '@users/exception';
 import { IGetUserService, IPasswordManagerService } from '@users/service';
 
 import { TYPES } from '@config/dependency-injection';
@@ -92,5 +93,15 @@ describe('AuthService', () => {
     const result = await authService.validateUser('teste', 'teste');
 
     expect(result).toBeDefined();
+  });
+
+  it('should throw UserNotFindException when validateUser', async () => {
+    jest
+      .spyOn(getUserService, 'getUserByLogin')
+      .mockRejectedValue(new UserNotFoundException('any'));
+
+    await expect(
+      authService.validateUser('teste', 'teste'),
+    ).rejects.toThrowError(new UserNotFoundException('any'));
   });
 });

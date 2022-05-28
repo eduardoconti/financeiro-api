@@ -15,7 +15,7 @@ import { IDatabaseService } from './database.service.interface';
 
 @Injectable()
 export class DatabaseService implements IDatabaseService {
-  private queryRunner: QueryRunner;
+  queryRunner: QueryRunner;
 
   constructor(@InjectDataSource() private readonly dataSource: DataSource) {
     this.queryRunner = this.dataSource.createQueryRunner();
@@ -33,16 +33,14 @@ export class DatabaseService implements IDatabaseService {
     try {
       await await this.getQueryRunner().startTransaction();
     } catch (error) {
-      console.log(error);
       throw new StartTransactionDatabaseException(undefined, error);
     }
   };
 
   public commitTransaction = async (): Promise<void> => {
     try {
-      await this.queryRunner.commitTransaction();
+      await this.getQueryRunner().commitTransaction();
     } catch (error) {
-      console.log(error);
       throw new CommitTransactionDatabaseException(undefined, error);
     }
   };
@@ -51,15 +49,13 @@ export class DatabaseService implements IDatabaseService {
     try {
       await this.getQueryRunner().rollbackTransaction();
     } catch (error) {
-      console.log(this.queryRunner);
-      console.log(error);
       throw new RollbackTransactionDatabaseException(undefined, error);
     }
   };
 
   public release = async (): Promise<void> => {
     try {
-      await this.queryRunner.release();
+      await this.getQueryRunner().release();
     } catch (error) {
       throw new ReleaseTransactionDatabaseException(undefined, error);
     }
@@ -67,7 +63,8 @@ export class DatabaseService implements IDatabaseService {
 
   public save = async <E>(entity: E): Promise<E> => {
     try {
-      const result = await this.queryRunner?.manager.save<E>(entity);
+      console.log(this.queryRunner);
+      const result = await this.queryRunner.manager.save<E>(entity);
 
       return result as E;
     } catch (err) {
@@ -76,6 +73,6 @@ export class DatabaseService implements IDatabaseService {
   };
 
   private getQueryRunner = (): QueryRunner => {
-    return this.queryRunner ?? this.dataSource.createQueryRunner();
+    return this.queryRunner;
   };
 }
