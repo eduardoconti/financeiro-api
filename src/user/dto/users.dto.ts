@@ -6,9 +6,10 @@ import {
   IsString,
   Length,
 } from 'class-validator';
-import { CONSTRAINTS_LIMITS, CONSTRAINTS_MESSAGES } from 'src/shared/constants';
 
 import { UserProfile, UserStatus } from '@users/enums';
+
+import { CONSTRAINTS_LIMITS, CONSTRAINTS_MESSAGES } from '@shared/constants';
 
 export class UserDTO {
   id!: string;

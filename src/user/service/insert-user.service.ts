@@ -21,19 +21,22 @@ export class InsertUserService implements IInsertUserService {
   ) {}
 
   async insert(userRequest: UserDTO): Promise<Users> {
-    const { login } = userRequest;
-    if (await this.userRepository.findOneByParams({ login })) {
-      throw new UserLoginAlreadyExistsException(
-        ERROR_MESSAGES.USER_LOGIN_ALREADY_EXISTS_ERROR,
+    try {
+      const { login } = userRequest;
+      if (await this.userRepository.findOneByParams({ login })) {
+        throw new UserLoginAlreadyExistsException(
+          ERROR_MESSAGES.USER_LOGIN_ALREADY_EXISTS_ERROR,
+        );
+      }
+      const passwordHash: string = await this.passwordManager.getHash(
+        userRequest.password,
       );
-    }
-    const passwordHash: string = await this.passwordManager.getHash(
-      userRequest.password,
-    );
 
-    userRequest.password = passwordHash;
-    userRequest.id = uuidv4();
-    console.log(userRequest);
-    return await this.userRepository.insert(userRequest);
+      userRequest.password = passwordHash;
+      userRequest.id = uuidv4();
+      return await this.userRepository.insert(userRequest);
+    } catch (error: any) {
+      throw error;
+    }
   }
 }

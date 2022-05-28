@@ -49,7 +49,7 @@ import { AppService } from './service';
         password: configService.get('POSTGRES_PASSWORD'),
         database: configService.get('POSTGRES_DB'),
         entities: [__dirname + '/../**/*.entity{.ts,.js}'],
-        ssl: { rejectUnauthorized: false },
+        //ssl: { rejectUnauthorized: false },
       }),
     }),
   ],

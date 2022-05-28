@@ -20,7 +20,7 @@
       "@wallet/*": ["src/wallet/*"],
       "@category/*": ["src/category/*"],
       "@config/*": ["src/config/*"],
-      "@db/*": ["src/db/*"],
+      "@db/*": ["src/database/*"],
       "@expense/*": ["src/expense/*"],
       "@graphic/*": ["src/graphic/*"],
       "@earning/*": ["src/earning/*"],

@@ -1,36 +1,31 @@
 import { pathsToModuleNameMapper } from 'ts-jest/utils';
 
-import { compilerOptions } from './tsconfig.json';
-
 export default {
-  // Stop running tests after `n` failures
-  bail: true,
-
-  moduleFileExtensions: ['js', 'json', 'ts'],
+  moduleFileExtensions: ['ts', 'js', 'json'],
   clearMocks: true,
+  collectCoverage: true,
   rootDir: 'src',
   modulePaths: ['<rootDir>'],
   testRegex: '.*\\.spec\\.ts$',
   transform: {
     '^.+\\.(t|j)s$': 'ts-jest',
   },
-  collectCoverageFrom: ['**/*.(t|j)s'],
   coverageDirectory: '../coverage',
   testEnvironment: 'node',
   preset: 'ts-jest',
   moduleNameMapper: pathsToModuleNameMapper({
     "@app/*": ["src/app/*"],
-    "@users/*": ["src/users/*"],
+    "@users/*": ["src/user/*"],
     "@auth/*": ["src/auth/*"],
     "@wallet/*": ["src/wallet/*"],
     "@category/*": ["src/category/*"],
     "@config/*": ["src/config/*"],
-    "@db/*": ["src/db/*"],
-    "@despesas/*": ["src/despesas/*"],
+    "@db/*": ["src/database/*"],
+    "@expense/*": ["src/expense/*"],
     "@graphic/*": ["src/graphic/*"],
-    "@receitas/*": ["src/receitas/*"],
+    "@earning/*": ["src/earning/*"],
     "@shared/*": ["src/shared/*"],
-    "@transference/*": ["src/transferencias/*"],
+    "@transference/*": ["src/transference/*"],
   }, {
     prefix: '<rootDir>/../',
   }),

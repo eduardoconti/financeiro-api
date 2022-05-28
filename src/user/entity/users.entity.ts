@@ -1,6 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Exclude } from 'class-transformer';
-import { Transferencias } from 'src/transference/entity';
 import { Entity, Column, PrimaryColumn, OneToMany } from 'typeorm';
 
 import { Earning } from '@earning/entity';
@@ -10,6 +9,8 @@ import { Category } from '@category/entity';
 import { Carteiras } from '@wallet/entity';
 
 import { Despesas } from '@expense/entity';
+
+import { Transferencias } from '@transference/entity';
 
 @Entity({ schema: 'public', name: 'users' })
 export class Users {
@@ -50,4 +51,12 @@ export class Users {
 
   @OneToMany(() => Category, (categorias) => categorias.user)
   userCategorias?: Category[];
+
+  constructor(partial: Partial<Users>) {
+    Object.assign(this, partial);
+  }
+
+  static build(partial: Partial<Users>): Users {
+    return new Users(partial);
+  }
 }

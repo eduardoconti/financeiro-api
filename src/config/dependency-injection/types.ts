@@ -10,6 +10,8 @@ import { TYPES as APP_TYPES } from '@app/config/dependency-injection';
 
 import { TYPES as USER_TYPES } from '@users/config/dependency-injection';
 
+import { TYPES as DATABASE_TYPES } from '@db/config/dependency-injection';
+
 import { TYPES as EXPENSE_TYPES } from '@expense/config/dependency-injection';
 
 import { TYPES as GRAPHIC_TYPES } from '@graphic/config/dependency-injection';
@@ -26,4 +28,5 @@ export const TYPES: { [keys: string]: symbol } = {
   ...GRAPHIC_TYPES,
   ...EARNING_TYPES,
   ...TRANSFERENCE_TYPES,
+  ...DATABASE_TYPES,
 };

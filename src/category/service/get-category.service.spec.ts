@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/unbound-method */
 import { Test } from '@nestjs/testing';
 
-import { Categorias } from '@category/entity';
+import { Category } from '@category/entity';
 import {
   CategoryNotFoundException,
   FindCategoryException,
@@ -21,7 +21,7 @@ const categoryRepositoryMocked = {
 
 const fakeUserId = '37f5c664-274f-47b2-811b-e3cdd093f27f';
 const fakeCategoryId = 1;
-const fakeCategory = Categorias.build({
+const fakeCategory = Category.build({
   id: fakeCategoryId,
   descricao: 'Fake Category',
   userId: fakeUserId,
@@ -153,7 +153,7 @@ describe('GetCategoryService', () => {
 
       expect.assertions(2);
       await expect(() =>
-        categoryService.findCategoryUserById(fakeCategoryId, fakeUserId),
+        categoryService.findCategoryUserById(fakeCategoryId, '123'),
       ).rejects.toThrowError(ForbiddenCategoryException);
       expect(categoryRepository.findById).toBeCalledWith(fakeCategoryId);
 
