@@ -1,13 +1,14 @@
 import { Inject } from '@nestjs/common';
-import { InjectDataSource } from '@nestjs/typeorm';
-import { DataSource } from 'typeorm';
 import { v4 as uuidv4 } from 'uuid';
 
 import { TYPES } from '@config/dependency-injection';
 
+import { IDatabaseService } from '@db/services';
+
 import { DespesasDTO } from '@expense/dto';
 import { Despesas } from '@expense/entity';
 import { InsertExpenseException } from '@expense/exceptions';
+import { buildExpenseEntityInstalment } from '@expense/helpers';
 import { IExpenseRepository } from '@expense/repository';
 
 import { DateHelper } from '@shared/helpers';
@@ -18,7 +19,8 @@ export class InsertExpenseService implements IInsertExpenseService {
   constructor(
     @Inject(TYPES.ExpenseRepository)
     private readonly expenseRepository: IExpenseRepository,
-    @InjectDataSource() private readonly dataSource: DataSource,
+    @Inject(TYPES.DatabaseService)
+    private readonly databaseService: IDatabaseService,
   ) {}
 
   async insert(
@@ -42,69 +44,28 @@ export class InsertExpenseService implements IInsertExpenseService {
     expense: DespesasDTO,
     userId: string,
   ): Promise<Despesas[]> {
-    const { valor, instalment, ...rest } = expense;
     const instalmentId = uuidv4();
-    const instalmentValue = valor / instalment;
-    const residual = this.calculateResidual(valor, instalment);
-    const { residualPerInstalment, instalmentsToReceivResidual } =
-      this.calculateResidualPerInstalment(residual, instalment);
-    const data: Despesas[] = [];
-    const queryRunner = this.dataSource.createQueryRunner();
+
     try {
-      await queryRunner.connect();
-      await queryRunner.startTransaction();
-      for (let instalment = 1; instalment <= expense.instalment; instalment++) {
-        const entity = Despesas.build({
-          ...rest,
-          descricao: `${instalment}${'/'}${expense.instalment}${' '}${
-            expense.descricao
-          }`,
-          valor:
-            instalment <= instalmentsToReceivResidual
-              ? instalmentValue + residualPerInstalment
-              : instalmentValue,
-          userId,
-          instalment: instalment,
-          vencimento: DateHelper.addMonth(instalment - 1, expense.vencimento),
-          instalmentId,
-          createdAt: DateHelper.dateNow(),
-        });
+      await this.databaseService.connect();
+      await this.databaseService.startTransaction();
+      const expenses = buildExpenseEntityInstalment(
+        expense,
+        userId,
+        instalmentId,
+      );
+      expenses.forEach(async (element) => {
+        await this.databaseService.save(element);
+      });
 
-        data.push(entity);
-        await queryRunner.manager.save(entity);
-      }
-
-      await queryRunner.commitTransaction();
-      return data;
+      await this.databaseService.commitTransaction();
+      return expenses;
     } catch (e) {
-      await queryRunner.rollbackTransaction();
+      console.log(e);
+      await this.databaseService.rollbackTransaction();
       throw new InsertExpenseException(e);
     } finally {
-      await queryRunner.release();
+      await this.databaseService.release();
     }
-  }
-
-  private calculateResidual(value: number, instalment: number): number {
-    return ((value * 100) % instalment) / 100;
-  }
-
-  private calculateResidualPerInstalment(
-    residual: number,
-    instalments: number,
-  ): { residualPerInstalment: number; instalmentsToReceivResidual: number } {
-    let instalmentsToReceivResidual = 1;
-    let residualPerInstalment = residual;
-    if (residual > 0.01) {
-      do {
-        instalmentsToReceivResidual++;
-      } while (
-        (residual * 100) % instalmentsToReceivResidual !== 0 &&
-        instalmentsToReceivResidual <= instalments
-      );
-      residualPerInstalment =
-        (residual * 100) / instalmentsToReceivResidual / 100;
-    }
-
-    return { residualPerInstalment, instalmentsToReceivResidual };
   }
 }

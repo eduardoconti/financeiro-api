@@ -22,6 +22,7 @@ import { TransferenciasModule } from '@transference/transferencias.module';
 
 import { AppController } from './app.controller';
 import { AppService } from './service';
+import { DatabaseModule } from '@db/database.module';
 
 @Module({
   imports: [
@@ -33,6 +34,7 @@ import { AppService } from './service';
     UsersModule,
     AuthModule,
     GraphicModule,
+    DatabaseModule,
     ConfigModule.forRoot({
       envFilePath: [`.env`],
     }),

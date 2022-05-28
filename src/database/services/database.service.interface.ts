@@ -7,5 +7,5 @@ export interface IDatabaseService {
   rollbackTransaction: () => Promise<void>;
   release: () => Promise<void>;
   save: <E>(entity: E) => Promise<E>;
-  queryRunner: QueryRunner;
+  queryRunner?: QueryRunner;
 }

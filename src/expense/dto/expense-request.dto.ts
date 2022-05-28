@@ -65,4 +65,12 @@ export class DespesasDTO {
   @ApiPropertyOptional({ description: 'Flag Pago', default: false })
   @IsBoolean({ message: CONSTRAINTS_MESSAGES.IS_BOOLEAN })
   pago?: boolean;
+
+  constructor(partial: Partial<DespesasDTO>) {
+    Object.assign(this, partial);
+  }
+
+  static build(partial: Partial<DespesasDTO>): DespesasDTO {
+    return new DespesasDTO(partial);
+  }
 }

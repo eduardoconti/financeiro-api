@@ -15,7 +15,7 @@ import { IDatabaseService } from './database.service.interface';
 
 @Injectable()
 export class DatabaseService implements IDatabaseService {
-  queryRunner: QueryRunner;
+  queryRunner?: QueryRunner;
 
   constructor(@InjectDataSource() private readonly dataSource: DataSource) {
     this.queryRunner = this.dataSource.createQueryRunner();
@@ -23,7 +23,7 @@ export class DatabaseService implements IDatabaseService {
 
   public connect = async (): Promise<any> => {
     try {
-      return await this.getQueryRunner().connect();
+      return await this.queryRunner?.connect();
     } catch (error) {
       throw new ConnectDatabaseException(undefined, error);
     }
@@ -31,7 +31,7 @@ export class DatabaseService implements IDatabaseService {
 
   public startTransaction = async (): Promise<void> => {
     try {
-      await await this.getQueryRunner().startTransaction();
+      await await this.queryRunner?.startTransaction();
     } catch (error) {
       throw new StartTransactionDatabaseException(undefined, error);
     }
@@ -39,7 +39,7 @@ export class DatabaseService implements IDatabaseService {
 
   public commitTransaction = async (): Promise<void> => {
     try {
-      await this.getQueryRunner().commitTransaction();
+      await this.queryRunner?.commitTransaction();
     } catch (error) {
       throw new CommitTransactionDatabaseException(undefined, error);
     }
@@ -47,7 +47,7 @@ export class DatabaseService implements IDatabaseService {
 
   public rollbackTransaction = async (): Promise<void> => {
     try {
-      await this.getQueryRunner().rollbackTransaction();
+      await this.queryRunner?.rollbackTransaction();
     } catch (error) {
       throw new RollbackTransactionDatabaseException(undefined, error);
     }
@@ -55,7 +55,8 @@ export class DatabaseService implements IDatabaseService {
 
   public release = async (): Promise<void> => {
     try {
-      await this.getQueryRunner().release();
+      await this.queryRunner?.release();
+      this.queryRunner = undefined;
     } catch (error) {
       throw new ReleaseTransactionDatabaseException(undefined, error);
     }
@@ -63,16 +64,10 @@ export class DatabaseService implements IDatabaseService {
 
   public save = async <E>(entity: E): Promise<E> => {
     try {
-      console.log(this.queryRunner);
-      const result = await this.queryRunner.manager.save<E>(entity);
-
+      const result = await this.queryRunner?.manager.save<E>(entity);
       return result as E;
     } catch (err) {
       throw new SaveDatabaseException(undefined, err);
     }
-  };
-
-  private getQueryRunner = (): QueryRunner => {
-    return this.queryRunner;
   };
 }

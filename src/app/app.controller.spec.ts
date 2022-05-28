@@ -3,11 +3,13 @@ import { Test, TestingModule } from '@nestjs/testing';
 
 import { TYPES } from '@config/dependency-injection';
 
-import { AppController } from './app.controller';
-import { IAppService } from './service';
 import { SuccessResponseData } from '@shared/dto';
-import { HomeDTO } from './dto';
 
+import { AppController } from './app.controller';
+import { HomeDTO } from './dto';
+import { IAppService } from './service';
+
+const homeDto = new HomeDTO('financeiro', 200, '1.0');
 describe('AppController', () => {
   let appController: AppController;
   let appService: IAppService;
@@ -36,6 +38,7 @@ describe('AppController', () => {
       expect(appService).toBeDefined();
     });
     it('should be able to getHello', () => {
+      jest.spyOn(appService, 'getHello').mockImplementation(() => homeDto);
       const data = appController.getHello();
       expect(data).toBeDefined();
       expect(data).toBeInstanceOf(SuccessResponseData);

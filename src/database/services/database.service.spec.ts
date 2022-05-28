@@ -93,22 +93,14 @@ describe('DatabaseService', () => {
   });
 
   it('should connect', async () => {
-    const getQueryRunner = jest
-      .spyOn(databaseService as any, 'getQueryRunner')
-      .mockImplementation(() => qr);
     jest
       .spyOn(dataSource.createQueryRunner(), 'connect')
       .mockResolvedValue(undefined);
 
     expect(async () => await databaseService.connect()).not.toThrowError();
-    expect(getQueryRunner).toHaveBeenCalled();
-    expect(getQueryRunner).toHaveBeenCalledTimes(1);
   });
 
   it('should throw ConnectDatabaseException', async () => {
-    const getQueryRunner = jest
-      .spyOn(databaseService as any, 'getQueryRunner')
-      .mockImplementation(() => qr);
     jest
       .spyOn(dataSource.createQueryRunner(), 'connect')
       .mockRejectedValue(new StartTransactionDatabaseException());
@@ -116,28 +108,18 @@ describe('DatabaseService', () => {
     await expect(databaseService.connect()).rejects.toThrow(
       new StartTransactionDatabaseException(),
     );
-    expect(getQueryRunner).toHaveBeenCalled();
-    expect(getQueryRunner).toHaveBeenCalledTimes(1);
   });
 
   it('should start transaction', async () => {
-    const getQueryRunner = jest
-      .spyOn(databaseService as any, 'getQueryRunner')
-      .mockImplementation(() => qr);
     jest
       .spyOn(dataSource.createQueryRunner(), 'startTransaction')
       .mockResolvedValue(undefined);
     expect(
       async () => await databaseService.startTransaction(),
     ).not.toThrowError();
-    expect(getQueryRunner).toHaveBeenCalled();
-    expect(getQueryRunner).toHaveBeenCalledTimes(1);
   });
 
   it('should throw error when start transaction', async () => {
-    const getQueryRunner = jest
-      .spyOn(databaseService as any, 'getQueryRunner')
-      .mockImplementation(() => qr);
     jest
       .spyOn(dataSource.createQueryRunner(), 'startTransaction')
       .mockRejectedValue(new StartTransactionDatabaseException());
@@ -145,66 +127,42 @@ describe('DatabaseService', () => {
     expect(
       async () => await databaseService.startTransaction(),
     ).rejects.toThrow(StartTransactionDatabaseException);
-    expect(getQueryRunner).toHaveBeenCalled();
-    expect(getQueryRunner).toHaveBeenCalledTimes(1);
   });
 
   it('should throw CommitTransactionDatabaseException', async () => {
-    const getQueryRunner = jest
-      .spyOn(databaseService as any, 'getQueryRunner')
-      .mockImplementation(() => qr);
-
     jest
       .spyOn(dataSource.createQueryRunner(), 'commitTransaction')
       .mockRejectedValue(new RollbackTransactionDatabaseException());
     await expect(async () =>
       databaseService.commitTransaction(),
     ).rejects.toThrowError();
-    expect(getQueryRunner).toHaveBeenCalled();
-    expect(getQueryRunner).toHaveBeenCalledTimes(1);
   });
 
   it('should commit transaction', async () => {
-    const getQueryRunner = jest
-      .spyOn(databaseService as any, 'getQueryRunner')
-      .mockImplementation(() => qr);
-
     jest
       .spyOn(dataSource.createQueryRunner(), 'commitTransaction')
       .mockResolvedValue(Promise.resolve());
     await expect(async () =>
       databaseService.commitTransaction(),
     ).not.toThrowError();
-    expect(getQueryRunner).toHaveBeenCalled();
-    expect(getQueryRunner).toHaveBeenCalledTimes(1);
   });
 
   it('should rollback transaction', async () => {
-    const getQueryRunner = jest
-      .spyOn(databaseService as any, 'getQueryRunner')
-      .mockImplementation(() => qr);
     jest
       .spyOn(dataSource.createQueryRunner(), 'rollbackTransaction')
       .mockResolvedValue(Promise.resolve());
     await expect(async () =>
       databaseService.rollbackTransaction(),
     ).not.toThrowError();
-    expect(getQueryRunner).toHaveBeenCalled();
-    expect(getQueryRunner).toHaveBeenCalledTimes(1);
   });
 
   it('should throw RollbackTransactionDatabaseException', async () => {
-    const getQueryRunner = jest
-      .spyOn(databaseService as any, 'getQueryRunner')
-      .mockImplementation(() => qr);
     jest
       .spyOn(dataSource.createQueryRunner(), 'rollbackTransaction')
       .mockRejectedValue(new RollbackTransactionDatabaseException());
     await expect(async () =>
       databaseService.rollbackTransaction(),
     ).rejects.toThrowError();
-    expect(getQueryRunner).toHaveBeenCalled();
-    expect(getQueryRunner).toHaveBeenCalledTimes(1);
   });
 
   it('should save', async () => {
@@ -217,42 +175,27 @@ describe('DatabaseService', () => {
   });
 
   it('should throw SaveDatabaseException', async () => {
-    const getQueryRunner = jest
-      .spyOn(databaseService as any, 'getQueryRunner')
-      .mockImplementation(() => qr);
     jest
       .spyOn(dataSource.createQueryRunner().manager, 'save')
       .mockRejectedValue(new SaveDatabaseException());
     await expect(
       async () => await databaseService.save(fakeUserEntity),
     ).rejects.toThrow(SaveDatabaseException);
-    expect(getQueryRunner).toHaveBeenCalled();
-    expect(getQueryRunner).toHaveBeenCalledTimes(1);
   });
 
   it('should release', async () => {
-    const getQueryRunner = jest
-      .spyOn(databaseService as any, 'getQueryRunner')
-      .mockImplementation(() => qr);
     jest
       .spyOn(dataSource.createQueryRunner(), 'release')
       .mockResolvedValue(Promise.resolve());
     await expect(async () => databaseService.release()).not.toThrowError();
-    expect(getQueryRunner).toHaveBeenCalled();
-    expect(getQueryRunner).toHaveBeenCalledTimes(1);
   });
 
   it('should throw ReleaseTransactionDatabaseException', async () => {
-    const getQueryRunner = jest
-      .spyOn(databaseService as any, 'getQueryRunner')
-      .mockImplementation(() => qr);
     jest
       .spyOn(dataSource.createQueryRunner(), 'release')
       .mockRejectedValue(new ReleaseTransactionDatabaseException());
     await expect(async () => await databaseService.release()).rejects.toThrow(
       ReleaseTransactionDatabaseException,
     );
-    expect(getQueryRunner).toHaveBeenCalled();
-    expect(getQueryRunner).toHaveBeenCalledTimes(1);
   });
 });

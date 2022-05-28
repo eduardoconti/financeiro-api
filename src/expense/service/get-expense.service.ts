@@ -10,10 +10,11 @@ import {
 } from '@expense/dto';
 import { Despesas } from '@expense/entity';
 import { ExpenseNotFoundException } from '@expense/exceptions';
+import { buildParams } from '@expense/helpers';
 import { IExpenseRepository } from '@expense/repository';
 import { ExpenseGroupMonth, FindExpenseByParams } from '@expense/types';
 
-import { OrmHelper, SqlFileManager } from '@shared/helpers';
+import { SqlFileManager } from '@shared/helpers';
 
 import { IGetExpenseService } from './get-expense.service.interface';
 
@@ -29,7 +30,7 @@ export class GetExpenseService implements IGetExpenseService {
     pago?: boolean,
   ): Promise<Despesas[]> {
     return await this.expenseRepository.findByParams(
-      this.buildParams(userId, start, end, pago),
+      buildParams(userId, start, end, pago),
     );
   }
 
@@ -126,24 +127,5 @@ export class GetExpenseService implements IGetExpenseService {
       throw new ExpenseNotFoundException();
     }
     return expense;
-  }
-
-  private buildParams(
-    userId: string,
-    start?: string,
-    end?: string,
-    pago?: boolean,
-  ): FindExpenseByParams {
-    const params: FindExpenseByParams = {};
-    if (pago !== undefined) {
-      params.pago = pago;
-    }
-
-    if (start || end) {
-      params.vencimento = OrmHelper.buildDateWhere(start, end);
-    }
-
-    params.userId = userId;
-    return params;
   }
 }

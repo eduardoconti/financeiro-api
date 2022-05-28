@@ -3,6 +3,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { TYPES } from '@config/dependency-injection';
 
+import { DatabaseModule } from '@db/database.module';
+
 import { Despesas } from './entity';
 import { ExpenseController } from './expense.controller';
 import { DespesasMiddleware } from './middleware/expense.middleware';
@@ -15,7 +17,7 @@ import {
 import { UpdateExpenseService } from './service/update-expense.service';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Despesas])],
+  imports: [TypeOrmModule.forFeature([Despesas]), DatabaseModule],
   controllers: [ExpenseController],
   providers: [
     {
