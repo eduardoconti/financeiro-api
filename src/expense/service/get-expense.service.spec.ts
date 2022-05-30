@@ -1,8 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { Between } from 'typeorm';
 
-import { UserNotFoundException } from '@users/exception';
-
 import { TYPES } from '@config/dependency-injection';
 
 import {
@@ -10,7 +8,6 @@ import {
   GetExpenseAmountGroupByCategoryResponse,
   GetExpenseAmountGroupByWalletResponse,
 } from '@expense/dto';
-import { ExpenseNotFoundException } from '@expense/exceptions';
 import { buildParams } from '@expense/helpers';
 import { mockExpenseEntity } from '@expense/mocks';
 import { IExpenseRepository } from '@expense/repository';
@@ -81,6 +78,24 @@ describe('GetExpenseService', () => {
     expect(data).toEqual(mockExpenseEntity);
     expect(expenseRepository.findByParams).toHaveBeenCalledWith(
       buildParams(userId, start, end, pago),
+    );
+    expect(data.userId).toEqual(userId);
+  });
+
+  it('should be able to getAllExpensesByUser by params without start date', async () => {
+    jest
+      .spyOn(expenseRepository, 'findByParams')
+      .mockResolvedValue([mockExpenseEntity]);
+    const [data] = await getExpenseService.getAllExpensesByUser(
+      userId,
+      undefined,
+      end,
+      pago,
+    );
+    expect(data).toBeDefined();
+    expect(data).toEqual(mockExpenseEntity);
+    expect(expenseRepository.findByParams).toHaveBeenCalledWith(
+      buildParams(userId, undefined, end, pago),
     );
     expect(data.userId).toEqual(userId);
   });

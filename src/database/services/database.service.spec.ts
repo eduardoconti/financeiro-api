@@ -9,7 +9,9 @@ import { Users } from '@users/entity';
 import { TYPES } from '@config/dependency-injection';
 
 import {
+  ConnectDatabaseException,
   ReleaseTransactionDatabaseException,
+  RemoveDatabaseException,
   RollbackTransactionDatabaseException,
   SaveDatabaseException,
   StartTransactionDatabaseException,
@@ -30,7 +32,21 @@ const fakeUserEntity: Users = Users.build(fakeUserDTO);
 describe('DatabaseService', () => {
   let databaseService: IDatabaseService;
   let dataSource: DataSource;
-  let qr: QueryRunner;
+  //let qr: QueryRunner;
+  const qr = {
+    manager: {},
+  } as QueryRunner;
+  qr.manager;
+  Object.assign(qr.manager, {
+    save: jest.fn(),
+    remove: jest.fn(),
+  });
+  qr.connect = jest.fn();
+  qr.release = jest.fn();
+  qr.startTransaction = jest.fn();
+  qr.commitTransaction = jest.fn();
+  qr.rollbackTransaction = jest.fn();
+  qr.release = jest.fn();
 
   beforeEach(async () => {
     const module = await Test.createTestingModule({
@@ -60,7 +76,7 @@ describe('DatabaseService', () => {
         {
           provide: DataSource,
           useValue: {
-            createQueryRunner: jest.fn(),
+            createQueryRunner: jest.fn(() => qr),
           },
         },
       ],
@@ -68,21 +84,6 @@ describe('DatabaseService', () => {
 
     databaseService = module.get<IDatabaseService>(TYPES.DatabaseService);
     dataSource = module.get<DataSource>(DataSource);
-    qr = {
-      manager: {},
-    } as QueryRunner;
-    qr.manager;
-    Object.assign(qr.manager, {
-      save: jest.fn(),
-    });
-    qr.connect = jest.fn();
-    qr.release = jest.fn();
-    qr.startTransaction = jest.fn();
-    qr.commitTransaction = jest.fn();
-    qr.rollbackTransaction = jest.fn();
-    qr.release = jest.fn();
-
-    dataSource.createQueryRunner = jest.fn(() => qr);
     databaseService.queryRunner = qr;
     jest.clearAllMocks();
   });
@@ -102,36 +103,37 @@ describe('DatabaseService', () => {
 
   it('should throw ConnectDatabaseException', async () => {
     jest
-      .spyOn(dataSource.createQueryRunner(), 'connect')
-      .mockRejectedValue(new StartTransactionDatabaseException());
+      .spyOn(databaseService.queryRunner as QueryRunner, 'connect')
+      .mockRejectedValue(new ConnectDatabaseException());
 
-    await expect(databaseService.connect()).rejects.toThrow(
-      new StartTransactionDatabaseException(),
+    await expect(async () => databaseService.connect()).rejects.toThrowError(
+      new ConnectDatabaseException(),
     );
   });
 
   it('should start transaction', async () => {
     jest
-      .spyOn(dataSource.createQueryRunner(), 'startTransaction')
+      .spyOn(databaseService.queryRunner as QueryRunner, 'startTransaction')
       .mockResolvedValue(undefined);
-    expect(
-      async () => await databaseService.startTransaction(),
+    await expect(async () =>
+      databaseService.startTransaction(),
     ).not.toThrowError();
   });
 
   it('should throw error when start transaction', async () => {
     jest
-      .spyOn(dataSource.createQueryRunner(), 'startTransaction')
+      .spyOn(databaseService.queryRunner as QueryRunner, 'startTransaction')
       .mockRejectedValue(new StartTransactionDatabaseException());
 
-    expect(
-      async () => await databaseService.startTransaction(),
+    //await databaseService.connect();
+    await expect(async () =>
+      databaseService.startTransaction(),
     ).rejects.toThrow(StartTransactionDatabaseException);
   });
 
   it('should throw CommitTransactionDatabaseException', async () => {
     jest
-      .spyOn(dataSource.createQueryRunner(), 'commitTransaction')
+      .spyOn(databaseService.queryRunner as QueryRunner, 'commitTransaction')
       .mockRejectedValue(new RollbackTransactionDatabaseException());
     await expect(async () =>
       databaseService.commitTransaction(),
@@ -140,8 +142,8 @@ describe('DatabaseService', () => {
 
   it('should commit transaction', async () => {
     jest
-      .spyOn(dataSource.createQueryRunner(), 'commitTransaction')
-      .mockResolvedValue(Promise.resolve());
+      .spyOn(databaseService.queryRunner as QueryRunner, 'commitTransaction')
+      .mockResolvedValue(undefined);
     await expect(async () =>
       databaseService.commitTransaction(),
     ).not.toThrowError();
@@ -149,53 +151,71 @@ describe('DatabaseService', () => {
 
   it('should rollback transaction', async () => {
     jest
-      .spyOn(dataSource.createQueryRunner(), 'rollbackTransaction')
-      .mockResolvedValue(Promise.resolve());
-    await expect(async () =>
-      databaseService.rollbackTransaction(),
+      .spyOn(databaseService.queryRunner as QueryRunner, 'rollbackTransaction')
+      .mockResolvedValue(undefined);
+    expect(
+      async () => await databaseService.rollbackTransaction(),
     ).not.toThrowError();
   });
 
   it('should throw RollbackTransactionDatabaseException', async () => {
     jest
-      .spyOn(dataSource.createQueryRunner(), 'rollbackTransaction')
+      .spyOn(databaseService.queryRunner as QueryRunner, 'rollbackTransaction')
       .mockRejectedValue(new RollbackTransactionDatabaseException());
-    await expect(async () =>
-      databaseService.rollbackTransaction(),
-    ).rejects.toThrowError();
+    expect(
+      async () => await databaseService.rollbackTransaction(),
+    ).rejects.toThrowError(RollbackTransactionDatabaseException);
   });
 
   it('should save', async () => {
     jest
-      .spyOn(dataSource.createQueryRunner().manager, 'save')
+      .spyOn((databaseService.queryRunner as QueryRunner).manager, 'save')
       .mockResolvedValue(Promise.resolve(fakeUserEntity));
-    expect(
-      async () => await databaseService.save(fakeUserEntity),
+    await expect(async () =>
+      databaseService.save(fakeUserEntity),
     ).not.toThrowError();
   });
 
   it('should throw SaveDatabaseException', async () => {
     jest
-      .spyOn(dataSource.createQueryRunner().manager, 'save')
+      .spyOn((databaseService.queryRunner as QueryRunner).manager, 'save')
       .mockRejectedValue(new SaveDatabaseException());
-    await expect(
-      async () => await databaseService.save(fakeUserEntity),
+    await expect(async () =>
+      databaseService.save(fakeUserEntity),
     ).rejects.toThrow(SaveDatabaseException);
   });
 
   it('should release', async () => {
     jest
-      .spyOn(dataSource.createQueryRunner(), 'release')
-      .mockResolvedValue(Promise.resolve());
+      .spyOn(databaseService.queryRunner as QueryRunner, 'release')
+      .mockResolvedValue(undefined);
     await expect(async () => databaseService.release()).not.toThrowError();
   });
 
   it('should throw ReleaseTransactionDatabaseException', async () => {
     jest
-      .spyOn(dataSource.createQueryRunner(), 'release')
+      .spyOn(databaseService.queryRunner as QueryRunner, 'release')
       .mockRejectedValue(new ReleaseTransactionDatabaseException());
-    await expect(async () => await databaseService.release()).rejects.toThrow(
+    expect(async () => await databaseService.release()).rejects.toThrow(
       ReleaseTransactionDatabaseException,
     );
+  });
+
+  it('should be able delete', async () => {
+    jest
+      .spyOn((databaseService.queryRunner as QueryRunner).manager, 'remove')
+      .mockResolvedValue(Promise.resolve([fakeUserEntity]));
+    expect(
+      async () => await databaseService.delete(fakeUserEntity),
+    ).not.toThrowError();
+  });
+
+  it('should throw RemoveDatabaseException', async () => {
+    jest
+      .spyOn((databaseService.queryRunner as QueryRunner).manager, 'remove')
+      .mockRejectedValue(new RemoveDatabaseException());
+    expect(
+      async () => await databaseService.delete(fakeUserEntity),
+    ).rejects.toThrow(RemoveDatabaseException);
   });
 });

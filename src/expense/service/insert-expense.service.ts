@@ -45,7 +45,6 @@ export class InsertExpenseService implements IInsertExpenseService {
     userId: string,
   ): Promise<Despesas[]> {
     const instalmentId = uuidv4();
-
     try {
       await this.databaseService.connect();
       await this.databaseService.startTransaction();
@@ -54,14 +53,15 @@ export class InsertExpenseService implements IInsertExpenseService {
         userId,
         instalmentId,
       );
-      expenses.forEach(async (element) => {
-        await this.databaseService.save(element);
-      });
+      const entitiesSaved = [];
 
+      for (const entity of expenses) {
+        const entitySaved = await this.databaseService.save(entity);
+        entitiesSaved.push(entitySaved);
+      }
       await this.databaseService.commitTransaction();
-      return expenses;
+      return entitiesSaved;
     } catch (e) {
-      console.log(e);
       await this.databaseService.rollbackTransaction();
       throw new InsertExpenseException(e);
     } finally {

@@ -6,6 +6,7 @@ import {
   CommitTransactionDatabaseException,
   ConnectDatabaseException,
   ReleaseTransactionDatabaseException,
+  RemoveDatabaseException,
   RollbackTransactionDatabaseException,
   SaveDatabaseException,
   StartTransactionDatabaseException,
@@ -15,15 +16,14 @@ import { IDatabaseService } from './database.service.interface';
 
 @Injectable()
 export class DatabaseService implements IDatabaseService {
-  queryRunner?: QueryRunner;
+  queryRunner!: QueryRunner;
 
-  constructor(@InjectDataSource() private readonly dataSource: DataSource) {
-    this.queryRunner = this.dataSource.createQueryRunner();
-  }
+  constructor(@InjectDataSource() private readonly dataSource: DataSource) {}
 
   public connect = async (): Promise<any> => {
     try {
-      return await this.queryRunner?.connect();
+      this.queryRunner = this.dataSource.createQueryRunner();
+      await this.queryRunner.connect();
     } catch (error) {
       throw new ConnectDatabaseException(undefined, error);
     }
@@ -31,7 +31,7 @@ export class DatabaseService implements IDatabaseService {
 
   public startTransaction = async (): Promise<void> => {
     try {
-      await await this.queryRunner?.startTransaction();
+      await this.queryRunner.startTransaction();
     } catch (error) {
       throw new StartTransactionDatabaseException(undefined, error);
     }
@@ -39,7 +39,7 @@ export class DatabaseService implements IDatabaseService {
 
   public commitTransaction = async (): Promise<void> => {
     try {
-      await this.queryRunner?.commitTransaction();
+      await this.queryRunner.commitTransaction();
     } catch (error) {
       throw new CommitTransactionDatabaseException(undefined, error);
     }
@@ -47,7 +47,7 @@ export class DatabaseService implements IDatabaseService {
 
   public rollbackTransaction = async (): Promise<void> => {
     try {
-      await this.queryRunner?.rollbackTransaction();
+      await this.queryRunner.rollbackTransaction();
     } catch (error) {
       throw new RollbackTransactionDatabaseException(undefined, error);
     }
@@ -55,8 +55,8 @@ export class DatabaseService implements IDatabaseService {
 
   public release = async (): Promise<void> => {
     try {
-      await this.queryRunner?.release();
-      this.queryRunner = undefined;
+      await this.queryRunner.release();
+      //this.queryRunner = undefined;
     } catch (error) {
       throw new ReleaseTransactionDatabaseException(undefined, error);
     }
@@ -64,10 +64,19 @@ export class DatabaseService implements IDatabaseService {
 
   public save = async <E>(entity: E): Promise<E> => {
     try {
-      const result = await this.queryRunner?.manager.save<E>(entity);
+      const result = await this.queryRunner.manager.save<E>(entity);
       return result as E;
     } catch (err) {
       throw new SaveDatabaseException(undefined, err);
+    }
+  };
+
+  public delete = async <E>(entity: E): Promise<E> => {
+    try {
+      await this.queryRunner.manager.remove<E>(entity);
+      return entity as E;
+    } catch (err) {
+      throw new RemoveDatabaseException(undefined, err);
     }
   };
 }

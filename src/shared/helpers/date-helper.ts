@@ -1,9 +1,6 @@
 import * as moment from 'moment';
+moment().locale('pb-br');
 export class DateHelper {
-  constructor() {
-    moment().locale('pb-br');
-  }
-
   static dateIso8601(dateString?: string): string {
     return moment(dateString).toISOString();
   }

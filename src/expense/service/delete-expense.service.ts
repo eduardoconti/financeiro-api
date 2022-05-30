@@ -1,8 +1,8 @@
 import { Inject } from '@nestjs/common';
-import { InjectDataSource } from '@nestjs/typeorm';
-import { DataSource } from 'typeorm';
 
 import { TYPES } from '@config/dependency-injection';
+
+import { IDatabaseService } from '@db/services';
 
 import { ExpenseDeleteResponseDTO } from '@expense/dto';
 import { Despesas } from '@expense/entity';
@@ -18,7 +18,8 @@ export class DeleteExpenseService implements IDeleteExpenseService {
   constructor(
     @Inject(TYPES.ExpenseRepository)
     private readonly expenseRepository: IExpenseRepository,
-    @InjectDataSource() private readonly dataSource: DataSource,
+    @Inject(TYPES.DatabaseService)
+    private readonly databaseService: IDatabaseService,
   ) {}
 
   async delete(id: number, userId: string): Promise<ExpenseDeleteResponseDTO> {
@@ -43,24 +44,23 @@ export class DeleteExpenseService implements IDeleteExpenseService {
   private async deleteInstalment(
     expense: Despesas,
   ): Promise<ExpenseDeleteResponseDTO> {
-    const queryRunner = this.dataSource.createQueryRunner();
     const { instalmentId, id, userId } = expense;
     try {
-      await queryRunner.connect();
-      await queryRunner.startTransaction();
+      await this.databaseService.connect();
+      await this.databaseService.startTransaction();
       const expenses = await this.expenseRepository.findByParams({
         instalmentId,
       });
       expenses.forEach(async (element) => {
-        await queryRunner.manager.delete(Despesas, element.id);
+        await this.databaseService.delete(element);
       });
-      await queryRunner.commitTransaction();
+      await this.databaseService.commitTransaction();
       return new ExpenseDeleteResponseDTO();
     } catch (error) {
-      await queryRunner.rollbackTransaction();
+      await this.databaseService.rollbackTransaction();
       throw new DeleteExpenseException(error, { id, userId });
     } finally {
-      await queryRunner.release();
+      await this.databaseService.release();
     }
   }
 }
