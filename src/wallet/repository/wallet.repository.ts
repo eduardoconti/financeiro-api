@@ -17,8 +17,7 @@ export class WalletRepository implements IWalletRepository {
   async insert(walletRequest: CarteirasDTO): Promise<Carteiras> {
     try {
       const wallet = this.repository.create(walletRequest);
-      await this.repository.save(wallet);
-      return wallet;
+      return await this.repository.save(wallet);
     } catch (error) {
       throw new BadRequestException(error);
     }

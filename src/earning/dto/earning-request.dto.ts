@@ -25,14 +25,6 @@ export class ReceitasDTO {
   })
   descricao!: string;
 
-  @ApiProperty({
-    description: 'uuid do usuario',
-  })
-  @IsUUID('4')
-  @IsOptional()
-  //@IsNotEmpty({ message: CONSTRAINTS_MESSAGES.IS_NOT_EMPTY })
-  userId!: string;
-
   @ApiProperty({ default: 0 })
   @IsNotEmpty({ message: CONSTRAINTS_MESSAGES.IS_NOT_EMPTY })
   valor!: number;
@@ -54,4 +46,12 @@ export class ReceitasDTO {
   @IsNotEmpty({ message: CONSTRAINTS_MESSAGES.IS_NOT_EMPTY })
   // @IsNumber({}, { message: CONSTRAINTS_MESSAGES.IS_NUMBER })
   carteiraId!: number;
+
+  constructor(partial: Partial<ReceitasDTO>) {
+    Object.assign(this, partial);
+  }
+
+  static build(partial: Partial<ReceitasDTO>): ReceitasDTO {
+    return new ReceitasDTO(partial);
+  }
 }

@@ -5,15 +5,11 @@ import { TYPES } from '@config/dependency-injection';
 import { IDatabaseService } from '@db/services';
 
 import { InsertExpenseException } from '@expense/exceptions';
-import {
-  buildExpenseEntityInstalment,
-  descriptionOfInstalment,
-} from '@expense/helpers';
+import { buildExpenseEntityInstalment } from '@expense/helpers';
 import {
   fakeInsertExpenseRequest,
   fakeInsertExpenseRequestWithInstalment,
   mockExpenseEntity,
-  mockExpenseInstalment,
 } from '@expense/mocks';
 import { IExpenseRepository } from '@expense/repository';
 

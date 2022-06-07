@@ -61,4 +61,11 @@ export class Carteiras {
   @JoinColumn({ name: 'user_id', referencedColumnName: 'id' })
   @Exclude()
   user?: Users;
+
+  constructor(partial: Partial<Carteiras>) {
+    Object.assign(this, partial);
+  }
+  static build(partial: Partial<Carteiras>): Carteiras {
+    return new Carteiras(partial);
+  }
 }

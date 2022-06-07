@@ -14,4 +14,12 @@ export class InsertCategoryRequestDTO {
     message: CONSTRAINTS_MESSAGES.IS_LENGTH,
   })
   descricao!: string;
+
+  constructor(partial: Partial<InsertCategoryRequestDTO>) {
+    Object.assign(this, partial);
+  }
+
+  static build(partial: Partial<InsertCategoryRequestDTO>) {
+    return new InsertCategoryRequestDTO(partial);
+  }
 }

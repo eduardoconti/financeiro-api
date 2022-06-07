@@ -49,8 +49,7 @@ export class UpdateEarningService implements IUpdateEarningService {
       throw new EarningNotFoundException();
     }
     if (earning.pago !== patchData.pago) {
-      await this.earningRepository.update(id, patchData);
-      earning.pago = patchData.pago;
+      return await this.earningRepository.update(id, patchData);
     }
     return earning;
   }

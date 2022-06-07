@@ -2,7 +2,6 @@ import { Injectable, Inject } from '@nestjs/common';
 
 import { InsertCategoryRequestDTO } from '@category/dto';
 import { Category } from '@category/entity';
-import { CategoryMapper } from '@category/helpers';
 import { ICategoryRepository } from '@category/repository';
 
 import { TYPES } from '@config/dependency-injection';

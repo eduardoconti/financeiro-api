@@ -21,4 +21,11 @@ export class CarteirasDTO {
     message: CONSTRAINTS_MESSAGES.IS_LENGTH,
   })
   descricao!: string;
+
+  constructor(partial: Partial<CarteirasDTO>) {
+    Object.assign(this, partial);
+  }
+  static build(partial: Partial<CarteirasDTO>): CarteirasDTO {
+    return new CarteirasDTO(partial);
+  }
 }
