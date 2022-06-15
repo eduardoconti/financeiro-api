@@ -1,11 +1,13 @@
 import { Test } from '@nestjs/testing';
 
+import { mockWalletEntity, mockWalletRequest } from '@wallet/mocks';
 import { IWalletRepository } from '@wallet/repository';
 
 import { TYPES } from '@config/dependency-injection';
 
 import { InsertWalletService } from './insert-wallet.service';
 import { IInsertWalletService } from './insert-wallet.service.interface';
+import { BadRequestException } from '@config/exceptions';
 
 describe('InsertWalletService', () => {
   let insertWalletService: IInsertWalletService;
@@ -38,16 +40,22 @@ describe('InsertWalletService', () => {
     expect(walletRepository).toBeDefined();
   });
 
-  // it('should insert a wallet', async () => {
-  //   jest
-  //     .spyOn(walletRepository, 'insert')
-  //     .mockResolvedValue(mockWalletEntity);
+  it('should insert a wallet', async () => {
+    jest.spyOn(walletRepository, 'insert').mockResolvedValue(mockWalletEntity);
 
-  //   const data = await insertWalletService.insertWallet(
-  //     fakeInsertWalletRequest,
-  //   );
+    const data = await insertWalletService.insertWallet(mockWalletRequest);
 
-  //   expect(data).toBeDefined();
-  //   expect(data).toEqual(mockWalletEntity);
-  // });
+    expect(data).toBeDefined();
+    expect(data).toEqual(mockWalletEntity);
+  });
+
+  it('should throw BadRequestException', async () => {
+    jest
+      .spyOn(walletRepository, 'insert')
+      .mockRejectedValue(new BadRequestException());
+
+    await expect(
+      insertWalletService.insertWallet(mockWalletRequest),
+    ).rejects.toThrow(new BadRequestException());
+  });
 });

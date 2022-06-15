@@ -50,24 +50,6 @@ describe('DatabaseService', () => {
 
   beforeEach(async () => {
     const module = await Test.createTestingModule({
-      imports: [
-        TypeOrmModule.forRootAsync({
-          imports: [ConfigModule],
-          inject: [ConfigService],
-          useFactory: (configService: ConfigService) => ({
-            type: 'postgres',
-            //autoLoadEntities: true,
-            synchronize: false,
-            host: process.env.POSTGRES_HOST,
-            port: 5430,
-            username: 'admin',
-            password: 'admin',
-            database: 'financeiro',
-            entities: getMetadataArgsStorage().tables.map((t) => t.target),
-            //ssl: { rejectUnauthorized: false },
-          }),
-        }),
-      ],
       providers: [
         {
           provide: TYPES.DatabaseService,

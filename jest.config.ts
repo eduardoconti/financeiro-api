@@ -3,7 +3,6 @@ import { pathsToModuleNameMapper } from 'ts-jest/utils';
 export default {
   moduleFileExtensions: ['ts', 'js', 'json'],
   clearMocks: true,
-  collectCoverage: true,
   rootDir: 'src',
   modulePaths: ['<rootDir>'],
   testRegex: '.*\\.spec\\.ts$',
@@ -13,6 +12,9 @@ export default {
   coverageDirectory: '../coverage',
   testEnvironment: 'node',
   preset: 'ts-jest',
+  collectCoverageFrom: [
+    '<rootDir>/**/*.{service,repository,controller}.ts',
+  ],
   moduleNameMapper: pathsToModuleNameMapper({
     "@app/*": ["src/app/*"],
     "@users/*": ["src/user/*"],

@@ -1,8 +1,10 @@
 import { Test } from '@nestjs/testing';
 
+import { mockWalletDeleteResponse, mockWalletEntity } from '@wallet/mocks';
 import { IWalletRepository } from '@wallet/repository';
 
 import { TYPES } from '@config/dependency-injection';
+import { BadRequestException } from '@config/exceptions';
 
 import { DeleteWalletService } from './delete-wallet.service';
 import { IDeleteWalletService } from './delete-wallet.service.interface';
@@ -38,24 +40,26 @@ describe('DeleteWalletService', () => {
     expect(walletRepository).toBeDefined();
   });
 
-  // it('should delete a wallet', async () => {
-  //   jest
-  //     .spyOn(walletRepository, 'delete')
-  //     .mockResolvedValue(mockWalletEntity);
+  it('should delete a wallet', async () => {
+    jest
+      .spyOn(walletRepository, 'delete')
+      .mockResolvedValue(mockWalletDeleteResponse);
 
-  //   const data = await deleteWalletService.delete(
-  //     mockWalletEntity.id as number,
-  //   );
+    const data = await deleteWalletService.deleteWallet(
+      mockWalletEntity.id as number,
+    );
 
-  //   expect(data).toBeDefined();
-  //   expect(data).toEqual(mockWalletEntity);
-  // });
+    expect(data).toBeDefined();
+    expect(data).toEqual(mockWalletDeleteResponse);
+  });
 
-  // it('should throw WalletNotFoundException', async () => {
-  //   jest.spyOn(walletRepository, 'delete').mockResolvedValue(null);
+  it('should throw WalletNotFoundException', async () => {
+    jest
+      .spyOn(walletRepository, 'delete')
+      .mockRejectedValue(new BadRequestException());
 
-  //   await expect(
-  //     deleteWalletService.delete(mockWalletEntity.id as number),
-  //   ).rejects.toThrowError(WalletNotFoundException);
-  // });
+    await expect(
+      deleteWalletService.deleteWallet(mockWalletEntity.id as number),
+    ).rejects.toThrowError(new BadRequestException());
+  });
 });

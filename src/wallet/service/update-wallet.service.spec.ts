@@ -1,8 +1,10 @@
 import { Test } from '@nestjs/testing';
 
+import { mockWalletEntity, mockWalletRequest } from '@wallet/mocks';
 import { IWalletRepository } from '@wallet/repository';
 
 import { TYPES } from '@config/dependency-injection';
+import { BadRequestException } from '@config/exceptions';
 
 import { UpdateWalletService } from './update-wallet.service';
 import { IUpdateWalletService } from './update-wallet.service.interface';
@@ -39,32 +41,28 @@ describe('UpdateWalletService', () => {
     expect(walletRepository).toBeDefined();
   });
 
-  // it('should update a wallet', async () => {
-  //   jest
-  //     .spyOn(walletRepository, 'findOneByParams')
-  //     .mockResolvedValue(mockWalletEntity);
-  //   jest
-  //     .spyOn(walletRepository, 'update')
-  //     .mockResolvedValue(mockWalletEntity);
+  it('should update a wallet', async () => {
+    jest.spyOn(walletRepository, 'update').mockResolvedValue(mockWalletEntity);
 
-  //   const data = await updateWalletService.update(
-  //     mockWalletEntity.id as number,
-  //     mockWalletEntity.userId,
-  //     fakeInsertWalletRequest,
-  //   );
+    const data = await updateWalletService.updateWallet(
+      mockWalletEntity.id as number,
+      mockWalletRequest,
+    );
 
-  //   expect(data).toBeDefined();
-  //   expect(data).toEqual(mockWalletEntity);
-  // });
+    expect(data).toBeDefined();
+    expect(data).toEqual(mockWalletEntity);
+  });
 
-  // it('should throw WalletNotFoundException', async () => {
-  //   jest.spyOn(walletRepository, 'findOneByParams').mockResolvedValue(null);
+  it('should throw BadRequestException', async () => {
+    jest
+      .spyOn(walletRepository, 'update')
+      .mockRejectedValue(new BadRequestException());
 
-  //   await expect(
-  //     updateWalletService.update(
-  //       mockWalletEntity.id as number,
-  //       mockWalletEntity.userId,
-  //       fakeInsertWalletRequest,
-  //   )).rejects.toThrowError(BadRequestException);
-  // });
+    await expect(
+      updateWalletService.updateWallet(
+        mockWalletEntity.id as number,
+        mockWalletRequest,
+      ),
+    ).rejects.toThrowError(new BadRequestException());
+  });
 });
