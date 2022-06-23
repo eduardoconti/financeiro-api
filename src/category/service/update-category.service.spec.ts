@@ -1,5 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 
+import { CategoryNotFoundException } from '@category/exception';
 import { fakeCategoryEntity, fakeCategoryRequest } from '@category/mocks';
 import { ICategoryRepository } from '@category/repository';
 
@@ -8,7 +9,6 @@ import { TYPES } from '@config/dependency-injection';
 import { IGetCategoryService } from './get-category.service.interface';
 import { UpdateCategoryService } from './update-category.service';
 import { IUpdateCategoryService } from './update-category.service.interface';
-import { CategoryNotFoundException } from '@category/exception';
 
 describe('UpdateCategoryService', () => {
   let service: IUpdateCategoryService;

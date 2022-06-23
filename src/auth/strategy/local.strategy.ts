@@ -6,7 +6,6 @@ import { TYPES } from '@config/dependency-injection';
 
 import { UserPayloadDto } from '../dto/user-payload.dto';
 import { AuthService } from '../service/auth.service';
-import { BadRequestException } from '@config/exceptions';
 
 @Injectable()
 export class LocalStrategy extends PassportStrategy(Strategy) {

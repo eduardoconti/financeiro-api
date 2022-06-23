@@ -18,6 +18,7 @@ import {
   MethodNotAllowedException,
   NotFoundException,
 } from '@config/exceptions';
+
 import { HttpInternalMessages } from '@shared/enums';
 @Catch()
 export class HttpExceptionFilter implements ExceptionFilter {
