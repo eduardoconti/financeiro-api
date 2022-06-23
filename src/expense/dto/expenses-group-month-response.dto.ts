@@ -1,15 +1,10 @@
-import { Transform } from 'class-transformer';
-
 import { Despesas } from '@expense/entity';
 
 export class ExpensesGroupMonthDTO {
   month: number;
   data: Despesas[];
-  @Transform(({ value }) => Math.round(value * 100) / 100)
   total: number;
-  @Transform(({ value }) => Math.round(value * 100) / 100)
   totalPayed: number;
-  @Transform(({ value }) => Math.round(value * 100) / 100)
   totalOpen: number;
   quantity: number;
 

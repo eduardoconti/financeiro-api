@@ -14,6 +14,8 @@ import { UsersModule } from '@users/users.module';
 
 import { TYPES } from '@config/dependency-injection';
 
+import { DatabaseModule } from '@db/database.module';
+
 import { DespesasModule } from '@expense/expense.module';
 
 import { GraphicModule } from '@graphic/graphic.module';
@@ -22,7 +24,6 @@ import { TransferenciasModule } from '@transference/transferencias.module';
 
 import { AppController } from './app.controller';
 import { AppService } from './service';
-import { DatabaseModule } from '@db/database.module';
 
 @Module({
   imports: [
@@ -51,7 +52,7 @@ import { DatabaseModule } from '@db/database.module';
         password: configService.get('POSTGRES_PASSWORD'),
         database: configService.get('POSTGRES_DB'),
         entities: [__dirname + '/../**/*.entity{.ts,.js}'],
-        //ssl: { rejectUnauthorized: false },
+        ssl: { rejectUnauthorized: false },
       }),
     }),
   ],

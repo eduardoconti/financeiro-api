@@ -1,15 +1,10 @@
-import { Transform } from 'class-transformer';
-
 import { Earning } from '@earning/entity';
 
 export class EarningsGroupMonthDTO {
   month: number;
   data: Earning[];
-  @Transform(({ value }) => Math.round(value * 100) / 100)
   total: number;
-  @Transform(({ value }) => Math.round(value * 100) / 100)
   totalPayed: number;
-  @Transform(({ value }) => Math.round(value * 100) / 100)
   totalOpen: number;
   quantity: number;
 

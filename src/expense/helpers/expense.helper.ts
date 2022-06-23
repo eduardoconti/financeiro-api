@@ -4,30 +4,8 @@ import { FindExpenseByParams } from '@expense/types';
 
 import { DateHelper, OrmHelper } from '@shared/helpers';
 
-export function calculateResidualPerInstalment(
-  residual: number,
-  instalments: number,
-): { residualPerInstalment: number; instalmentsToReceivResidual: number } {
-  {
-    let instalmentsToReceivResidual = 1;
-    let residualPerInstalment = residual;
-    if (residual > 0.01) {
-      do {
-        instalmentsToReceivResidual++;
-      } while (
-        (residual * 100) % instalmentsToReceivResidual !== 0 &&
-        instalmentsToReceivResidual <= instalments
-      );
-      residualPerInstalment =
-        (residual * 100) / instalmentsToReceivResidual / 100;
-    }
-
-    return { residualPerInstalment, instalmentsToReceivResidual };
-  }
-}
-
 export function calculateResidual(value: number, instalment: number): number {
-  return ((value * 100) % instalment) / 100;
+  return value % instalment;
 }
 
 export function descriptionOfInstalment(
@@ -44,10 +22,17 @@ export function buildExpenseEntityInstalment(
   instalmentId: string,
 ): Despesas[] {
   const { valor, instalment, ...rest } = expense;
-  const instalmentValue = valor / instalment;
-  const residual = calculateResidual(valor, instalment);
-  const { residualPerInstalment, instalmentsToReceivResidual } =
-    calculateResidualPerInstalment(residual, instalment);
+  let instalmentValue = valor / instalment;
+  let instalmentsToReceivResidual = 0;
+  let residualPerInstalment = 0;
+
+  if (!Number.isInteger(instalmentValue)) {
+    const residual = calculateResidual(valor, instalment);
+    instalmentValue = Math.floor(instalmentValue);
+    instalmentsToReceivResidual = residual;
+    residualPerInstalment = 1;
+  }
+
   const data: Despesas[] = [];
   for (let instalment = 1; instalment <= expense.instalment; instalment++) {
     const newValue =
@@ -62,7 +47,7 @@ export function buildExpenseEntityInstalment(
         expense.instalment,
         expense.descricao,
       ),
-      valor: parseFloat(newValue.toFixed(2)),
+      valor: newValue,
       userId,
       instalment: instalment,
       vencimento: DateHelper.addMonth(instalment - 1, expense.vencimento),

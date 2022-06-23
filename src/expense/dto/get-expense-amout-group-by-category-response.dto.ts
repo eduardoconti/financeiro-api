@@ -1,7 +1,4 @@
-import { Transform } from 'class-transformer';
-
 export class GetExpenseAmountGroupByCategoryResponse {
-  @Transform(({ value }) => Math.round(value * 100) / 100)
   readonly valor: number;
   readonly descricao: string;
   readonly id: number;

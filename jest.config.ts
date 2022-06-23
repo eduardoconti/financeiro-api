@@ -13,7 +13,7 @@ export default {
   testEnvironment: 'node',
   preset: 'ts-jest',
   collectCoverageFrom: [
-    '<rootDir>/**/*.{service,repository,controller}.ts',
+    '<rootDir>/**/*.{service,repository,controller,exception,dto,helper}.ts',
   ],
   moduleNameMapper: pathsToModuleNameMapper({
     "@app/*": ["src/app/*"],

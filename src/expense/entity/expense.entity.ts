@@ -1,4 +1,4 @@
-import { Exclude, Transform } from 'class-transformer';
+import { Exclude } from 'class-transformer';
 import {
   Entity,
   Column,
@@ -21,8 +21,7 @@ export class Despesas {
   @Column('text', { nullable: false })
   descricao!: string;
 
-  @Column('float', { default: 0 })
-  @Transform(({ value }) => Math.round(value * 100) / 100)
+  @Column('integer', { default: 0 })
   valor!: number;
 
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })

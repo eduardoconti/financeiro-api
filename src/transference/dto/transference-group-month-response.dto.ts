@@ -1,15 +1,10 @@
-import { Transform } from 'class-transformer';
-
 import { Transferencias } from '@transference/entity';
 
 export class TransferenceGroupMonthDTO {
   month: number;
   data: Transferencias[];
-  @Transform(({ value }) => Math.round(value * 100) / 100)
   total: number;
-  @Transform(({ value }) => Math.round(value * 100) / 100)
   totalPayed: number;
-  @Transform(({ value }) => Math.round(value * 100) / 100)
   totalOpen: number;
   quantity: number;
 

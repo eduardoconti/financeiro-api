@@ -4,7 +4,7 @@ import { HttpInternalMessages } from '../enums';
 import { ResponseDataDto } from './response-data.dto';
 
 export class SuccessResponseData<D> extends ResponseDataDto {
-  private readonly data: D;
+  data: D;
 
   constructor(
     data: D,

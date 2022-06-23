@@ -2,10 +2,10 @@ import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import {
   IsBoolean,
   IsDateString,
+  IsInt,
   IsNotEmpty,
   IsOptional,
   IsString,
-  IsUUID,
   Length,
 } from 'class-validator';
 
@@ -14,7 +14,7 @@ import { DateHelper } from '@shared/helpers';
 
 export class ReceitasDTO {
   @ApiProperty({
-    description: 'Descrição da despesa',
+    description: 'Descrição da receita',
     minLength: CONSTRAINTS_LIMITS.DESCRICAO.min,
     maxLength: CONSTRAINTS_LIMITS.DESCRICAO.max,
   })
@@ -27,6 +27,7 @@ export class ReceitasDTO {
 
   @ApiProperty({ default: 0 })
   @IsNotEmpty({ message: CONSTRAINTS_MESSAGES.IS_NOT_EMPTY })
+  @IsInt({ message: CONSTRAINTS_MESSAGES.IS_INTEGER })
   valor!: number;
 
   @ApiPropertyOptional({
@@ -44,7 +45,7 @@ export class ReceitasDTO {
 
   @ApiProperty()
   @IsNotEmpty({ message: CONSTRAINTS_MESSAGES.IS_NOT_EMPTY })
-  // @IsNumber({}, { message: CONSTRAINTS_MESSAGES.IS_NUMBER })
+  @IsInt({ message: CONSTRAINTS_MESSAGES.IS_INTEGER })
   carteiraId!: number;
 
   constructor(partial: Partial<ReceitasDTO>) {

@@ -24,7 +24,7 @@ export class Transferencias {
   @Column('boolean', { default: false })
   pago?: boolean;
 
-  @Column('float', { default: 0 })
+  @Column('integer', { default: 0 })
   valor!: number;
 
   @Column({

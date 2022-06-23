@@ -4,6 +4,7 @@ import { TYPES } from '@config/dependency-injection';
 
 import { IDatabaseService } from '@db/services';
 
+import { Despesas } from '@expense/entity';
 import { InsertExpenseException } from '@expense/exceptions';
 import { buildExpenseEntityInstalment } from '@expense/helpers';
 import {
@@ -85,6 +86,7 @@ describe('InsertExpenseService', () => {
 
     expect(data).toBeDefined();
     expect(data).toEqual(mockExpenseEntity);
+    expect((data as Despesas).valor).toBe(100);
   });
 
   it('should insert a new expense with instalments', async () => {
@@ -118,10 +120,10 @@ describe('InsertExpenseService', () => {
     );
   });
 
-  it('should insert a new expense with instalments and aply residual 0.01 for first instalment', async () => {
+  it('should insert a new expense with instalments and aply residual 1 for first instalment', async () => {
     const fakeRequest = {
       ...fakeInsertExpenseRequestWithInstalment,
-      valor: 17.31,
+      valor: 5,
     };
     const entities = buildExpenseEntityInstalment(
       fakeRequest,
@@ -147,11 +149,44 @@ describe('InsertExpenseService', () => {
     expect(data).toHaveLength(fakeRequest.instalment);
   });
 
-  it('should insert a new expense with instalments and aply residual 0.02 or more for 2 or more instalments', async () => {
+  it('should insert a new expense with instalments and aply residual 2 or more for 2 instalments', async () => {
     const fakeRequest = {
       ...fakeInsertExpenseRequestWithInstalment,
-      valor: 6,
-      instalment: 7,
+      valor: 14,
+      instalment: 4,
+    };
+    const entities = buildExpenseEntityInstalment(
+      fakeRequest,
+      fakeUserId,
+      'fakeid',
+    );
+    jest.spyOn(databaseService, 'connect').mockResolvedValue(undefined);
+    jest
+      .spyOn(databaseService, 'startTransaction')
+      .mockResolvedValue(undefined);
+    jest
+      .spyOn(databaseService, 'save')
+      .mockResolvedValueOnce(entities[0])
+      .mockResolvedValueOnce(entities[1])
+      .mockResolvedValueOnce(entities[2])
+      .mockResolvedValueOnce(entities[3]);
+
+    const data = await insertExpenseService.insert(fakeRequest, fakeUserId);
+    expect(databaseService.connect).toHaveBeenCalledTimes(1);
+    expect(databaseService.startTransaction).toHaveBeenCalledTimes(1);
+    expect(databaseService.save).toHaveBeenCalledTimes(fakeRequest.instalment);
+    expect(data).toBeDefined();
+    expect(data).toEqual(entities);
+    expect(data).toHaveLength(fakeRequest.instalment);
+    expect((data as Despesas[])[2].valor).toBeLessThan(
+      (data as Despesas[])[0].valor,
+    );
+  });
+  it('should insert a new expense with instalments and aply residual 3 or more for 3 instalments', async () => {
+    const fakeRequest = {
+      ...fakeInsertExpenseRequestWithInstalment,
+      valor: 13,
+      instalment: 5,
     };
     const entities = buildExpenseEntityInstalment(
       fakeRequest,
@@ -168,18 +203,18 @@ describe('InsertExpenseService', () => {
       .mockResolvedValueOnce(entities[1])
       .mockResolvedValueOnce(entities[2])
       .mockResolvedValueOnce(entities[3])
-      .mockResolvedValueOnce(entities[4])
-      .mockResolvedValueOnce(entities[5])
-      .mockResolvedValueOnce(entities[6]);
+      .mockResolvedValueOnce(entities[4]);
 
     const data = await insertExpenseService.insert(fakeRequest, fakeUserId);
-
     expect(databaseService.connect).toHaveBeenCalledTimes(1);
     expect(databaseService.startTransaction).toHaveBeenCalledTimes(1);
     expect(databaseService.save).toHaveBeenCalledTimes(fakeRequest.instalment);
     expect(data).toBeDefined();
     expect(data).toEqual(entities);
     expect(data).toHaveLength(fakeRequest.instalment);
+    expect((data as Despesas[])[3].valor).toBeLessThan(
+      (data as Despesas[])[0].valor,
+    );
   });
 
   it('should throw InsertExpenseException and rollback transaction', async () => {

@@ -18,6 +18,7 @@ export class MasterUserGuard implements CanActivate {
   }
 
   async validateRequest(user: UserPayloadInterface) {
+    console.log(user?.userProfile);
     if (user?.userProfile !== UserProfile.MASTER) {
       throw new UnauthorizedException(
         undefined,

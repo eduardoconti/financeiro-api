@@ -2,23 +2,32 @@ import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import {
   IsBoolean,
   IsDateString,
+  IsInt,
   IsNotEmpty,
-  IsNumber,
   IsOptional,
 } from 'class-validator';
+
+import { TRANSFERENCE_CONSTRAINTS_MESSAGES } from '@transference/constants';
+import { isValidWallet } from '@transference/decorators';
 
 import { CONSTRAINTS_MESSAGES } from '@shared/constants';
 import { DateHelper } from '@shared/helpers';
 
 export class TransferenciasDTO {
   @ApiProperty()
-  @IsNumber({}, { message: CONSTRAINTS_MESSAGES.IS_NUMBER })
+  @IsInt({ message: CONSTRAINTS_MESSAGES.IS_INTEGER })
   @IsNotEmpty({ message: CONSTRAINTS_MESSAGES.IS_NOT_EMPTY })
+  @isValidWallet('carteiraDestinoId', {
+    message: TRANSFERENCE_CONSTRAINTS_MESSAGES.SAME_DESTINY_AND_ORIGIN_WALLET,
+  })
   carteiraOrigemId!: number;
 
   @ApiProperty()
   @IsNotEmpty({ message: CONSTRAINTS_MESSAGES.IS_NOT_EMPTY })
-  @IsNumber({}, { message: CONSTRAINTS_MESSAGES.IS_NUMBER })
+  @IsInt({ message: CONSTRAINTS_MESSAGES.IS_INTEGER })
+  @isValidWallet('carteiraOrigemId', {
+    message: TRANSFERENCE_CONSTRAINTS_MESSAGES.SAME_DESTINY_AND_ORIGIN_WALLET,
+  })
   carteiraDestinoId!: number;
 
   @ApiPropertyOptional({ default: DateHelper.dateNow() })
@@ -33,6 +42,7 @@ export class TransferenciasDTO {
 
   @ApiProperty()
   @IsNotEmpty({ message: CONSTRAINTS_MESSAGES.IS_NOT_EMPTY })
-  @IsNumber({}, { message: CONSTRAINTS_MESSAGES.IS_NUMBER })
+  @IsInt({ message: CONSTRAINTS_MESSAGES.IS_INTEGER })
+  @IsInt({ message: CONSTRAINTS_MESSAGES.IS_INTEGER })
   valor!: number;
 }

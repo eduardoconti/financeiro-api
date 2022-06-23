@@ -2,12 +2,16 @@ import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import {
   IsBoolean,
   IsDateString,
+  IsInt,
   IsNotEmpty,
   IsNumber,
   IsOptional,
   IsString,
   Length,
+  Min,
 } from 'class-validator';
+
+import { Instalment } from '@expense/decorators';
 
 import { CONSTRAINTS_LIMITS, CONSTRAINTS_MESSAGES } from '@shared/constants';
 import { DateHelper } from '@shared/helpers';
@@ -38,11 +42,20 @@ export class DespesasDTO {
 
   @ApiProperty({ description: 'Numero de parcelas', default: 1, example: 1 })
   @IsNumber({}, { message: CONSTRAINTS_MESSAGES.IS_NUMBER })
+  @Min(1)
+  @IsInt({ message: CONSTRAINTS_MESSAGES.IS_INTEGER })
+  @Instalment('valor', { message: CONSTRAINTS_MESSAGES.INSTALMENT })
   @IsNotEmpty({ message: CONSTRAINTS_MESSAGES.IS_NOT_EMPTY })
   instalment!: number;
 
-  @ApiProperty({ description: 'Valor da despesa', default: 0, example: 12.99 })
+  @ApiProperty({
+    description: 'Valor da despesa em centavos',
+    default: 0,
+    example: 1299,
+  })
+  @IsInt({ message: CONSTRAINTS_MESSAGES.IS_INTEGER })
   @IsNumber({}, { message: CONSTRAINTS_MESSAGES.IS_NUMBER })
+  @Min(0)
   @IsNotEmpty({ message: CONSTRAINTS_MESSAGES.IS_NOT_EMPTY })
   valor!: number;
 

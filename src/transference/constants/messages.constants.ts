@@ -9,6 +9,11 @@ export const TRANSFERENCE_ERROR_MESSAGES = {
   TRANSFERENCE_NOT_FOUND: 'Transferencia não encontrada!',
 };
 
+export const TRANSFERENCE_CONSTRAINTS_MESSAGES = {
+  SAME_DESTINY_AND_ORIGIN_WALLET:
+    'A carteira de origem e destino não podem ser iguais!',
+};
+
 export const SUCCESS_MESSAGES = {
   GET_SUCCESS: 'Resposta retornada com sucesso!',
   TRANSFERENCE_CREATE_SUCCESS: 'Transferencia criada com sucesso!',

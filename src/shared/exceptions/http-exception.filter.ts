@@ -18,6 +18,7 @@ import {
   MethodNotAllowedException,
   NotFoundException,
 } from '@config/exceptions';
+import { HttpInternalMessages } from '@shared/enums';
 @Catch()
 export class HttpExceptionFilter implements ExceptionFilter {
   catch(exception: unknown, host: ArgumentsHost) {
@@ -26,7 +27,10 @@ export class HttpExceptionFilter implements ExceptionFilter {
     Sentry.captureException(exception);
 
     if (exception instanceof CommonNotFoundException) {
-      const notFoundException = new NotFoundException();
+      const notFoundException = new NotFoundException(
+        HttpInternalMessages.NOT_FOUND,
+        'Rout not found',
+      );
       return response
         .status(notFoundException.status)
         .json(notFoundException.getResponse());
