@@ -48,7 +48,6 @@ describe('WalletRepository', () => {
       .mockImplementation(() => Promise.resolve(walletEntity));
 
     const result = await walletRepository.insert(walletRequest);
-    //expect(result).toEqual(walletMock);
-    expect(result).toBeDefined();
+    expect(result).toEqual(walletEntity);
   });
 });

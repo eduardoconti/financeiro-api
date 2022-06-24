@@ -1,10 +1,4 @@
 import { Inject } from '@nestjs/common';
-import {
-  Between,
-  FindOperator,
-  LessThanOrEqual,
-  MoreThanOrEqual,
-} from 'typeorm';
 
 import { TYPES } from '@config/dependency-injection';
 
@@ -15,13 +9,14 @@ import {
 } from '@transference/dto';
 import { Transferencias } from '@transference/entity';
 import { TransferenceNotFoundException } from '@transference/exceptions';
+import { buildParams } from '@transference/helpers';
 import { ITransferenceRepository } from '@transference/repository';
 import {
   FindTransferenceByParams,
   TransferenceGroupMonth,
 } from '@transference/types';
 
-import { DateHelper, SqlFileManager } from '@shared/helpers';
+import { SqlFileManager } from '@shared/helpers';
 
 import { IGetTransferenceService } from './get-transference.service.interface';
 
@@ -37,7 +32,7 @@ export class GetTransferenceService implements IGetTransferenceService {
     pago?: boolean,
   ): Promise<Transferencias[]> {
     return await this.earningRepository.findByParams(
-      this.buildParams(userId, pago, start, end),
+      buildParams(userId, start, end, pago),
     );
   }
 
@@ -118,43 +113,5 @@ export class GetTransferenceService implements IGetTransferenceService {
       throw new TransferenceNotFoundException();
     }
     return transference;
-  }
-
-  private buildDateWhere(
-    start?: string,
-    end?: string,
-  ): FindOperator<Date> | undefined {
-    if (!start && !end) {
-      return;
-    }
-    if (start && end) {
-      return Between(DateHelper.date(start), DateHelper.date(end));
-    } else if (start) {
-      return MoreThanOrEqual(DateHelper.date(start));
-    } else if (end) {
-      return LessThanOrEqual(DateHelper.date(end));
-    } else {
-      return;
-    }
-  }
-
-  private buildParams(
-    userId: string,
-    pago?: boolean,
-    start?: string,
-    end?: string,
-  ): FindTransferenceByParams {
-    const params: FindTransferenceByParams = {};
-    if (pago !== undefined) {
-      params.pago = pago;
-    }
-
-    if (start || end) {
-      params.transferencia = this.buildDateWhere(start, end);
-    }
-
-    params.userId = userId;
-
-    return params;
   }
 }

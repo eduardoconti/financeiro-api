@@ -24,16 +24,17 @@ export class UpdateTransferenceService implements IUpdateTransferenceService {
   async update(
     id: number,
     userId: string,
-    despesa: Partial<TransferenciasDTO>,
+    transference: Partial<TransferenciasDTO>,
   ): Promise<Transferencias> {
-    const transference = await this.transferenceRepository.findOneByParams({
-      id,
-      userId,
-    });
-    if (!transference) {
+    const transferenceEntity =
+      await this.transferenceRepository.findOneByParams({
+        id,
+        userId,
+      });
+    if (!transferenceEntity) {
       throw new TransferenceNotFoundException();
     }
-    return await this.transferenceRepository.update(id, despesa);
+    return await this.transferenceRepository.update(id, transference);
   }
 
   async updateFlagPayed(
@@ -49,18 +50,13 @@ export class UpdateTransferenceService implements IUpdateTransferenceService {
       throw new TransferenceNotFoundException();
     }
     if (transference.pago !== patchData.pago) {
-      await this.transferenceRepository.update(id, {
+      return await this.transferenceRepository.update(id, {
         ...patchData,
-        transferencia: patchData.pago ? DateHelper.dateNow() : undefined,
+        transferencia: patchData.pago
+          ? DateHelper.dateNow()
+          : transference.transferencia,
       });
-      transference.pago = patchData.pago;
     }
-
-    const updated = await this.transferenceRepository.findOneByParams({ id });
-
-    if (!updated) {
-      throw new TransferenceNotFoundException();
-    }
-    return updated;
+    return transference;
   }
 }

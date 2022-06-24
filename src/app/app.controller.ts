@@ -35,7 +35,7 @@ export class AppController {
   @SwaggerApiSuccessResponse(HttpInternalMessages.OK, HomeDTO)
   getHello(): SuccessResponseData<HomeDTO> {
     return new SuccessResponseData<HomeDTO>(
-      this.appService.getHello(),
+      this.appService.healthCheck(),
       HttpStatus.OK,
       SUCCESS_MESSAGES.GET_SUCCESS,
     );

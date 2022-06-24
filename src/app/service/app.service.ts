@@ -9,7 +9,7 @@ import { IAppService } from './app.service.interface';
 export class AppService implements IAppService {
   constructor(private readonly configService: ConfigService) {}
 
-  getHello(): HomeDTO {
+  healthCheck(): HomeDTO {
     return new HomeDTO(
       this.configService.get('API_NAME'),
       HttpStatus.OK,

@@ -22,7 +22,7 @@ describe('AppController', () => {
         {
           provide: TYPES.AppService,
           useValue: {
-            getHello: jest.fn(),
+            healthCheck: jest.fn(),
           },
         },
       ],
@@ -38,7 +38,7 @@ describe('AppController', () => {
       expect(appService).toBeDefined();
     });
     it('should be able to getHello', () => {
-      jest.spyOn(appService, 'getHello').mockImplementation(() => homeDto);
+      jest.spyOn(appService, 'healthCheck').mockImplementation(() => homeDto);
       const data = appController.getHello();
       expect(data).toBeDefined();
       expect(data).toBeInstanceOf(SuccessResponseData);

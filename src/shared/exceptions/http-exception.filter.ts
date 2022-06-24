@@ -63,7 +63,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
           .status(status)
           .json(
             new ErrorResponseDTO(
-              title as string,
+              title ?? exception.error.message,
               exception?.error?.driverError?.detail ?? exception?.detail,
             ),
           );

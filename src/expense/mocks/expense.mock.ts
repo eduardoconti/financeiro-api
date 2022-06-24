@@ -1,4 +1,4 @@
-import { DespesasDTO } from '@expense/dto';
+import { DespesasDTO, ExpensesGroupMonthDTO } from '@expense/dto';
 import { Despesas } from '@expense/entity';
 import { descriptionOfInstalment } from '@expense/helpers';
 
@@ -39,3 +39,34 @@ export const mockExpenseInstalment = Despesas.build({
   vencimento: nextMonth,
   instalmentId: 'fakeid',
 });
+
+export const expensesGroupMonthDTOMock = ExpensesGroupMonthDTO.build({
+  month: 1,
+  total: 200,
+  totalPayed: 100,
+  totalOpen: 100,
+  quantity: 2,
+  data: [mockExpenseEntity, { ...mockExpenseEntity, pago: true }],
+});
+export const getExpensesGroupByMonthSqlMock: {
+  month: string;
+  data: ExpensesGroupMonthDTO;
+}[] = [
+  {
+    month: '202201',
+    data: expensesGroupMonthDTOMock,
+  },
+  {
+    month: '202202',
+    data: { ...expensesGroupMonthDTOMock, month: 2 },
+  },
+];
+
+export const getExpensesGroupByMonthResponseMock = {
+  '202201': ExpensesGroupMonthDTO.build({
+    ...getExpensesGroupByMonthSqlMock[0].data,
+  }),
+  '202202': ExpensesGroupMonthDTO.build({
+    ...getExpensesGroupByMonthSqlMock[1].data,
+  }),
+};
