@@ -60,7 +60,7 @@ describe('GetCategoryService', () => {
 
   describe('GetAllCategories', () => {
     it('should return FindCategoryException when there is an unknown error', async (done) => {
-      (categoryRepository.findAll as jest.Mock).mockRejectedValue(
+      (categoryRepository.findByParams as jest.Mock).mockRejectedValue(
         new FindCategoryException(),
       );
 
@@ -72,14 +72,16 @@ describe('GetCategoryService', () => {
     });
 
     it('should return an array of categories if successfully', async () => {
-      (categoryRepository.findAll as jest.Mock).mockResolvedValue([
+      (categoryRepository.findByParams as jest.Mock).mockResolvedValue([
         fakeCategory,
       ]);
 
       const result = await categoryService.getAllCategories(fakeUserId);
 
       expect(result).toEqual([fakeCategory]);
-      expect(categoryRepository.findAll).toHaveBeenCalledWith(fakeUserId);
+      expect(categoryRepository.findByParams).toHaveBeenCalledWith({
+        fakeUserId,
+      });
     });
   });
 

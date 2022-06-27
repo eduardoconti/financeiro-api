@@ -42,7 +42,7 @@ import {
 @ApiTags('Transference')
 @UseGuards(JwtAuthGuard)
 @ApiBearerAuth()
-export class TransferenciasController {
+export class TransferenceController {
   constructor(
     @Inject(TYPES.GetTransferenceService)
     private readonly getTransferenceService: IGetTransferenceService,
@@ -55,7 +55,7 @@ export class TransferenciasController {
   ) {}
 
   @Get()
-  async retornaTodasTransferencias(
+  async getAll(
     @User() user: UserPayloadInterface,
     @Query() params: FindTransferenceByQueryParamsDTO,
   ): Promise<SuccessResponseData<Transferencias[]>> {
@@ -73,7 +73,7 @@ export class TransferenciasController {
   }
 
   @Get(':id')
-  async retornaTransferenciaPoId(
+  async getById(
     @Param('id') id: number,
     @User() user: UserPayloadInterface,
   ): Promise<SuccessResponseData<Transferencias>> {
@@ -89,7 +89,7 @@ export class TransferenciasController {
   }
 
   @Get('values/origin')
-  async retornaTodasTransferenciasAgrupadosOrigem(
+  async getValuesGroupByOrigin(
     @User() user: UserPayloadInterface,
     @Query() params: FindTransferenceByQueryParamsDTO,
   ) {
@@ -109,7 +109,7 @@ export class TransferenciasController {
   }
 
   @Get('values/destiny')
-  async retornaTodasTransferenciasAgrupadosDestino(
+  async getValuesGroupByDestiny(
     @User() user: UserPayloadInterface,
     @Query() params: FindTransferenceByQueryParamsDTO,
   ) {
@@ -129,7 +129,7 @@ export class TransferenciasController {
   }
 
   @Patch('flag/:id')
-  async alteraFlagPago(
+  async updateFlagPayed(
     @Param('id') id: number,
     @Body() transference: TransferencePatchFlagPayedDTO,
     @User() user: UserPayloadInterface,
@@ -147,7 +147,7 @@ export class TransferenciasController {
   }
 
   @Put(':id')
-  async updateTransference(
+  async update(
     @Param('id') id: number,
     @Body() transference: TransferenciasDTO,
     @User() user: UserPayloadInterface,
@@ -165,7 +165,7 @@ export class TransferenciasController {
   }
 
   @Delete(':id')
-  async deleteTransference(
+  async delete(
     @Param('id') id: number,
     @User() user: UserPayloadInterface,
   ): Promise<SuccessResponseData<TransferenceDeleteResponseDTO>> {
@@ -178,7 +178,7 @@ export class TransferenciasController {
   }
 
   @Post()
-  async insertTransference(
+  async insert(
     @Body() transference: TransferenciasDTO,
     @User() user: UserPayloadInterface,
   ): Promise<SuccessResponseData<Transferencias>> {
@@ -188,7 +188,7 @@ export class TransferenciasController {
     );
     return new SuccessResponseData<Transferencias>(
       data,
-      HttpStatus.OK,
+      HttpStatus.CREATED,
       SUCCESS_MESSAGES.TRANSFERENCE_CREATE_SUCCESS,
     );
   }

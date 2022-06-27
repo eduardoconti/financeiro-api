@@ -1,21 +1,21 @@
-import { ExecutionContext, INestApplication } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
+import { HttpStatus } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
-import * as request from 'supertest';
 
-import { JwtAuthGuard } from '@auth/guard';
-
-import { AppModule } from '@app/app.module';
+import { userPayloadInterfaceMock } from '@auth/mocks';
 
 import { TYPES } from '@config/dependency-injection';
 
-import { DatabaseModule } from '@db/database.module';
-
-import { ValidationPipe } from '@shared/pipes';
-
+import { ExpenseDeleteResponseDTO } from './dto';
 import { ExpenseController } from './expense.controller';
-import { DespesasModule } from './expense.module';
-import { fakeInsertExpenseRequest, mockExpenseEntity } from './mocks';
+import {
+  fakeInsertExpenseRequest,
+  findExpenseByQueryParamsDTOMock,
+  getExpenseAmountGroupByCategoryResponseMock,
+  getExpenseAmountGroupByWalletResponseMock,
+  getExpensesGroupByMonthResponseMock,
+  getTotalExpensesResponseMock,
+  mockExpenseEntity,
+} from './mocks';
 import {
   IDeleteExpenseService,
   IGetExpenseService,
@@ -29,22 +29,16 @@ describe('ExpenseController', () => {
   let getExpenseService: IGetExpenseService;
   let insertExpenseService: IInsertExpenseService;
   let deleteExpenseService: IDeleteExpenseService;
-  let app: INestApplication;
 
   beforeAll(async () => {
     const module = await Test.createTestingModule({
       controllers: [ExpenseController],
       providers: [
         {
-          provide: JwtService,
-          useValue: {
-            sign: jest.fn(),
-          },
-        },
-        {
           provide: TYPES.UpdateExpenseService,
           useValue: {
             update: jest.fn(),
+            updateFlagPayed: jest.fn(),
           },
         },
         {
@@ -52,6 +46,10 @@ describe('ExpenseController', () => {
           useValue: {
             getAllExpensesByUser: jest.fn(),
             getTotalExpenses: jest.fn(),
+            getExpensesGroupByMonth: jest.fn(),
+            getExpenseValuesGroupByCategory: jest.fn(),
+            getExpenseValuesGroupByWallet: jest.fn(),
+            findOne: jest.fn(),
           },
         },
         {
@@ -67,18 +65,7 @@ describe('ExpenseController', () => {
           },
         },
       ],
-    })
-      // .overrideGuard(JwtAuthGuard)
-      // .useValue({
-      //   canActivate: jest.fn(),
-      // })
-      .compile();
-
-    // app = module.createNestApplication();
-    // app.useGlobalPipes(new ValidationPipe());
-    // await app.init();
-    // console.log(app);
-
+    }).compile();
     expenseController = module.get(ExpenseController);
     updateExpenseService = module.get<IUpdateExpenseService>(
       TYPES.UpdateExpenseService,
@@ -100,24 +87,122 @@ describe('ExpenseController', () => {
     expect(deleteExpenseService).toBeDefined();
   });
 
-  // it('should be insert a new expense', () => {
-  //   // jest
-  //   //   .spyOn(insertExpenseService, 'insert')
-  //   //   .mockResolvedValue(mockExpenseEntity);
-  //   return request(app.getHttpServer())
-  //     .post('expense')
-  //     .send(fakeInsertExpenseRequest)
-  //     .expect(500);
-  //   //console.log(data);
-  //   // const { data } = await expenseController.insertExpense(
-  //   //   fakeInsertExpenseRequest,
-  //   //   {
-  //   //     userId: 'userId',
-  //   //     userName: 'userName',
-  //   //     userProfile: 1,
-  //   //   },
-  //   // );
-  //   // expect(data).toBeDefined();
-  //   // expect(data).toEqual(mockExpenseEntity);
-  // });
+  it('should return all expenses', async () => {
+    const mockExpenses = [mockExpenseEntity];
+    jest
+      .spyOn(getExpenseService, 'getAllExpensesByUser')
+      .mockResolvedValue(mockExpenses);
+    const result = await expenseController.getAllExpenses(
+      userPayloadInterfaceMock,
+      findExpenseByQueryParamsDTOMock,
+    );
+    expect(result.data).toEqual(mockExpenses);
+    expect(result.getStatus()).toEqual(HttpStatus.OK);
+  });
+
+  it('should return total expenses', async () => {
+    jest
+      .spyOn(getExpenseService, 'getTotalExpenses')
+      .mockResolvedValue(getTotalExpensesResponseMock);
+    const result = await expenseController.getExpensesValues(
+      userPayloadInterfaceMock,
+      findExpenseByQueryParamsDTOMock,
+    );
+    expect(result.data).toEqual(getTotalExpensesResponseMock);
+    expect(result.getStatus()).toEqual(HttpStatus.OK);
+  });
+
+  it('should insert expense', async () => {
+    jest
+      .spyOn(insertExpenseService, 'insert')
+      .mockResolvedValue(mockExpenseEntity);
+    const result = await expenseController.insertExpense(
+      fakeInsertExpenseRequest,
+      userPayloadInterfaceMock,
+    );
+    expect(result.data).toEqual(mockExpenseEntity);
+    expect(result.getStatus()).toEqual(HttpStatus.CREATED);
+  });
+
+  it('should update expense', async () => {
+    jest
+      .spyOn(updateExpenseService, 'update')
+      .mockResolvedValue(mockExpenseEntity);
+    const result = await expenseController.update(
+      userPayloadInterfaceMock,
+      1,
+      fakeInsertExpenseRequest,
+    );
+    expect(result.data).toEqual(mockExpenseEntity);
+    expect(result.getStatus()).toEqual(HttpStatus.OK);
+  });
+
+  it('should delete expense', async () => {
+    const deleted = new ExpenseDeleteResponseDTO();
+    jest.spyOn(deleteExpenseService, 'delete').mockResolvedValue(deleted);
+    const result = await expenseController.delete(userPayloadInterfaceMock, 1);
+    expect(result.data).toEqual(deleted);
+    expect(result.getStatus()).toEqual(HttpStatus.OK);
+  });
+
+  it('should update flag payed', async () => {
+    jest
+      .spyOn(updateExpenseService, 'updateFlagPayed')
+      .mockResolvedValue(mockExpenseEntity);
+    const result = await expenseController.updateFlagPayed(
+      userPayloadInterfaceMock,
+      1,
+      { pago: true },
+    );
+    expect(result.data).toEqual(mockExpenseEntity);
+    expect(result.getStatus()).toEqual(HttpStatus.OK);
+  });
+
+  it('should get expense by id', async () => {
+    jest
+      .spyOn(getExpenseService, 'findOne')
+      .mockResolvedValue(mockExpenseEntity);
+    const result = await expenseController.getExpenseById(
+      userPayloadInterfaceMock,
+      1,
+    );
+    expect(result.data).toEqual(mockExpenseEntity);
+    expect(result.getStatus()).toEqual(HttpStatus.OK);
+  });
+
+  it('should get expenses values grouped by month', async () => {
+    jest
+      .spyOn(getExpenseService, 'getExpensesGroupByMonth')
+      .mockResolvedValue(getExpensesGroupByMonthResponseMock);
+    const result = await expenseController.getExpensesValuesGroupByMonth(
+      userPayloadInterfaceMock,
+      findExpenseByQueryParamsDTOMock,
+    );
+    expect(result.data).toEqual(getExpensesGroupByMonthResponseMock);
+    expect(result.getStatus()).toEqual(HttpStatus.OK);
+  });
+
+  it('should get expense values gruped by wallet', async () => {
+    jest
+      .spyOn(getExpenseService, 'getExpenseValuesGroupByWallet')
+      .mockResolvedValue(getExpenseAmountGroupByWalletResponseMock);
+    const result = await expenseController.getExpensesValuesGroupByWallet(
+      userPayloadInterfaceMock,
+      findExpenseByQueryParamsDTOMock,
+    );
+    expect(result.data).toEqual(getExpenseAmountGroupByWalletResponseMock);
+    expect(result.getStatus()).toEqual(HttpStatus.OK);
+  });
+
+  it('should get expense values gruped by category', async () => {
+    jest
+      .spyOn(getExpenseService, 'getExpenseValuesGroupByCategory')
+      .mockResolvedValue(getExpenseAmountGroupByCategoryResponseMock);
+    const result = await expenseController.getExpensesValuesGroupByCategory(
+      userPayloadInterfaceMock,
+      findExpenseByQueryParamsDTOMock,
+    );
+    expect(result.data).toEqual(getExpenseAmountGroupByCategoryResponseMock);
+    expect(result.getStatus()).toEqual(HttpStatus.OK);
+  });
 });

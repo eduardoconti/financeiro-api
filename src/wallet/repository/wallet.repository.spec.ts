@@ -19,7 +19,6 @@ import { fakeUserId } from '@expense/mocks';
 import { WalletRepository } from './wallet.repository';
 import { IWalletRepository } from './wallet.repository.interface';
 
-const walletMock: jest.Mocked<Carteiras> = mockWalletEntity;
 describe('WalletRepository', () => {
   let ormRepository: Repository<Carteiras>;
   let walletRepository: IWalletRepository;
@@ -46,7 +45,9 @@ describe('WalletRepository', () => {
   });
 
   it('should insert new wallet', async () => {
-    jest.spyOn(ormRepository, 'create').mockImplementation(() => walletMock);
+    jest
+      .spyOn(ormRepository, 'create')
+      .mockImplementation(() => mockWalletEntity);
     jest
       .spyOn(ormRepository, 'save')
       .mockImplementation(() => Promise.resolve(mockWalletEntity));
@@ -56,7 +57,9 @@ describe('WalletRepository', () => {
   });
 
   it('should throw InsertWalletException', async () => {
-    jest.spyOn(ormRepository, 'create').mockImplementation(() => walletMock);
+    jest
+      .spyOn(ormRepository, 'create')
+      .mockImplementation(() => mockWalletEntity);
     jest
       .spyOn(ormRepository, 'save')
       .mockImplementation(() => Promise.reject(new Error('error')));
@@ -70,7 +73,9 @@ describe('WalletRepository', () => {
     jest
       .spyOn(ormRepository, 'findOneOrFail')
       .mockImplementation(() => Promise.resolve(mockWalletEntity));
-    jest.spyOn(ormRepository, 'create').mockImplementation(() => walletMock);
+    jest
+      .spyOn(ormRepository, 'create')
+      .mockImplementation(() => mockWalletEntity);
     jest
       .spyOn(ormRepository, 'save')
       .mockImplementation(() => Promise.resolve(mockWalletEntity));
@@ -87,7 +92,9 @@ describe('WalletRepository', () => {
     jest
       .spyOn(ormRepository, 'findOneOrFail')
       .mockImplementation(() => Promise.resolve(mockWalletEntity));
-    jest.spyOn(ormRepository, 'create').mockImplementation(() => walletMock);
+    jest
+      .spyOn(ormRepository, 'create')
+      .mockImplementation(() => mockWalletEntity);
     jest
       .spyOn(ormRepository, 'save')
       .mockImplementation(() => Promise.reject(new Error('error')));
@@ -99,6 +106,20 @@ describe('WalletRepository', () => {
         mockWalletRequest,
       ),
     ).rejects.toThrowError(UpdateWalletException);
+  });
+
+  it('should throw ForbiddenWalletException when call update', async () => {
+    jest
+      .spyOn(ormRepository, 'findOneOrFail')
+      .mockImplementation(() => Promise.resolve(mockWalletEntity));
+
+    await expect(
+      walletRepository.update(
+        mockWalletEntity.id as number,
+        'another userid',
+        mockWalletRequest,
+      ),
+    ).rejects.toThrowError(ForbiddenWalletException);
   });
 
   it('should call findById', async () => {

@@ -1,6 +1,7 @@
 import { fakeUserId } from '@expense/mocks';
 
 import {
+  FindTransferenceByQueryParamsDTO,
   GetTotalTransferenceResponseDTO,
   GetTransferenceAmountGroupByWalletResponse,
   TransferenceGroupMonthDTO,
@@ -56,3 +57,10 @@ export const getTotalTransferencesSqlMock = [
     totalOpen: 500,
   }),
 ];
+
+export const findTransferenceByQueryParamsDTOMock: FindTransferenceByQueryParamsDTO =
+  {
+    start: '2020-01-01',
+    end: '2020-12-31',
+    pago: false,
+  };

@@ -27,7 +27,7 @@ export class CategoryRepository implements ICategoryRepository {
       await this.repository.save(newCategory);
       return newCategory;
     } catch (error) {
-      throw new InsertCategoryException(error);
+      throw new InsertCategoryException(error, category);
     }
   }
 
@@ -36,7 +36,7 @@ export class CategoryRepository implements ICategoryRepository {
       await this.repository.update({ id }, category);
       return await this.repository.findOne({ where: { id: id } });
     } catch (error) {
-      throw new UpdateCategoryException(error);
+      throw new UpdateCategoryException(error, category);
     }
   }
 
@@ -63,24 +63,12 @@ export class CategoryRepository implements ICategoryRepository {
     }
   }
 
-  async findAll(userId: string): Promise<Category[]> {
-    try {
-      return await this.repository.find({
-        order: { descricao: 'ASC' },
-        relations: ['user'],
-        where: { userId: userId },
-      });
-    } catch (error) {
-      throw new FindCategoryException(error);
-    }
-  }
-
   async delete(id: number): Promise<CategoryDeleteResponseDTO> {
     try {
       await this.repository.delete({ id });
       return new CategoryDeleteResponseDTO(true);
     } catch (error) {
-      throw new DeleteCategoryException(undefined, error);
+      throw new DeleteCategoryException(error);
     }
   }
 }

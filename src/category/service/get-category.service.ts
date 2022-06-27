@@ -40,6 +40,10 @@ export class GetCategoryService implements IGetCategoryService {
   }
 
   async getAllCategories(userId: string): Promise<Category[]> {
-    return await this.categoriaRepository.findAll(userId);
+    const categories = await this.categoriaRepository.findByParams({ userId });
+    if (!categories) {
+      throw new CategoryNotFoundException();
+    }
+    return categories;
   }
 }

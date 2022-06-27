@@ -11,11 +11,11 @@ import {
   InsertTransferenceService,
   UpdateTransferenceService,
 } from './service';
-import { TransferenciasController } from './transferencias.controller';
+import { TransferenceController } from './transference.controller';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Transferencias])],
-  controllers: [TransferenciasController],
+  controllers: [TransferenceController],
   providers: [
     { provide: TYPES.GetTransferenceService, useClass: GetTransferenceService },
     {
@@ -36,4 +36,4 @@ import { TransferenciasController } from './transferencias.controller';
     },
   ],
 })
-export class TransferenciasModule {}
+export class TransferenceModule {}

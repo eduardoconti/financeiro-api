@@ -31,6 +31,7 @@ import {
   ExpensePatchFlagPayedDTO,
   FindExpenseByQueryParamsDTO,
   GetExpenseAmountGroupByCategoryResponse,
+  GetExpenseAmountGroupByWalletResponse,
   GetTotalExpenseResponseDTO,
 } from './dto';
 import { Despesas } from './entity';
@@ -113,7 +114,7 @@ export class ExpenseController {
   async getExpensesValuesGroupByCategory(
     @User() user: UserPayloadInterface,
     @Query() params: FindExpenseByQueryParamsDTO,
-  ) {
+  ): Promise<SuccessResponseData<GetExpenseAmountGroupByCategoryResponse[]>> {
     const { start, end, pago } = params;
     const data = await this.getExpenseService.getExpenseValuesGroupByCategory(
       user.userId,
@@ -137,7 +138,7 @@ export class ExpenseController {
   async getExpensesValuesGroupByWallet(
     @User() user: UserPayloadInterface,
     @Query() params: FindExpenseByQueryParamsDTO,
-  ): Promise<any> {
+  ): Promise<SuccessResponseData<GetExpenseAmountGroupByWalletResponse[]>> {
     const { start, end, pago } = params;
     const data = await this.getExpenseService.getExpenseValuesGroupByWallet(
       user.userId,
@@ -161,7 +162,7 @@ export class ExpenseController {
   async getExpensesValuesGroupByMonth(
     @User() user: UserPayloadInterface,
     @Query() params: FindExpenseByQueryParamsDTO,
-  ) {
+  ): Promise<SuccessResponseData<ExpenseGroupMonth>> {
     const { start, end } = params;
     const data = await this.getExpenseService.getExpensesGroupByMonth(
       user.userId,
@@ -200,7 +201,7 @@ export class ExpenseController {
     description: 'Change flag payed if different from request.',
   })
   @Patch('flag/:id')
-  async updateFlagPayedById(
+  async updateFlagPayed(
     @User() userToken: UserPayloadInterface,
     @Param('id', ParseIntPipe) id: number,
     @Body() despesa: ExpensePatchFlagPayedDTO,
@@ -221,7 +222,7 @@ export class ExpenseController {
     description: 'Change expense.',
   })
   @Put(':id')
-  async updateById(
+  async update(
     @User() userToken: UserPayloadInterface,
     @Param('id', ParseIntPipe) id: number,
     @Body() despesa: Partial<DespesasDTO>,
@@ -242,7 +243,7 @@ export class ExpenseController {
     description: 'Remove expense.',
   })
   @Delete(':id')
-  async deletById(
+  async delete(
     @User() userToken: UserPayloadInterface,
     @Param('id', ParseIntPipe) id: number,
   ): Promise<SuccessResponseData<ExpenseDeleteResponseDTO>> {

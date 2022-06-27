@@ -20,7 +20,7 @@ import { DespesasModule } from '@expense/expense.module';
 
 import { GraphicModule } from '@graphic/graphic.module';
 
-import { TransferenciasModule } from '@transference/transferencias.module';
+import { TransferenceModule } from '@transference/transference.module';
 
 import { AppController } from './app.controller';
 import { AppService } from './service';
@@ -31,7 +31,7 @@ import { AppService } from './service';
     ReceitasModule,
     CategoryModule,
     WalletModule,
-    TransferenciasModule,
+    TransferenceModule,
     UsersModule,
     AuthModule,
     GraphicModule,

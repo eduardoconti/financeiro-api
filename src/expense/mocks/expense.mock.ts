@@ -1,4 +1,11 @@
-import { DespesasDTO, ExpensesGroupMonthDTO } from '@expense/dto';
+import {
+  DespesasDTO,
+  ExpensesGroupMonthDTO,
+  FindExpenseByQueryParamsDTO,
+  GetExpenseAmountGroupByCategoryResponse,
+  GetExpenseAmountGroupByWalletResponse,
+  GetTotalExpenseResponseDTO,
+} from '@expense/dto';
 import { Despesas } from '@expense/entity';
 import { descriptionOfInstalment } from '@expense/helpers';
 
@@ -70,3 +77,31 @@ export const getExpensesGroupByMonthResponseMock = {
     ...getExpensesGroupByMonthSqlMock[1].data,
   }),
 };
+
+export const findExpenseByQueryParamsDTOMock =
+  new FindExpenseByQueryParamsDTO();
+findExpenseByQueryParamsDTOMock.start = '2020-01-01';
+findExpenseByQueryParamsDTOMock.end = '2020-12-31';
+findExpenseByQueryParamsDTOMock.pago = false;
+
+export const getTotalExpensesResponseMock = GetTotalExpenseResponseDTO.build({
+  total: 200,
+  totalPayed: 100,
+  totalOpen: 100,
+});
+
+export const getExpenseAmountGroupByWalletResponseMock = [
+  GetExpenseAmountGroupByWalletResponse.build({
+    id: 1,
+    valor: 1,
+    descricao: 'teste',
+  }),
+];
+
+export const getExpenseAmountGroupByCategoryResponseMock = [
+  GetExpenseAmountGroupByCategoryResponse.build({
+    id: 1,
+    valor: 1,
+    descricao: 'teste',
+  }),
+];
