@@ -14,11 +14,10 @@ export class DeleteWalletService implements IDeleteWalletService {
     private walletRepository: IWalletRepository,
   ) {}
 
-  async deleteWallet(id: number): Promise<CarteirasDeleteResponseDTO> {
-    try {
-      return await this.walletRepository.delete(id);
-    } catch (error) {
-      throw new BadRequestException(error);
-    }
+  async deleteWallet(
+    id: number,
+    userId: string,
+  ): Promise<CarteirasDeleteResponseDTO> {
+    return await this.walletRepository.delete(id, userId);
   }
 }

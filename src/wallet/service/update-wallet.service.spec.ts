@@ -4,7 +4,8 @@ import { mockWalletEntity, mockWalletRequest } from '@wallet/mocks';
 import { IWalletRepository } from '@wallet/repository';
 
 import { TYPES } from '@config/dependency-injection';
-import { BadRequestException } from '@config/exceptions';
+
+import { fakeUserId } from '@expense/mocks';
 
 import { UpdateWalletService } from './update-wallet.service';
 import { IUpdateWalletService } from './update-wallet.service.interface';
@@ -46,23 +47,11 @@ describe('UpdateWalletService', () => {
 
     const data = await updateWalletService.updateWallet(
       mockWalletEntity.id as number,
+      fakeUserId,
       mockWalletRequest,
     );
 
     expect(data).toBeDefined();
     expect(data).toEqual(mockWalletEntity);
-  });
-
-  it('should throw BadRequestException', async () => {
-    jest
-      .spyOn(walletRepository, 'update')
-      .mockRejectedValue(new BadRequestException());
-
-    await expect(
-      updateWalletService.updateWallet(
-        mockWalletEntity.id as number,
-        mockWalletRequest,
-      ),
-    ).rejects.toThrowError(new BadRequestException());
   });
 });

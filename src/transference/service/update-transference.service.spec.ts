@@ -96,6 +96,24 @@ describe('UpdateTransferenceService', () => {
     expect(result).toEqual({ ...transferenceEntityMock, pago: true });
   });
 
+  it('should call updateFlagPayed and alter flag payed to false', async () => {
+    jest
+      .spyOn(transferenceRepository, 'findOneByParams')
+      .mockResolvedValue({ ...transferenceEntityMock, pago: true });
+
+    jest
+      .spyOn(transferenceRepository, 'update')
+      .mockResolvedValue({ ...transferenceEntityMock, pago: false });
+
+    const result = await updateTransferenceService.updateFlagPayed(
+      1,
+      fakeUserId,
+      { pago: false },
+    );
+
+    expect(result).toEqual({ ...transferenceEntityMock, pago: false });
+  });
+
   it('should call updateFlagPayed with de same flag', async () => {
     jest
       .spyOn(transferenceRepository, 'findOneByParams')

@@ -64,8 +64,8 @@ export class GetTransferenceService implements IGetTransferenceService {
   }
 
   async getTransferenceValuesGroupByWallet(
-    type = 'origin',
     userId: string,
+    type = 'origin',
     start?: string,
     end?: string,
     pago?: boolean,

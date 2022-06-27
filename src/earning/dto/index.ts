@@ -1,5 +1,4 @@
 export * from './earnings-group-month-response.dto';
-export * from './earning-response.dto';
 export * from './earning-request.dto';
 export * from './earning-delete-response.dto';
 export * from './patch-flag-payed.dto';

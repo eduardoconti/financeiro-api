@@ -23,8 +23,8 @@ export interface IGetTransferenceService {
   ): Promise<TransferenceGroupMonth>;
 
   getTransferenceValuesGroupByWallet(
-    type: string,
     userId: string,
+    type?: string,
     start?: string,
     end?: string,
     pago?: boolean,

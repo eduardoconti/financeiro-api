@@ -47,13 +47,4 @@ describe('GetWalletService', () => {
     expect(data).toBeDefined();
     expect(data).toEqual([mockWalletEntity]);
   });
-
-  it('should throw BadRequestException', async () => {
-    jest
-      .spyOn(walletRepository, 'find')
-      .mockRejectedValue(new BadRequestException());
-    await expect(
-      getWalletService.getAllByUserId(mockWalletEntity.userId),
-    ).rejects.toThrowError(new BadRequestException());
-  });
 });

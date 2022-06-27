@@ -8,6 +8,7 @@ import { BadRequestException } from '@config/exceptions';
 
 import { DeleteWalletService } from './delete-wallet.service';
 import { IDeleteWalletService } from './delete-wallet.service.interface';
+import { fakeUserId } from '@expense/mocks';
 
 describe('DeleteWalletService', () => {
   let deleteWalletService: IDeleteWalletService;
@@ -47,19 +48,10 @@ describe('DeleteWalletService', () => {
 
     const data = await deleteWalletService.deleteWallet(
       mockWalletEntity.id as number,
+      fakeUserId,
     );
 
     expect(data).toBeDefined();
     expect(data).toEqual(mockWalletDeleteResponse);
-  });
-
-  it('should throw WalletNotFoundException', async () => {
-    jest
-      .spyOn(walletRepository, 'delete')
-      .mockRejectedValue(new BadRequestException());
-
-    await expect(
-      deleteWalletService.deleteWallet(mockWalletEntity.id as number),
-    ).rejects.toThrowError(new BadRequestException());
   });
 });

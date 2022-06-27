@@ -1,9 +1,16 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 import { CarteirasDeleteResponseDTO, CarteirasDTO } from '@wallet/dto';
 import { Carteiras } from '@wallet/entity';
+import {
+  DeleteWalletException,
+  FindWalletException,
+  ForbiddenWalletException,
+  InsertWalletException,
+  UpdateWalletException,
+} from '@wallet/exception';
 
 import { IWalletRepository } from './wallet.repository.interface';
 
@@ -19,17 +26,24 @@ export class WalletRepository implements IWalletRepository {
       const wallet = this.repository.create(walletRequest);
       return await this.repository.save(wallet);
     } catch (error) {
-      throw new BadRequestException(error);
+      throw new InsertWalletException(error, walletRequest);
     }
   }
 
-  async update(id: number, walletRequest: CarteirasDTO): Promise<Carteiras> {
+  async update(
+    id: number,
+    userId: string,
+    walletRequest: CarteirasDTO,
+  ): Promise<Carteiras> {
+    const entity = await this.findById(id);
+    if (userId !== entity.userId) {
+      throw new ForbiddenWalletException();
+    }
     try {
-      await this.findById(id);
-      await this.repository.update({ id }, walletRequest);
-      return await this.findById(id);
+      const wallet = this.repository.create({ ...entity, ...walletRequest });
+      return await this.repository.save(wallet);
     } catch (error) {
-      throw new BadRequestException(error);
+      throw new UpdateWalletException(error);
     }
   }
 
@@ -42,7 +56,7 @@ export class WalletRepository implements IWalletRepository {
 
       return wallet;
     } catch (error) {
-      throw new BadRequestException(error);
+      throw new FindWalletException(error);
     }
   }
 
@@ -54,17 +68,23 @@ export class WalletRepository implements IWalletRepository {
         where: { userId: userId },
       })
       .catch((error) => {
-        throw new BadRequestException(error);
+        throw new FindWalletException(error);
       });
   }
 
-  async delete(id: number): Promise<CarteirasDeleteResponseDTO> {
+  async delete(
+    id: number,
+    userId: string,
+  ): Promise<CarteirasDeleteResponseDTO> {
+    const entity = await this.findById(id);
+    if (userId !== entity.userId) {
+      throw new ForbiddenWalletException();
+    }
     try {
-      await this.findById(id);
-      await this.repository.delete({ id });
+      await this.repository.remove(entity);
       return new CarteirasDeleteResponseDTO(true);
     } catch (error) {
-      throw new BadRequestException(error);
+      throw new DeleteWalletException(error);
     }
   }
 }

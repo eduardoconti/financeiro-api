@@ -15,11 +15,11 @@ export class UpdateWalletService implements IUpdateWalletService {
     private walletRepository: IWalletRepository,
   ) {}
 
-  async updateWallet(id: number, wallet: CarteirasDTO): Promise<Carteiras> {
-    try {
-      return await this.walletRepository.update(id, wallet);
-    } catch (error) {
-      throw new BadRequestException(error);
-    }
+  async updateWallet(
+    id: number,
+    userId: string,
+    wallet: CarteirasDTO,
+  ): Promise<Carteiras> {
+    return await this.walletRepository.update(id, userId, wallet);
   }
 }

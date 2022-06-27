@@ -57,8 +57,15 @@ export class CategoryController {
     description: 'Return all categories by id from logged user.',
   })
   @Get()
-  async getAll(@User() user: UserPayloadInterface): Promise<Category[]> {
-    return await this.getCategoryService.getAllCategories(user.userId);
+  async getAll(
+    @User() user: UserPayloadInterface,
+  ): Promise<SuccessResponseData<Category[]>> {
+    const data = await this.getCategoryService.getAllCategories(user.userId);
+    return new SuccessResponseData(
+      data,
+      HttpStatus.OK,
+      SUCCESS_MESSAGES.GET_SUCCESS,
+    );
   }
 
   @ApiOperation({

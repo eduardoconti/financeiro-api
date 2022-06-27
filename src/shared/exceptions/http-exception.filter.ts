@@ -67,9 +67,8 @@ export class HttpExceptionFilter implements ExceptionFilter {
               exception?.error?.driverError?.detail ?? exception?.detail,
             ),
           );
-      } else {
-        return response.status(status).json(errorResponse);
       }
+      return response.status(status).json(errorResponse);
     }
 
     return response

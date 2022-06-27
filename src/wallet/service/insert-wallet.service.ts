@@ -1,4 +1,4 @@
-import { Injectable, Inject, BadRequestException } from '@nestjs/common';
+import { Injectable, Inject } from '@nestjs/common';
 
 import { CarteirasDTO } from '@wallet/dto';
 import { Carteiras } from '@wallet/entity';
@@ -16,10 +16,6 @@ export class InsertWalletService implements IInsertWalletService {
   ) {}
 
   async insertWallet(wallet: CarteirasDTO | Carteiras): Promise<Carteiras> {
-    try {
-      return await this.walletRepository.insert(wallet);
-    } catch (error) {
-      throw new BadRequestException(error);
-    }
+    return await this.walletRepository.insert(wallet);
   }
 }

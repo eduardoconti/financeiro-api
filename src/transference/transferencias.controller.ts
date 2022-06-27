@@ -95,8 +95,8 @@ export class TransferenciasController {
   ) {
     const data =
       await this.getTransferenceService.getTransferenceValuesGroupByWallet(
-        'origin',
         user.userId,
+        'origin',
         params.start,
         params.end,
         params.pago,
@@ -115,8 +115,8 @@ export class TransferenciasController {
   ) {
     const data =
       await this.getTransferenceService.getTransferenceValuesGroupByWallet(
-        'destiny',
         user.userId,
+        'destiny',
         params.start,
         params.end,
         params.pago,

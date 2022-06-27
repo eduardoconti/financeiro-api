@@ -1,16 +1,39 @@
 import { Test } from '@nestjs/testing';
+import { Between } from 'typeorm';
 
 import { TYPES } from '@config/dependency-injection';
 
 import { fakeUserId } from '@expense/mocks';
 
 import { TransferenceNotFoundException } from '@transference/exceptions';
-import { transferenceEntityMock } from '@transference/mocks';
+import {
+  getTotalTransferencesSqlMock,
+  getTransferencesGroupByMonthResponseMock,
+  getTransferencesGroupByMonthSqlMock,
+  getTransferenceValuesGroupByWalletMock,
+  transferenceEntityMock,
+} from '@transference/mocks';
 import { ITransferenceRepository } from '@transference/repository';
+
+import { DateHelper } from '@shared/helpers';
 
 import { GetTransferenceService } from './get-transference.service';
 import { IGetTransferenceService } from './get-transference.service.interface';
 
+jest.mock('@shared/helpers', () => ({
+  SqlFileManager: {
+    readFile: () => 'fake sql',
+  },
+  DateHelper: {
+    dateNow: () => new Date('2022-05-26T18:59:18.026Z'),
+    addMonth: () => new Date('2022-05-26T18:59:18.026Z'),
+    date: () => new Date('2022-05-26T18:59:18.026Z'),
+  },
+  OrmHelper: {
+    buildDateWhere: () =>
+      Between(DateHelper.date('2022-24-06'), DateHelper.date('2022-24-06')),
+  },
+}));
 describe('GetTransferenceService', () => {
   let service: IGetTransferenceService;
   let transferenceRepository: ITransferenceRepository;
@@ -72,6 +95,63 @@ describe('GetTransferenceService', () => {
     );
 
     expect(result).toEqual([transferenceEntityMock]);
+  });
+
+  it('should call getTransferencesGroupByMonth', async () => {
+    jest
+      .spyOn(transferenceRepository, 'query')
+      .mockResolvedValue(getTransferencesGroupByMonthSqlMock);
+
+    const result = await service.getTransferencesGroupByMonth(
+      fakeUserId,
+      undefined,
+      '2022-06-24',
+    );
+
+    expect(result).toEqual(getTransferencesGroupByMonthResponseMock);
+  });
+
+  it('should call getTransferenceValuesGroupByWallet', async () => {
+    jest
+      .spyOn(transferenceRepository, 'query')
+      .mockResolvedValue(getTransferenceValuesGroupByWalletMock);
+
+    const result = await service.getTransferenceValuesGroupByWallet(fakeUserId);
+
+    expect(result).toEqual(getTransferenceValuesGroupByWalletMock);
+  });
+
+  it('should call getTransferenceValuesGroupByWallet destiny', async () => {
+    jest
+      .spyOn(transferenceRepository, 'query')
+      .mockResolvedValue(getTransferenceValuesGroupByWalletMock);
+
+    const result = await service.getTransferenceValuesGroupByWallet(
+      fakeUserId,
+      'destiny',
+      undefined,
+      '2022-06-24',
+    );
+
+    expect(result).toEqual(getTransferenceValuesGroupByWalletMock);
+  });
+
+  it('should call getTotalTransferences', async () => {
+    jest
+      .spyOn(transferenceRepository, 'query')
+      .mockResolvedValue(getTotalTransferencesSqlMock);
+
+    const result = await service.getTotalTransferences(
+      fakeUserId,
+      '2022-06-24',
+    );
+
+    expect(result).toEqual(getTotalTransferencesSqlMock[0]);
+    expect(transferenceRepository.query).toHaveBeenCalledWith('fake sql', [
+      fakeUserId,
+      '2022-06-24',
+      undefined,
+    ]);
   });
   it('should call findOne', async () => {
     jest

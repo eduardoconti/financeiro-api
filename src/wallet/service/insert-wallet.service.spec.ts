@@ -48,14 +48,4 @@ describe('InsertWalletService', () => {
     expect(data).toBeDefined();
     expect(data).toEqual(mockWalletEntity);
   });
-
-  it('should throw BadRequestException', async () => {
-    jest
-      .spyOn(walletRepository, 'insert')
-      .mockRejectedValue(new BadRequestException());
-
-    await expect(
-      insertWalletService.insertWallet(mockWalletRequest),
-    ).rejects.toThrow(new BadRequestException());
-  });
 });

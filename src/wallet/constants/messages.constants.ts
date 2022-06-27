@@ -5,6 +5,8 @@ export const WALLET_ERROR_MESSAGES = {
   WALLET_UPDATE_ERROR: 'Ocorreu um erro ao alterar a carteira!',
   WALLET_DELETE_ERROR: 'Ocorreu um erro ao deletar a carteira!',
   WALLET_NOT_FOUND: 'Carteira não encontrada!',
+  WALLET_FORBIDDEN:
+    'Usuário não autorizado a realizar operação para essa carteira!',
 };
 
 export const SUCCESS_MESSAGES = {

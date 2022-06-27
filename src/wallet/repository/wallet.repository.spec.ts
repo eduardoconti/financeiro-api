@@ -1,13 +1,20 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-import { ConfigModule, ConfigService } from '@nestjs/config';
 import { Test } from '@nestjs/testing';
-import { getRepositoryToken, TypeOrmModule } from '@nestjs/typeorm';
-import { getMetadataArgsStorage, Repository } from 'typeorm';
+import { getRepositoryToken } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 import { Carteiras } from '@wallet/entity';
+import {
+  DeleteWalletException,
+  FindWalletException,
+  ForbiddenWalletException,
+  InsertWalletException,
+  UpdateWalletException,
+} from '@wallet/exception';
 import { mockWalletEntity, mockWalletRequest } from '@wallet/mocks';
 
 import { TYPES } from '@config/dependency-injection';
+
+import { fakeUserId } from '@expense/mocks';
 
 import { WalletRepository } from './wallet.repository';
 import { IWalletRepository } from './wallet.repository.interface';
@@ -39,15 +46,145 @@ describe('WalletRepository', () => {
   });
 
   it('should insert new wallet', async () => {
-    const walletRequest = mockWalletRequest;
-    const walletEntity = mockWalletEntity;
-
     jest.spyOn(ormRepository, 'create').mockImplementation(() => walletMock);
     jest
       .spyOn(ormRepository, 'save')
-      .mockImplementation(() => Promise.resolve(walletEntity));
+      .mockImplementation(() => Promise.resolve(mockWalletEntity));
 
-    const result = await walletRepository.insert(walletRequest);
-    expect(result).toEqual(walletEntity);
+    const result = await walletRepository.insert(mockWalletRequest);
+    expect(result).toEqual(mockWalletEntity);
+  });
+
+  it('should throw InsertWalletException', async () => {
+    jest.spyOn(ormRepository, 'create').mockImplementation(() => walletMock);
+    jest
+      .spyOn(ormRepository, 'save')
+      .mockImplementation(() => Promise.reject(new Error('error')));
+
+    await expect(
+      walletRepository.insert(mockWalletRequest),
+    ).rejects.toThrowError(InsertWalletException);
+  });
+
+  it('should update wallet', async () => {
+    jest
+      .spyOn(ormRepository, 'findOneOrFail')
+      .mockImplementation(() => Promise.resolve(mockWalletEntity));
+    jest.spyOn(ormRepository, 'create').mockImplementation(() => walletMock);
+    jest
+      .spyOn(ormRepository, 'save')
+      .mockImplementation(() => Promise.resolve(mockWalletEntity));
+
+    const result = await walletRepository.update(
+      mockWalletEntity.id as number,
+      fakeUserId,
+      mockWalletRequest,
+    );
+    expect(result).toEqual(mockWalletEntity);
+  });
+
+  it('should throw UpdateWalletException', async () => {
+    jest
+      .spyOn(ormRepository, 'findOneOrFail')
+      .mockImplementation(() => Promise.resolve(mockWalletEntity));
+    jest.spyOn(ormRepository, 'create').mockImplementation(() => walletMock);
+    jest
+      .spyOn(ormRepository, 'save')
+      .mockImplementation(() => Promise.reject(new Error('error')));
+
+    await expect(
+      walletRepository.update(
+        mockWalletEntity.id as number,
+        fakeUserId,
+        mockWalletRequest,
+      ),
+    ).rejects.toThrowError(UpdateWalletException);
+  });
+
+  it('should call findById', async () => {
+    jest
+      .spyOn(ormRepository, 'findOneOrFail')
+      .mockImplementation(() => Promise.resolve(mockWalletEntity));
+
+    const result = await walletRepository.findById(
+      mockWalletEntity.id as number,
+    );
+    expect(result).toEqual(mockWalletEntity);
+    expect(ormRepository.findOneOrFail).toHaveBeenCalledWith({
+      relations: ['user'],
+      where: { id: mockWalletEntity.id as number },
+    });
+  });
+
+  it('should throw FindWalletException when call findById', async () => {
+    jest
+      .spyOn(ormRepository, 'findOneOrFail')
+      .mockImplementation(() => Promise.reject(new Error('error')));
+    await expect(
+      walletRepository.findById(mockWalletEntity.id as number),
+    ).rejects.toThrowError(FindWalletException);
+  });
+
+  it('should call find', async () => {
+    jest
+      .spyOn(ormRepository, 'find')
+      .mockImplementation(() => Promise.resolve([mockWalletEntity]));
+
+    const result = await walletRepository.find(mockWalletEntity.userId);
+    expect(result).toEqual([mockWalletEntity]);
+    expect(ormRepository.find).toHaveBeenCalledWith({
+      order: { descricao: 'ASC' },
+      relations: ['user'],
+      where: { userId: mockWalletEntity.userId },
+    });
+  });
+
+  it('should throw FindWalletException when call find', async () => {
+    jest
+      .spyOn(ormRepository, 'find')
+      .mockImplementation(() => Promise.reject(new Error('error')));
+    await expect(
+      walletRepository.find(mockWalletEntity.userId),
+    ).rejects.toThrowError(FindWalletException);
+  });
+
+  it('should call delete', async () => {
+    jest
+      .spyOn(ormRepository, 'findOneOrFail')
+      .mockImplementation(() => Promise.resolve(mockWalletEntity));
+    jest
+      .spyOn(ormRepository, 'remove')
+      .mockImplementation(() => Promise.resolve(mockWalletEntity));
+
+    const result = await walletRepository.delete(
+      mockWalletEntity.id as number,
+      mockWalletEntity.userId,
+    );
+    expect(result).toEqual({ deleted: true });
+  });
+
+  it('should throw ForbiddenWalletException when call delete', async () => {
+    jest
+      .spyOn(ormRepository, 'findOneOrFail')
+      .mockImplementation(() => Promise.resolve(mockWalletEntity));
+    await expect(
+      walletRepository.delete(mockWalletEntity.id as number, 'otherUserId'),
+    ).rejects.toThrowError(ForbiddenWalletException);
+  });
+
+  it('should throw DeleteWalletException when call delete', async () => {
+    jest
+      .spyOn(ormRepository, 'findOneOrFail')
+      .mockImplementation(() => Promise.resolve(mockWalletEntity));
+
+    jest
+      .spyOn(ormRepository, 'remove')
+      .mockImplementation(() => Promise.reject(new Error('orm error')));
+    await expect(
+      walletRepository.delete(
+        mockWalletEntity.id as number,
+        mockWalletEntity.userId,
+      ),
+    ).rejects.toThrowError(DeleteWalletException);
   });
 });

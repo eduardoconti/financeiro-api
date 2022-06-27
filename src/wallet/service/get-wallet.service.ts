@@ -15,10 +15,6 @@ export class GetWalletService implements IGetWalletService {
   ) {}
 
   async getAllByUserId(userId: string): Promise<Carteiras[]> {
-    try {
-      return await this.carteiraRepository.find(userId);
-    } catch (error) {
-      throw new BadRequestException(error);
-    }
+    return await this.carteiraRepository.find(userId);
   }
 }

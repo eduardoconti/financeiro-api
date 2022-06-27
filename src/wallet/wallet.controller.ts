@@ -78,8 +78,9 @@ export class WalletController {
   @Delete(':id')
   async delete(
     @Param('id') id: number,
+    @User() user: UserPayloadInterface,
   ): Promise<SuccessResponseData<CarteirasDeleteResponseDTO>> {
-    const data = await this.deleteWalletService.deleteWallet(id);
+    const data = await this.deleteWalletService.deleteWallet(id, user.userId);
     return new SuccessResponseData<CarteirasDeleteResponseDTO>(
       data,
       HttpStatus.OK,
@@ -90,9 +91,14 @@ export class WalletController {
   @Put(':id')
   async update(
     @Param('id') id: number,
+    @User() user: UserPayloadInterface,
     @Body() wallet: CarteirasDTO,
   ): Promise<SuccessResponseData<Carteiras>> {
-    const data = await this.updateWalletService.updateWallet(id, wallet);
+    const data = await this.updateWalletService.updateWallet(
+      id,
+      user.userId,
+      wallet,
+    );
     return new SuccessResponseData<Carteiras>(
       data,
       HttpStatus.OK,
