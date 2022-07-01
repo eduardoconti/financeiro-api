@@ -1,6 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
 
-import { CategoryNotFoundException } from '@category/exception';
 import { fakeCategoryEntity, fakeCategoryRequest } from '@category/mocks';
 import { ICategoryRepository } from '@category/repository';
 
@@ -67,22 +66,5 @@ describe('UpdateCategoryService', () => {
     );
     expect(result).toEqual(fakeCategoryEntity);
     expect(getCategoryService.findCategoryUserById).toBeCalled();
-  });
-
-  it('should throw CategoryNotFoundException when update repository returns null', async () => {
-    jest.spyOn(categoryRepository, 'update').mockResolvedValue(null);
-
-    jest
-      .spyOn(getCategoryService, 'findCategoryUserById')
-      .mockResolvedValue(fakeCategoryEntity);
-    await expect(
-      service.update(
-        fakeCategoryEntity.id as number,
-        fakeCategoryEntity.userId,
-        fakeCategoryRequest,
-      ),
-    ).rejects.toThrowError(
-      new CategoryNotFoundException(null, fakeCategoryRequest),
-    );
   });
 });

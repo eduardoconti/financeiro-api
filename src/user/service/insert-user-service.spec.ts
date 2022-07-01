@@ -38,7 +38,7 @@ describe('InsertUserService', () => {
         {
           provide: TYPES.UserRepository,
           useValue: {
-            findOneByParams: jest.fn(),
+            findByParams: jest.fn(),
             insert: jest.fn(),
           },
         },
@@ -73,8 +73,8 @@ describe('InsertUserService', () => {
       .spyOn(passwordManagerService, 'getHash')
       .mockImplementation(() => Promise.resolve('test'));
     jest
-      .spyOn(userRepository, 'findOneByParams')
-      .mockImplementation(() => Promise.resolve(null));
+      .spyOn(userRepository, 'findByParams')
+      .mockImplementation(() => Promise.resolve(undefined));
     jest
       .spyOn(userRepository, 'insert')
       .mockImplementation(() => Promise.resolve(fakeUserEntity));
@@ -88,8 +88,8 @@ describe('InsertUserService', () => {
       .spyOn(passwordManagerService, 'getHash')
       .mockImplementation(() => Promise.resolve('test'));
     jest
-      .spyOn(userRepository, 'findOneByParams')
-      .mockImplementation(() => Promise.resolve(fakeUserEntity));
+      .spyOn(userRepository, 'findByParams')
+      .mockImplementation(() => Promise.resolve([fakeUserEntity]));
 
     await expect(insertUserService.insert(fakeUserDTO)).rejects.toThrow(
       UserLoginAlreadyExistsException,
@@ -103,20 +103,20 @@ describe('InsertUserService', () => {
         Promise.reject(new InternalServerErrorException()),
       );
     jest
-      .spyOn(userRepository, 'findOneByParams')
-      .mockImplementation(() => Promise.resolve(null));
+      .spyOn(userRepository, 'findByParams')
+      .mockImplementation(() => Promise.resolve(undefined));
 
     await expect(insertUserService.insert(fakeUserDTO)).rejects.toThrow(
       new InternalServerErrorException(),
     );
   });
 
-  it('should throw userRepository.findOneByParams error', async () => {
+  it('should throw userRepository.findByParams error', async () => {
     jest
       .spyOn(passwordManagerService, 'getHash')
       .mockImplementation(() => Promise.resolve('test'));
     jest
-      .spyOn(userRepository, 'findOneByParams')
+      .spyOn(userRepository, 'findByParams')
       .mockImplementation(() => Promise.reject(new GetUserException('any')));
 
     await expect(insertUserService.insert(fakeUserDTO)).rejects.toThrow(
@@ -129,8 +129,8 @@ describe('InsertUserService', () => {
       .spyOn(passwordManagerService, 'getHash')
       .mockImplementation(() => Promise.resolve('test'));
     jest
-      .spyOn(userRepository, 'findOneByParams')
-      .mockImplementation(() => Promise.resolve(null));
+      .spyOn(userRepository, 'findByParams')
+      .mockImplementation(() => Promise.resolve(undefined));
     jest
       .spyOn(userRepository, 'insert')
       .mockImplementation(() => Promise.reject(new InsertUserException('any')));

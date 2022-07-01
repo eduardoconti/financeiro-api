@@ -17,22 +17,26 @@ export class GetUserService implements IGetUserService {
   ) {}
 
   async getAll(): Promise<Users[]> {
-    return await this.userRepository.findAll();
+    const user = await this.userRepository.findByParams();
+    if (!user) {
+      throw new UserNotFoundException(ERROR_MESSAGES.USER_NOT_FOUND);
+    }
+    return user;
   }
 
   async getUserByLogin(login: string): Promise<Users> {
-    const user = await this.userRepository.findOneByParams({ login });
+    const user = await this.userRepository.findByParams({ login });
     if (!user) {
       throw new UserNotFoundException(ERROR_MESSAGES.USER_NOT_FOUND);
     }
-    return user;
+    return user[0];
   }
 
   async getUserById(id: string): Promise<Users> {
-    const user = await this.userRepository.findOneByParams({ id });
+    const user = await this.userRepository.findByParams({ id });
     if (!user) {
       throw new UserNotFoundException(ERROR_MESSAGES.USER_NOT_FOUND);
     }
-    return user;
+    return user[0];
   }
 }

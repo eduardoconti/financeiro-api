@@ -4,7 +4,8 @@ import {
 } from '@category/dto';
 import { Category } from '@category/entity';
 
-const fakeUserId = '37f5c664-274f-47b2-811b-e3cdd093f27f';
+import { fakeUserId } from '@expense/mocks';
+
 const fakeCategoryId = 1;
 export const fakeCategoryEntity = Category.build({
   id: fakeCategoryId,

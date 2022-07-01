@@ -4,7 +4,10 @@ import { v4 as uuidv4 } from 'uuid';
 import { ERROR_MESSAGES } from '@users/constants';
 import { UserDTO } from '@users/dto';
 import { Users } from '@users/entity';
-import { UserLoginAlreadyExistsException } from '@users/exception';
+import {
+  InsertUserException,
+  UserLoginAlreadyExistsException,
+} from '@users/exception';
 import { IUserRepository } from '@users/repository';
 
 import { TYPES } from '@config/dependency-injection';
@@ -21,13 +24,12 @@ export class InsertUserService implements IInsertUserService {
   ) {}
 
   async insert(userRequest: UserDTO): Promise<Users> {
+    if (await this.userRepository.findByParams({ login: userRequest.login })) {
+      throw new UserLoginAlreadyExistsException(
+        ERROR_MESSAGES.USER_LOGIN_ALREADY_EXISTS_ERROR,
+      );
+    }
     try {
-      const { login } = userRequest;
-      if (await this.userRepository.findOneByParams({ login })) {
-        throw new UserLoginAlreadyExistsException(
-          ERROR_MESSAGES.USER_LOGIN_ALREADY_EXISTS_ERROR,
-        );
-      }
       const passwordHash: string = await this.passwordManager.getHash(
         userRequest.password,
       );
@@ -36,7 +38,7 @@ export class InsertUserService implements IInsertUserService {
       userRequest.id = uuidv4();
       return await this.userRepository.insert(userRequest);
     } catch (error: any) {
-      throw error;
+      throw new InsertUserException(ERROR_MESSAGES.USER_CREATE_ERROR, error);
     }
   }
 }

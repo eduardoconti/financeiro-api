@@ -1,31 +1,23 @@
-/* eslint-disable @typescript-eslint/unbound-method */
 import { Test } from '@nestjs/testing';
 
-import { Category } from '@category/entity';
 import {
   CategoryNotFoundException,
-  FindCategoryException,
   ForbiddenCategoryException,
 } from '@category/exception';
+import { fakeCategoryEntity } from '@category/mocks';
 import { ICategoryRepository } from '@category/repository';
 
 import { TYPES } from '@config/dependency-injection';
+
+import { fakeUserId } from '@expense/mocks';
 
 import { GetCategoryService } from './get-category.service';
 import { IGetCategoryService } from './get-category.service.interface';
 
 const categoryRepositoryMocked = {
-  findAll: jest.fn(),
+  findByParams: jest.fn(),
   findById: jest.fn(),
 };
-
-const fakeUserId = '37f5c664-274f-47b2-811b-e3cdd093f27f';
-const fakeCategoryId = 1;
-const fakeCategory = Category.build({
-  id: fakeCategoryId,
-  descricao: 'Fake Category',
-  userId: fakeUserId,
-});
 describe('GetCategoryService', () => {
   let categoryService: IGetCategoryService;
   let categoryRepository: ICategoryRepository;
@@ -58,121 +50,68 @@ describe('GetCategoryService', () => {
     expect(categoryService).toBeDefined();
   });
 
-  describe('GetAllCategories', () => {
-    it('should return FindCategoryException when there is an unknown error', async (done) => {
-      (categoryRepository.findByParams as jest.Mock).mockRejectedValue(
-        new FindCategoryException(),
-      );
+  it('should return CategoryNotFoundException when call findById', async () => {
+    jest.spyOn(categoryRepository, 'findById').mockResolvedValue(null);
 
-      await expect(() =>
-        categoryService.getAllCategories(fakeUserId),
-      ).rejects.toThrowError(FindCategoryException);
-
-      done();
-    });
-
-    it('should return an array of categories if successfully', async () => {
-      (categoryRepository.findByParams as jest.Mock).mockResolvedValue([
-        fakeCategory,
-      ]);
-
-      const result = await categoryService.getAllCategories(fakeUserId);
-
-      expect(result).toEqual([fakeCategory]);
-      expect(categoryRepository.findByParams).toHaveBeenCalledWith({
-        fakeUserId,
-      });
-    });
+    await expect(() => categoryService.findById(1)).rejects.toThrowError(
+      CategoryNotFoundException,
+    );
   });
 
-  describe('FindById', () => {
-    it('should return FindCategoryException when there is an unknown error', async (done) => {
-      (categoryRepository.findById as jest.Mock).mockRejectedValue(
-        new FindCategoryException(),
-      );
+  it('should call findById', async () => {
+    (categoryRepository.findById as jest.Mock).mockResolvedValue(
+      fakeCategoryEntity,
+    );
+    const result = await categoryService.findById(1);
 
-      await expect(() =>
-        categoryService.findById(fakeCategoryId),
-      ).rejects.toThrowError(FindCategoryException);
-
-      done();
-    });
-
-    it('should return CategoryNotFoundException when there is an unknown error', async (done) => {
-      (categoryRepository.findById as jest.Mock).mockResolvedValue(undefined);
-
-      expect.assertions(2);
-      await expect(() =>
-        categoryService.findById(fakeCategoryId),
-      ).rejects.toThrowError(CategoryNotFoundException);
-      expect(categoryRepository.findById).toBeCalledWith(fakeCategoryId);
-
-      done();
-    });
-
-    it('should return category if successfully', async () => {
-      (categoryRepository.findById as jest.Mock).mockResolvedValue(
-        fakeCategory,
-      );
-      const result = await categoryService.findById(fakeCategoryId);
-
-      expect(result).toEqual(fakeCategory);
-      expect(categoryRepository.findById).toHaveBeenCalledWith(fakeCategoryId);
-    });
+    expect(result).toEqual(fakeCategoryEntity);
+    expect(categoryRepository.findById).toHaveBeenCalledWith(1);
   });
 
-  describe('FindCategoryUserById', () => {
-    it('should return FindCategoryException when there is an unknown error', async (done) => {
-      (categoryRepository.findById as jest.Mock).mockRejectedValue(
-        new FindCategoryException(),
-      );
+  it('should return CategoryNotFoundException when call findCategoryUserById', async () => {
+    jest.spyOn(categoryRepository, 'findById').mockResolvedValue(null);
 
-      expect.assertions(2);
-      await expect(() =>
-        categoryService.findCategoryUserById(fakeCategoryId, fakeUserId),
-      ).rejects.toThrowError(FindCategoryException);
-      expect(categoryRepository.findById).toBeCalledWith(fakeCategoryId);
+    await expect(() =>
+      categoryService.findCategoryUserById(1, fakeUserId),
+    ).rejects.toThrowError(CategoryNotFoundException);
+    expect(categoryRepository.findById).toBeCalledWith(1);
+  });
 
-      done();
-    });
+  it('should return ForbiddenCategoryException when call findCategoryUserById', async () => {
+    jest
+      .spyOn(categoryRepository, 'findById')
+      .mockResolvedValue({ ...fakeCategoryEntity, userId: '123' });
 
-    it('should return CategoryNotFound when not found category', async (done) => {
-      (categoryRepository.findById as jest.Mock).mockResolvedValue(undefined);
+    await expect(() =>
+      categoryService.findCategoryUserById(1, fakeUserId),
+    ).rejects.toThrowError(ForbiddenCategoryException);
+    expect(categoryRepository.findById).toBeCalledWith(1);
+  });
 
-      expect.assertions(2);
-      await expect(() =>
-        categoryService.findCategoryUserById(fakeCategoryId, fakeUserId),
-      ).rejects.toThrowError(CategoryNotFoundException);
-      expect(categoryRepository.findById).toBeCalledWith(fakeCategoryId);
+  it('should call findCategoryUserById', async () => {
+    jest
+      .spyOn(categoryRepository, 'findById')
+      .mockResolvedValue(fakeCategoryEntity);
 
-      done();
-    });
+    const result = await categoryService.findCategoryUserById(1, fakeUserId);
 
-    it('should return ForbiddenCategoryException when category not percente to user', async (done) => {
-      (categoryRepository.findById as jest.Mock).mockResolvedValue(
-        fakeCategory,
-      );
+    expect(result).toEqual(fakeCategoryEntity);
+  });
 
-      expect.assertions(2);
-      await expect(() =>
-        categoryService.findCategoryUserById(fakeCategoryId, '123'),
-      ).rejects.toThrowError(ForbiddenCategoryException);
-      expect(categoryRepository.findById).toBeCalledWith(fakeCategoryId);
+  it('should call getAllCategories', async () => {
+    jest
+      .spyOn(categoryRepository, 'findByParams')
+      .mockResolvedValue([fakeCategoryEntity]);
 
-      done();
-    });
+    const result = await categoryService.getAllCategories(fakeUserId);
 
-    it('should return user category if successfully', async () => {
-      (categoryRepository.findById as jest.Mock).mockResolvedValue(
-        fakeCategory,
-      );
-      const result = await categoryService.findCategoryUserById(
-        fakeCategoryId,
-        fakeUserId,
-      );
+    expect(result).toEqual([fakeCategoryEntity]);
+  });
 
-      expect(result).toEqual(fakeCategory);
-      expect(categoryRepository.findById).toBeCalledWith(fakeCategoryId);
-    });
+  it('should throw CategoryNotFoundException when call getAllCategories', async () => {
+    jest.spyOn(categoryRepository, 'findByParams').mockResolvedValue(null);
+    await expect(
+      categoryService.getAllCategories(fakeUserId),
+    ).rejects.toThrowError(CategoryNotFoundException);
   });
 });

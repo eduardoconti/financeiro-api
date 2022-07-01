@@ -9,6 +9,7 @@ import {
   IsString,
   Length,
   Min,
+  ValidateIf,
 } from 'class-validator';
 
 import { Instalment } from '@expense/decorators';
@@ -76,6 +77,7 @@ export class DespesasDTO {
   pagamento?: Date;
 
   @ApiPropertyOptional({ description: 'Flag Pago', default: false })
+  @ValidateIf((o) => o.pago !== undefined)
   @IsBoolean({ message: CONSTRAINTS_MESSAGES.IS_BOOLEAN })
   pago?: boolean;
 

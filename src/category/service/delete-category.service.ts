@@ -21,8 +21,11 @@ export class DeleteCategoryService implements IDeleteCategoryService {
     id: number,
     userId: string,
   ): Promise<CategoryDeleteResponseDTO> {
-    await this.getCategoryService.findCategoryUserById(id, userId);
+    const category = await this.getCategoryService.findCategoryUserById(
+      id,
+      userId,
+    );
 
-    return await this.categoryRepository.delete(id);
+    return await this.categoryRepository.delete(category);
   }
 }

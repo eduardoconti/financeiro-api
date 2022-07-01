@@ -28,10 +28,6 @@ export class UpdateCategoryService implements IUpdateCategoryService {
       id,
       descricao: categoryUpdateRequest.descricao,
     });
-    const category = await this.categoryRepository.update(id, entity);
-    if (!category) {
-      throw new CategoryNotFoundException(null, categoryUpdateRequest);
-    }
-    return category;
+    return await this.categoryRepository.update(entity);
   }
 }

@@ -8,6 +8,7 @@ export class InsertCategoryRequestDTO {
     description: 'Descrição da categoria',
     minLength: CONSTRAINTS_LIMITS.DESCRICAO.min,
     maxLength: CONSTRAINTS_LIMITS.DESCRICAO.max,
+    example: 'Alimentação',
   })
   @IsString({ message: CONSTRAINTS_MESSAGES.IS_STRING })
   @Length(CONSTRAINTS_LIMITS.DESCRICAO.min, CONSTRAINTS_LIMITS.DESCRICAO.max, {

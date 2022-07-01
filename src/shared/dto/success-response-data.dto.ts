@@ -1,9 +1,11 @@
 import { HttpStatus } from '@nestjs/common';
+import { ApiResponseProperty } from '@nestjs/swagger';
 
 import { HttpInternalMessages } from '../enums';
 import { ResponseDataDto } from './response-data.dto';
 
 export class SuccessResponseData<D> extends ResponseDataDto {
+  @ApiResponseProperty()
   data: D;
 
   constructor(

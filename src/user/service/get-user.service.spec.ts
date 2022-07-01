@@ -30,8 +30,7 @@ describe('GetUserService', () => {
         {
           provide: TYPES.UserRepository,
           useValue: {
-            findOneByParams: jest.fn(),
-            findAll: jest.fn(),
+            findByParams: jest.fn(),
           },
         },
         {
@@ -57,16 +56,17 @@ describe('GetUserService', () => {
   });
 
   it('should be able to get all users', async () => {
-    jest.spyOn(userRepository, 'findAll').mockImplementation(() => {
+    jest.spyOn(userRepository, 'findByParams').mockImplementation(() => {
       return Promise.resolve([fakeUserEntity]);
     });
     const users = await getUserService.getAll();
     expect(users).toBeDefined();
+    expect(userRepository.findByParams).toHaveBeenCalledWith();
   });
 
   it('should be able to get user by login', async () => {
-    jest.spyOn(userRepository, 'findOneByParams').mockImplementation(() => {
-      return Promise.resolve(fakeUserEntity);
+    jest.spyOn(userRepository, 'findByParams').mockImplementation(() => {
+      return Promise.resolve([fakeUserEntity]);
     });
     const user = await getUserService.getUserByLogin('test');
     expect(user).toBeDefined();
@@ -75,8 +75,8 @@ describe('GetUserService', () => {
   });
 
   it('should be able to get user by id', async () => {
-    jest.spyOn(userRepository, 'findOneByParams').mockImplementation(() => {
-      return Promise.resolve(fakeUserEntity);
+    jest.spyOn(userRepository, 'findByParams').mockImplementation(() => {
+      return Promise.resolve([fakeUserEntity]);
     });
     const user = await getUserService.getUserById('test');
     expect(user).toBeDefined();
@@ -85,8 +85,8 @@ describe('GetUserService', () => {
   });
 
   it('should throw UserNotFoundException when get user by id', async () => {
-    jest.spyOn(userRepository, 'findOneByParams').mockImplementation(() => {
-      return Promise.resolve(null);
+    jest.spyOn(userRepository, 'findByParams').mockImplementation(() => {
+      return Promise.resolve(undefined);
     });
     await expect(getUserService.getUserById('test')).rejects.toThrow(
       new UserNotFoundException('any'),
@@ -94,8 +94,8 @@ describe('GetUserService', () => {
   });
 
   it('should throw UserNotFoundException when get user by login', async () => {
-    jest.spyOn(userRepository, 'findOneByParams').mockImplementation(() => {
-      return Promise.resolve(null);
+    jest.spyOn(userRepository, 'findByParams').mockImplementation(() => {
+      return Promise.resolve(undefined);
     });
     await expect(getUserService.getUserByLogin('test')).rejects.toThrow(
       new UserNotFoundException('any'),

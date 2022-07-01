@@ -3,7 +3,7 @@ import { ApiResponse, getSchemaPath } from '@nestjs/swagger';
 
 import { HttpInternalMessages } from '@shared/enums';
 
-export const SwaggerApiSuccessResponse = <TModel extends Type<any>>(
+export const SwaggerApiSuccessArrayResponse = <TModel extends Type<any>>(
   message: string,
   model: TModel,
   status: HttpStatus = HttpStatus.OK,
@@ -12,7 +12,6 @@ export const SwaggerApiSuccessResponse = <TModel extends Type<any>>(
   return applyDecorators(
     ApiResponse({
       schema: {
-        title: 'SuccessResponseDTO',
         properties: {
           status: {
             example: status,
@@ -29,7 +28,7 @@ export const SwaggerApiSuccessResponse = <TModel extends Type<any>>(
             type: 'string',
             description: 'Response internalMessage',
           },
-          data: { $ref: getSchemaPath(model) },
+          data: { items: { $ref: getSchemaPath(model) } },
         },
       },
       status: status,

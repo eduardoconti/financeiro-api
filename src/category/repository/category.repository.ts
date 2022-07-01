@@ -22,53 +22,46 @@ export class CategoryRepository implements ICategoryRepository {
   ) {}
 
   async insert(category: Category): Promise<Category> {
-    try {
-      const newCategory = this.repository.create(category);
-      await this.repository.save(newCategory);
-      return newCategory;
-    } catch (error) {
+    const newCategory = this.repository.create(category);
+
+    return await this.repository.save(newCategory).catch((error) => {
       throw new InsertCategoryException(error, category);
-    }
+    });
   }
 
-  async update(id: number, category: Category): Promise<Category | null> {
-    try {
-      await this.repository.update({ id }, category);
-      return await this.repository.findOne({ where: { id: id } });
-    } catch (error) {
+  async update(category: Category): Promise<Category> {
+    return await this.repository.save(category).catch((error) => {
       throw new UpdateCategoryException(error, category);
-    }
+    });
   }
 
   async findById(id: number): Promise<Category | null> {
-    try {
-      return await this.repository.findOne({
+    return await this.repository
+      .findOne({
         where: { id: id },
         relations: ['user'],
+      })
+      .catch((error) => {
+        throw new FindCategoryException(error);
       });
-    } catch (error) {
-      throw new FindCategoryException(error);
-    }
   }
 
   async findByParams(params: FindCategoryByParams): Promise<Category[] | null> {
-    try {
-      return await this.repository.find({
+    return await this.repository
+      .find({
         relations: ['user'],
         where: params,
         order: { descricao: 'ASC' },
+      })
+      .catch((error) => {
+        throw new FindCategoryException(error, { params: params });
       });
-    } catch (error) {
-      throw new FindCategoryException(error, { params: params });
-    }
   }
 
-  async delete(id: number): Promise<CategoryDeleteResponseDTO> {
-    try {
-      await this.repository.delete({ id });
-      return new CategoryDeleteResponseDTO(true);
-    } catch (error) {
+  async delete(category: Category): Promise<CategoryDeleteResponseDTO> {
+    await this.repository.remove(category).catch((error) => {
       throw new DeleteCategoryException(error);
-    }
+    });
+    return new CategoryDeleteResponseDTO(true);
   }
 }

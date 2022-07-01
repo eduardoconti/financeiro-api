@@ -11,7 +11,12 @@ import {
   ParseIntPipe,
   HttpStatus,
 } from '@nestjs/common';
-import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiExtraModels,
+  ApiOperation,
+  ApiTags,
+} from '@nestjs/swagger';
 
 import { JwtAuthGuard } from '@auth/guard/jwt-auth.guard';
 import { UserPayloadInterface } from '@auth/interfaces/user-payload.interface';
@@ -20,11 +25,17 @@ import { User } from '@users/decorator';
 
 import { TYPES } from '@config/dependency-injection';
 
+import {
+  SwaggerApiInternalServerErrorResponse,
+  SwaggerApiSuccessArrayResponse,
+  SwaggerApiSuccessResponse,
+} from '@shared/decorators/swagger';
 import { SuccessResponseData } from '@shared/dto';
 
-import { SUCCESS_MESSAGES } from './constants';
+import { ERROR_MESSAGES, SUCCESS_MESSAGES } from './constants';
 import {
   CategoryDeleteResponseDTO,
+  CategoryResponseDTO,
   InsertCategoryRequestDTO,
   UpdateCategoryDTO,
 } from './dto';
@@ -40,6 +51,7 @@ import {
 @ApiTags('Categories')
 @UseGuards(JwtAuthGuard)
 @ApiBearerAuth()
+@ApiExtraModels(CategoryResponseDTO)
 export class CategoryController {
   constructor(
     @Inject(TYPES.GetCategoryService)
@@ -57,6 +69,14 @@ export class CategoryController {
     description: 'Return all categories by id from logged user.',
   })
   @Get()
+  @SwaggerApiSuccessArrayResponse(
+    SUCCESS_MESSAGES.GET_SUCCESS,
+    CategoryResponseDTO,
+  )
+  @SwaggerApiInternalServerErrorResponse(
+    ERROR_MESSAGES.CATEGORY_FIND_ERROR,
+    'Database error',
+  )
   async getAll(
     @User() user: UserPayloadInterface,
   ): Promise<SuccessResponseData<Category[]>> {
@@ -73,6 +93,11 @@ export class CategoryController {
     description: 'Return categories by id and logged user id.',
   })
   @Get(':id')
+  @SwaggerApiSuccessResponse(SUCCESS_MESSAGES.GET_SUCCESS, CategoryResponseDTO)
+  @SwaggerApiInternalServerErrorResponse(
+    ERROR_MESSAGES.CATEGORY_FIND_ERROR,
+    'Database error',
+  )
   async getOne(
     @Param('id', ParseIntPipe) id: number,
     @User() user: UserPayloadInterface,
@@ -93,6 +118,14 @@ export class CategoryController {
     description: 'Create an category for use in expense.',
   })
   @Post()
+  @SwaggerApiSuccessResponse(
+    SUCCESS_MESSAGES.CATEGORY_CREATE_SUCCESS,
+    CategoryResponseDTO,
+  )
+  @SwaggerApiInternalServerErrorResponse(
+    ERROR_MESSAGES.CATEGORY_CREATE_ERROR,
+    'Failing row contains (37, 867dfc6e-1df0-4e3e-875e-15d1c579a5ff, null)',
+  )
   async insert(
     @Body() categoryRequest: InsertCategoryRequestDTO,
     @User() user: UserPayloadInterface,
