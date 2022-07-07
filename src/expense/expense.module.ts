@@ -1,6 +1,10 @@
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
+import { CategoryModule } from '@category/category.module';
+
+import { WalletModule } from '@wallet/wallet.module';
+
 import { TYPES } from '@config/dependency-injection';
 
 import { DatabaseModule } from '@db/database.module';
@@ -17,7 +21,12 @@ import {
 import { UpdateExpenseService } from './service/update-expense.service';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Despesas]), DatabaseModule],
+  imports: [
+    TypeOrmModule.forFeature([Despesas]),
+    DatabaseModule,
+    WalletModule,
+    CategoryModule,
+  ],
   controllers: [ExpenseController],
   providers: [
     {

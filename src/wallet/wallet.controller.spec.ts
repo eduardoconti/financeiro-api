@@ -28,7 +28,7 @@ describe('WalletController', () => {
       controllers: [WalletController],
       providers: [
         {
-          provide: TYPES.CarteiraService,
+          provide: TYPES.GetWalletService,
           useValue: {
             getAllByUserId: jest.fn(),
           },
@@ -54,7 +54,7 @@ describe('WalletController', () => {
       ],
     }).compile();
 
-    getWalletService = module.get<IGetWalletService>(TYPES.CarteiraService);
+    getWalletService = module.get<IGetWalletService>(TYPES.GetWalletService);
     insertWalletService = module.get<IInsertWalletService>(
       TYPES.InsertWalletService,
     );

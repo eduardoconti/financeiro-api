@@ -1,8 +1,34 @@
-import { GeneralGraphicDataDTO } from '.';
+import { ApiProperty, ApiResponseProperty } from '@nestjs/swagger';
+
+import { GeneralGraphicDataDTO } from './general-graphic-data.dto';
 import { GeneralGraphicResponseDataDTO } from './general-graphic-response-data.dto';
 
+export class GeneralDTO {
+  @ApiResponseProperty({
+    type: GeneralGraphicDataDTO,
+  })
+  earnings: GeneralGraphicDataDTO;
+  @ApiResponseProperty({
+    type: GeneralGraphicDataDTO,
+  })
+  expenses: GeneralGraphicDataDTO;
+
+  constructor(
+    earnings: GeneralGraphicDataDTO,
+    expenses: GeneralGraphicDataDTO,
+  ) {
+    this.earnings = earnings;
+    this.expenses = expenses;
+  }
+}
 export class GeneralGraphicResponseDTO {
+  @ApiProperty({
+    type: GeneralDTO,
+  })
   public geral: GeneralDTO;
+  @ApiProperty({
+    type: [GeneralGraphicResponseDataDTO],
+  })
   public months: GeneralGraphicResponseDataDTO[] = [];
 
   constructor() {
@@ -27,18 +53,5 @@ export class GeneralGraphicResponseDTO {
 
   setData(months: GeneralGraphicResponseDataDTO[]) {
     this.months = months;
-  }
-}
-
-export class GeneralDTO {
-  earnings: GeneralGraphicDataDTO;
-  expenses: GeneralGraphicDataDTO;
-
-  constructor(
-    earnings: GeneralGraphicDataDTO,
-    expenses: GeneralGraphicDataDTO,
-  ) {
-    this.earnings = earnings;
-    this.expenses = expenses;
   }
 }

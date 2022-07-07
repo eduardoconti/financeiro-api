@@ -2,10 +2,11 @@ import { Test } from '@nestjs/testing';
 
 import { TYPES } from '@config/dependency-injection';
 
+import { SuccessResponseData } from '@shared/dto';
+
 import { AuthController } from './auth.controller';
 import { singDtoMock, userPayloadInterfaceMock } from './mocks';
 import { IAuthService } from './service';
-import { SuccessResponseData } from '@shared/dto';
 
 describe('AuthController', () => {
   let authController: AuthController;

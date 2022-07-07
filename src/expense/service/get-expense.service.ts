@@ -128,4 +128,33 @@ export class GetExpenseService implements IGetExpenseService {
     }
     return expense;
   }
+
+  async getUnplannedExpenses(
+    userId: string,
+    start?: string,
+    end?: string,
+  ): Promise<ExpenseGroupMonth> {
+    const sqlString = SqlFileManager.readFile(
+      __dirname,
+      'get-unplanned-expenses.sql',
+    );
+
+    const despesas = await this.expenseRepository.query<ExpensesGroupMonthDTO>(
+      sqlString,
+      [userId, start, end],
+    );
+
+    if (!despesas) {
+      throw new ExpenseNotFoundException();
+    }
+    const monthExpenses: ExpenseGroupMonth = {};
+
+    despesas.forEach((element: ExpensesGroupMonthDTO) => {
+      monthExpenses[element.month] = ExpensesGroupMonthDTO.build({
+        ...element,
+      });
+    });
+
+    return monthExpenses;
+  }
 }

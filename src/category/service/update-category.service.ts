@@ -2,7 +2,6 @@ import { Inject } from '@nestjs/common';
 
 import { UpdateCategoryDTO } from '@category/dto';
 import { Category } from '@category/entity';
-import { CategoryNotFoundException } from '@category/exception';
 import { ICategoryRepository } from '@category/repository';
 
 import { TYPES } from '@config/dependency-injection';

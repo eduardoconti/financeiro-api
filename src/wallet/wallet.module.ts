@@ -24,7 +24,7 @@ import { WalletController } from './wallet.controller';
       useClass: WalletRepository,
     },
     {
-      provide: TYPES.CarteiraService,
+      provide: TYPES.GetWalletService,
       useClass: GetWalletService,
     },
     {
@@ -38,6 +38,12 @@ import { WalletController } from './wallet.controller';
     {
       provide: TYPES.DeleteWalletService,
       useClass: DeleteWalletService,
+    },
+  ],
+  exports: [
+    {
+      provide: TYPES.GetWalletService,
+      useClass: GetWalletService,
     },
   ],
 })

@@ -1,6 +1,10 @@
 import { Inject } from '@nestjs/common';
 import { v4 as uuidv4 } from 'uuid';
 
+import { IGetCategoryService } from '@category/service';
+
+import { IGetWalletService } from '@wallet/service';
+
 import { TYPES } from '@config/dependency-injection';
 
 import { IDatabaseService } from '@db/services';
@@ -21,12 +25,21 @@ export class InsertExpenseService implements IInsertExpenseService {
     private readonly expenseRepository: IExpenseRepository,
     @Inject(TYPES.DatabaseService)
     private readonly databaseService: IDatabaseService,
+    @Inject(TYPES.GetWalletService)
+    private getWalletService: IGetWalletService,
+    @Inject(TYPES.GetCategoryService)
+    private getCategoryService: IGetCategoryService,
   ) {}
 
   async insert(
     expense: DespesasDTO,
     userId: string,
   ): Promise<Despesas | Despesas[]> {
+    await this.getWalletService.findOne(expense.carteiraId, userId);
+    await this.getCategoryService.findCategoryUserById(
+      expense.categoriaId,
+      userId,
+    );
     if (expense.instalment === 1) {
       const entity = Despesas.build({
         ...expense,

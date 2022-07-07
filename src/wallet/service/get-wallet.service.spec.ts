@@ -4,7 +4,6 @@ import { mockWalletEntity } from '@wallet/mocks';
 import { IWalletRepository } from '@wallet/repository';
 
 import { TYPES } from '@config/dependency-injection';
-import { BadRequestException } from '@config/exceptions';
 
 import { GetWalletService } from './get-wallet.service';
 import { IGetWalletService } from './get-wallet.service.interface';
@@ -23,13 +22,13 @@ describe('GetWalletService', () => {
           },
         },
         {
-          provide: TYPES.CarteiraService,
+          provide: TYPES.GetWalletService,
           useClass: GetWalletService,
         },
       ],
     }).compile();
 
-    getWalletService = module.get<GetWalletService>(TYPES.CarteiraService);
+    getWalletService = module.get<GetWalletService>(TYPES.GetWalletService);
     walletRepository = module.get<IWalletRepository>(TYPES.WalletRepository);
     jest.clearAllMocks();
   });
@@ -46,5 +45,19 @@ describe('GetWalletService', () => {
 
     expect(data).toBeDefined();
     expect(data).toEqual([mockWalletEntity]);
+  });
+
+  it('should find one', async () => {
+    jest
+      .spyOn(walletRepository, 'findById')
+      .mockResolvedValue(mockWalletEntity);
+
+    const data = await getWalletService.findOne(
+      mockWalletEntity.id as number,
+      mockWalletEntity.userId,
+    );
+
+    expect(data).toBeDefined();
+    expect(data).toEqual(mockWalletEntity);
   });
 });

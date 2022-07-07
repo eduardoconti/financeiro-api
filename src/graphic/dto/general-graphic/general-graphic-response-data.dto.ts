@@ -1,14 +1,28 @@
-import { Transform } from 'class-transformer';
+import { ApiResponseProperty } from '@nestjs/swagger';
 
-import { GeneralGraphicDataDTO } from '.';
+import { GeneralGraphicDataDTO } from './general-graphic-data.dto';
 
 export class GeneralGraphicResponseDataDTO {
+  @ApiResponseProperty({
+    type: String,
+    example: '2022-jun',
+  })
   month: string;
+  @ApiResponseProperty({
+    type: GeneralGraphicDataDTO,
+  })
   earnings: GeneralGraphicDataDTO;
+  @ApiResponseProperty({
+    type: GeneralGraphicDataDTO,
+  })
   expenses: GeneralGraphicDataDTO;
-  @Transform(({ value }) => Math.round(value * 100) / 100)
+  @ApiResponseProperty({
+    type: Number,
+  })
   ballance: number;
-  @Transform(({ value }) => Math.round(value * 100) / 100)
+  @ApiResponseProperty({
+    type: Number,
+  })
   totalBallance: number;
 
   private constructor(

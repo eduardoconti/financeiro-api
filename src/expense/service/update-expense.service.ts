@@ -1,5 +1,9 @@
 import { Injectable, Inject } from '@nestjs/common';
 
+import { IGetCategoryService } from '@category/service';
+
+import { IGetWalletService } from '@wallet/service';
+
 import { TYPES } from '@config/dependency-injection';
 
 import { EXPENSE_ERROR_MESSAGES } from '@expense/constants';
@@ -21,6 +25,10 @@ export class UpdateExpenseService implements IUpdateExpenseService {
   constructor(
     @Inject(TYPES.ExpenseRepository)
     private expenseRepository: IExpenseRepository,
+    @Inject(TYPES.GetWalletService)
+    private getWalletService: IGetWalletService,
+    @Inject(TYPES.GetCategoryService)
+    private getCategoryService: IGetCategoryService,
   ) {}
 
   async update(
@@ -40,8 +48,20 @@ export class UpdateExpenseService implements IUpdateExpenseService {
       throw new UpdateInstalmentException();
     }
 
+    if (despesa.carteiraId) {
+      await this.getWalletService.findOne(despesa.carteiraId, userId);
+    }
+
+    if (despesa.categoriaId) {
+      await this.getCategoryService.findCategoryUserById(
+        expense.categoriaId,
+        userId,
+      );
+    }
+
     if (despesa.pagamento && !despesa.pago) {
       despesa.pago = true;
+      despesa.pagamento = DateHelper.dateNow();
     }
 
     if (despesa.instalment !== expense.instalment) {
@@ -53,8 +73,7 @@ export class UpdateExpenseService implements IUpdateExpenseService {
     return await this.expenseRepository.update(id, {
       ...despesa,
       updatedAt: DateHelper.dateNow(),
-      pagamento:
-        despesa.pagamento ?? despesa.pago ? DateHelper.dateNow() : undefined,
+      pagamento: despesa.pagamento ?? expense.pagamento,
     });
   }
 

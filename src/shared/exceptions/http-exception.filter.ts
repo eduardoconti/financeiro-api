@@ -57,7 +57,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
     if (exception instanceof HttpBaseException) {
       const errorResponse = exception.getResponse();
       const status = exception.status;
-      const title = exception.detail;
+      const title = exception.title;
       if (exception?.error?.constructor === QueryFailedError) {
         return response
           .status(status)

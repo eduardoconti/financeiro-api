@@ -37,7 +37,7 @@ import {
 @ApiBearerAuth()
 export class WalletController {
   constructor(
-    @Inject(TYPES.CarteiraService)
+    @Inject(TYPES.GetWalletService)
     private readonly getWalletService: IGetWalletService,
     @Inject(TYPES.InsertWalletService)
     private readonly insertWalletService: IInsertWalletService,

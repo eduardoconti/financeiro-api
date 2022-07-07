@@ -4,11 +4,11 @@ import { mockWalletDeleteResponse, mockWalletEntity } from '@wallet/mocks';
 import { IWalletRepository } from '@wallet/repository';
 
 import { TYPES } from '@config/dependency-injection';
-import { BadRequestException } from '@config/exceptions';
+
+import { fakeUserId } from '@expense/mocks';
 
 import { DeleteWalletService } from './delete-wallet.service';
 import { IDeleteWalletService } from './delete-wallet.service.interface';
-import { fakeUserId } from '@expense/mocks';
 
 describe('DeleteWalletService', () => {
   let deleteWalletService: IDeleteWalletService;

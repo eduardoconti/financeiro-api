@@ -8,6 +8,7 @@ import {
   GetExpenseAmountGroupByCategoryResponse,
   GetExpenseAmountGroupByWalletResponse,
 } from '@expense/dto';
+import { ExpenseNotFoundException } from '@expense/exceptions';
 import { buildParams } from '@expense/helpers';
 import { mockExpenseEntity } from '@expense/mocks';
 import { IExpenseRepository } from '@expense/repository';
@@ -190,5 +191,28 @@ describe('GetExpenseService', () => {
 
     expect(getExpenseService.findOne({ userId })).rejects.toThrowError();
     expect(expenseRepository.findOneByParams).toHaveBeenCalledWith({ userId });
+  });
+
+  it('should be able to getUnplannedExpenses', async () => {
+    const mock = new ExpensesGroupMonthDTO(202206, [mockExpenseEntity]);
+    jest.spyOn(expenseRepository, 'query').mockResolvedValue([mock]);
+
+    const data = await getExpenseService.getUnplannedExpenses(
+      userId,
+      start,
+      end,
+    );
+    expect(data).toBeDefined();
+    expect(data).toEqual({
+      '202206': mock,
+    });
+  });
+
+  it('should throw ExpenseNotFoundException when call getUnplannedExpenses', async () => {
+    jest.spyOn(expenseRepository, 'query').mockImplementation(undefined);
+
+    await expect(
+      getExpenseService.getUnplannedExpenses(userId, start, end),
+    ).rejects.toThrowError(ExpenseNotFoundException);
   });
 });

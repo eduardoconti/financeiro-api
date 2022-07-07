@@ -9,11 +9,14 @@ import { TYPES } from '@config/dependency-injection';
 
 import { ExpensesGroupMonthDTO } from '@expense/dto';
 import { IGetExpenseService } from '@expense/service';
+import { ExpenseGroupMonth } from '@expense/types';
 
 import {
   GeneralGraphicDataDTO,
   GeneralGraphicResponseDataDTO,
   GeneralGraphicResponseDTO,
+  GeneralUnplannedDTO,
+  UnplannedExpensesResponseDTO,
 } from '@graphic/dto/general-graphic';
 
 import { IGraphicService } from './graphic.service.interface';
@@ -40,10 +43,9 @@ export class GraphicService implements IGraphicService {
 
     const expensesProperties = Object.getOwnPropertyNames(despesas);
     const receitasProperties = Object.getOwnPropertyNames(receitas);
-    const properties =
-      expensesProperties.length > receitasProperties.length
-        ? expensesProperties
-        : receitasProperties;
+    const properties = [
+      ...new Set([...expensesProperties, ...receitasProperties]),
+    ];
 
     properties.forEach((key) => {
       receitas[key] ??
@@ -94,6 +96,32 @@ export class GraphicService implements IGraphicService {
     return graphicData;
   }
 
+  async unplannedExpenses(
+    userId: string,
+    start?: string,
+    end?: string,
+  ): Promise<UnplannedExpensesResponseDTO> {
+    const data: ExpenseGroupMonth =
+      await this.getExpenseService.getUnplannedExpenses(userId, start, end);
+    const generalUnplannedDTO = new GeneralUnplannedDTO();
+    const response = new UnplannedExpensesResponseDTO();
+    Object.getOwnPropertyNames(data).forEach((key) => {
+      const { total, totalOpen, totalPayed, quantity } = data[key];
+      generalUnplannedDTO.sum({
+        total,
+        totalOpen,
+        totalPayed,
+        quantity,
+      });
+      response.addMonth({
+        ...data[key],
+        month: this.getMonthName(key),
+      });
+    });
+
+    response.setGeral(generalUnplannedDTO);
+    return response;
+  }
   private getMonthName(yearMonth: string): string {
     moment().locale('pb-br');
     const dateString = this.createDate(yearMonth);

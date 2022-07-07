@@ -7,13 +7,7 @@ import { Users } from '@users/entity';
 
 import { TYPES } from '@config/dependency-injection';
 
-import { SuccessResponseData } from '@shared/dto';
-
-import {
-  GeneralGraphicDataDTO,
-  GeneralGraphicResponseDataDTO,
-  GeneralGraphicResponseDTO,
-} from './dto/general-graphic';
+import { GeneralGraphicResponseDTO } from './dto/general-graphic';
 import { GraphicController } from './graphic.controller';
 import { IGraphicService } from './service';
 const fakeUserDTO: UserDTO = new UserDTO();
@@ -27,12 +21,6 @@ const fakeUserEntity: Users = Users.build(fakeUserDTO);
 
 const fakeUserPayloadDto: UserPayloadDto = new UserPayloadDto(fakeUserEntity);
 
-const fakeGeneralGraphicDto = GeneralGraphicDataDTO.build({
-  quantity: 2,
-  total: 100,
-  totalOpen: 50,
-  totalPayed: 50,
-});
 describe('GraphicController', () => {
   let controller: GraphicController;
   let graphicService: IGraphicService;

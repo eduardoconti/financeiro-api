@@ -1,12 +1,21 @@
-import { Transform } from 'class-transformer';
+import { ApiResponseProperty } from '@nestjs/swagger';
 
 export class GeneralGraphicDataDTO {
+  @ApiResponseProperty({
+    type: Number,
+  })
   quantity: number;
-  @Transform(({ value }) => Math.round(value * 100) / 100)
+  @ApiResponseProperty({
+    type: Number,
+  })
   total: number;
-  @Transform(({ value }) => Math.round(value * 100) / 100)
+  @ApiResponseProperty({
+    type: Number,
+  })
   totalOpen: number;
-  @Transform(({ value }) => Math.round(value * 100) / 100)
+  @ApiResponseProperty({
+    type: Number,
+  })
   totalPayed: number;
 
   private constructor(

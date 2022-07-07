@@ -40,5 +40,11 @@ import {
       useClass: DeleteCategoryService,
     },
   ],
+  exports: [
+    {
+      provide: TYPES.GetCategoryService,
+      useClass: GetCategoryService,
+    },
+  ],
 })
 export class CategoryModule {}

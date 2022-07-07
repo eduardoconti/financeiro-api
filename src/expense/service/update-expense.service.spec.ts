@@ -15,6 +15,8 @@ import {
 } from '@expense/mocks';
 import { IExpenseRepository } from '@expense/repository';
 
+import { DateHelper } from '@shared/helpers';
+
 import { UpdateExpenseService } from './update-expense.service';
 import { IUpdateExpenseService } from './update-expense.service.interface';
 
@@ -22,6 +24,7 @@ jest.mock('@shared/helpers', () => ({
   DateHelper: {
     dateNow: () => new Date('2022-05-26T18:59:18.026Z'),
     addMonth: () => new Date('2022-05-26T18:59:18.026Z'),
+    date: (date: string | Date) => new Date(date),
   },
 }));
 describe('UpdateExpenseService', () => {
@@ -117,7 +120,7 @@ describe('UpdateExpenseService', () => {
     ).rejects.toThrowError(UpdateExpenseException);
   });
 
-  it('should update expense with paymenta date and flag not payed', async () => {
+  it('should update expense with payment date and flag not payed', async () => {
     jest
       .spyOn(expenseRepository, 'findOneByParams')
       .mockResolvedValue(mockExpenseEntity);
@@ -137,6 +140,44 @@ describe('UpdateExpenseService', () => {
 
     expect(data).toBeDefined();
     expect(data).toEqual({ ...mockExpenseEntity, pago: true });
+  });
+
+  it('should update paymenta date of expense payed', async () => {
+    jest.spyOn(expenseRepository, 'findOneByParams').mockResolvedValue({
+      ...mockExpenseEntity,
+      pago: true,
+      pagamento: DateHelper.date('2022-05-26T18:59:18.026Z'),
+    });
+    jest.spyOn(expenseRepository, 'update').mockResolvedValue({
+      ...mockExpenseEntity,
+      pago: true,
+      pagamento: DateHelper.date('2022-05-25T18:59:18.026Z'),
+      updatedAt: DateHelper.dateNow(),
+    });
+
+    const data = await updateExpenseService.update(
+      mockExpenseEntity.id as number,
+      mockExpenseEntity.userId,
+      {
+        ...fakeInsertExpenseRequest,
+        pago: true,
+        pagamento: DateHelper.date('2022-05-25T18:59:18.026Z'),
+      },
+    );
+
+    expect(data).toBeDefined();
+    expect(data).toEqual({
+      ...mockExpenseEntity,
+      pago: true,
+      pagamento: DateHelper.date('2022-05-25T18:59:18.026Z'),
+      updatedAt: DateHelper.dateNow(),
+    });
+    expect(expenseRepository.update).toBeCalledWith(mockExpenseEntity.id, {
+      ...fakeInsertExpenseRequest,
+      updatedAt: DateHelper.dateNow(),
+      pagamento: DateHelper.date('2022-05-25T18:59:18.026Z'),
+      pago: true,
+    });
   });
 
   it('should update flag payed', async () => {

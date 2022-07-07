@@ -2,6 +2,8 @@ import { Test } from '@nestjs/testing';
 
 import { TYPES } from '@config/dependency-injection';
 
+import { fakeUserId } from '@expense/mocks';
+
 import {
   transferenceEntityMock,
   transferenceRequestMock,
@@ -10,7 +12,6 @@ import { ITransferenceRepository } from '@transference/repository';
 
 import { InsertTransferenceService } from './insert-transference.service';
 import { IInsertTransferenceService } from './insert-transference.service.interface';
-import { fakeUserId } from '@expense/mocks';
 
 describe('InsertTransferenceService', () => {
   let insertTransferenceService: IInsertTransferenceService;

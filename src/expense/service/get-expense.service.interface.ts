@@ -40,4 +40,10 @@ export interface IGetExpenseService {
     start?: string,
     end?: string,
   ): Promise<GetTotalExpenseResponseDTO>;
+
+  getUnplannedExpenses(
+    userId: string,
+    start?: string,
+    end?: string,
+  ): Promise<ExpenseGroupMonth>;
 }

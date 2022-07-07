@@ -4,7 +4,6 @@ import { mockWalletEntity, mockWalletRequest } from '@wallet/mocks';
 import { IWalletRepository } from '@wallet/repository';
 
 import { TYPES } from '@config/dependency-injection';
-import { BadRequestException } from '@config/exceptions';
 
 import { InsertWalletService } from './insert-wallet.service';
 import { IInsertWalletService } from './insert-wallet.service.interface';

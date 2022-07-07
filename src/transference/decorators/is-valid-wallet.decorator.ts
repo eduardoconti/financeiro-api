@@ -19,8 +19,6 @@ export function isValidWallet(
         validate(value: any, args: ValidationArguments) {
           const [relatedPropertyName] = args.constraints;
           const relatedValue = (args.object as any)[relatedPropertyName];
-          console.log(value);
-          console.log(relatedValue);
           return value !== relatedValue;
         },
       },

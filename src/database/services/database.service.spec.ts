@@ -1,7 +1,5 @@
-import { ConfigModule, ConfigService } from '@nestjs/config';
 import { Test } from '@nestjs/testing';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { DataSource, getMetadataArgsStorage, QueryRunner } from 'typeorm';
+import { DataSource, QueryRunner } from 'typeorm';
 
 import { UserDTO } from '@users/dto';
 import { Users } from '@users/entity';

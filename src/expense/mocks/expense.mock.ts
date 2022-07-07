@@ -24,6 +24,11 @@ export const fakeInsertExpenseRequest = DespesasDTO.build({
   pago: false,
 });
 
+export const fakeInsertExpenseRequestPayed = DespesasDTO.build({
+  ...fakeInsertExpenseRequest,
+  pago: true,
+});
+
 export const fakeInsertExpenseRequestWithInstalment: DespesasDTO = {
   ...fakeInsertExpenseRequest,
   instalment: 2,
@@ -36,6 +41,13 @@ export const mockExpenseEntity = Despesas.build({
   createdAt,
   valor: 100,
 });
+
+export const mockExpenseEntityPayed = Despesas.build({
+  ...mockExpenseEntity,
+  ...fakeInsertExpenseRequestPayed,
+  updatedAt: new Date('2022-05-26T00:00:00.000Z'),
+});
+
 export const mockExpenseInstalment = Despesas.build({
   ...fakeInsertExpenseRequestWithInstalment,
   createdAt,
