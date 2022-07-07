@@ -1,5 +1,11 @@
 import { Test } from '@nestjs/testing';
 
+import { fakeCategoryEntity } from '@category/mocks';
+import { IGetCategoryService } from '@category/service';
+
+import { mockWalletEntity } from '@wallet/mocks';
+import { IGetWalletService } from '@wallet/service';
+
 import { TYPES } from '@config/dependency-injection';
 
 import { IDatabaseService } from '@db/services';
@@ -34,6 +40,9 @@ describe('InsertExpenseService', () => {
   let insertExpenseService: IInsertExpenseService;
   let expenseRepository: IExpenseRepository;
   let databaseService: IDatabaseService;
+  let getWalletService: IGetWalletService;
+  let getCategoryService: IGetCategoryService;
+
   beforeEach(async () => {
     const module = await Test.createTestingModule({
       providers: [
@@ -41,6 +50,18 @@ describe('InsertExpenseService', () => {
           provide: TYPES.ExpenseRepository,
           useValue: {
             insert: jest.fn(),
+          },
+        },
+        {
+          provide: TYPES.GetCategoryService,
+          useValue: {
+            findCategoryUserById: jest.fn(),
+          },
+        },
+        {
+          provide: TYPES.GetWalletService,
+          useValue: {
+            findOne: jest.fn(),
           },
         },
         {
@@ -66,6 +87,10 @@ describe('InsertExpenseService', () => {
     );
     expenseRepository = module.get<IExpenseRepository>(TYPES.ExpenseRepository);
     databaseService = module.get<IDatabaseService>(TYPES.DatabaseService);
+    getWalletService = module.get<IGetWalletService>(TYPES.GetWalletService);
+    getCategoryService = module.get<IGetCategoryService>(
+      TYPES.GetCategoryService,
+    );
     jest.clearAllMocks();
   });
 
@@ -73,9 +98,15 @@ describe('InsertExpenseService', () => {
     expect(insertExpenseService).toBeDefined();
     expect(expenseRepository).toBeDefined();
     expect(databaseService).toBeDefined();
+    expect(getWalletService).toBeDefined();
+    expect(getCategoryService).toBeDefined();
   });
 
   it('should insert a new expense', async () => {
+    jest.spyOn(getWalletService, 'findOne').mockResolvedValue(mockWalletEntity);
+    jest
+      .spyOn(getCategoryService, 'findCategoryUserById')
+      .mockResolvedValue(fakeCategoryEntity);
     jest
       .spyOn(expenseRepository, 'insert')
       .mockResolvedValue(mockExpenseEntity);

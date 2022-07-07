@@ -1,5 +1,6 @@
 import { Test } from '@nestjs/testing';
 
+import { ForbiddenWalletException } from '@wallet/exception';
 import { mockWalletEntity } from '@wallet/mocks';
 import { IWalletRepository } from '@wallet/repository';
 
@@ -19,6 +20,7 @@ describe('GetWalletService', () => {
           provide: TYPES.WalletRepository,
           useValue: {
             find: jest.fn(),
+            findById: jest.fn(),
           },
         },
         {
@@ -59,5 +61,15 @@ describe('GetWalletService', () => {
 
     expect(data).toBeDefined();
     expect(data).toEqual(mockWalletEntity);
+  });
+
+  it('should throw ForbiddenWalletException when not is the same user', async () => {
+    jest
+      .spyOn(walletRepository, 'findById')
+      .mockResolvedValue(mockWalletEntity);
+
+    await expect(
+      getWalletService.findOne(mockWalletEntity.id as number, 'anotheUser'),
+    ).rejects.toThrow(ForbiddenWalletException);
   });
 });

@@ -1,5 +1,9 @@
 import { Test } from '@nestjs/testing';
 
+import { IGetCategoryService } from '@category/service';
+
+import { IGetWalletService } from '@wallet/service';
+
 import { TYPES } from '@config/dependency-injection';
 
 import {
@@ -30,6 +34,8 @@ jest.mock('@shared/helpers', () => ({
 describe('UpdateExpenseService', () => {
   let updateExpenseService: IUpdateExpenseService;
   let expenseRepository: IExpenseRepository;
+  let getWalletService: IGetWalletService;
+  let getCategoryService: IGetCategoryService;
 
   beforeEach(async () => {
     const module = await Test.createTestingModule({
@@ -39,6 +45,18 @@ describe('UpdateExpenseService', () => {
           useValue: {
             findOneByParams: jest.fn(),
             update: jest.fn(),
+          },
+        },
+        {
+          provide: TYPES.GetCategoryService,
+          useValue: {
+            findCategoryUserById: jest.fn(),
+          },
+        },
+        {
+          provide: TYPES.GetWalletService,
+          useValue: {
+            findOne: jest.fn(),
           },
         },
         {
@@ -52,11 +70,17 @@ describe('UpdateExpenseService', () => {
       TYPES.UpdateExpenseService,
     );
     expenseRepository = module.get<IExpenseRepository>(TYPES.ExpenseRepository);
+    getWalletService = module.get<IGetWalletService>(TYPES.GetWalletService);
+    getCategoryService = module.get<IGetCategoryService>(
+      TYPES.GetCategoryService,
+    );
   });
 
   it('should be defined', () => {
     expect(updateExpenseService).toBeDefined();
     expect(expenseRepository).toBeDefined();
+    expect(getWalletService).toBeDefined();
+    expect(getCategoryService).toBeDefined();
   });
 
   it('should update an expense', async () => {
