@@ -9,6 +9,7 @@ import { TYPES } from '@config/dependency-injection';
 
 import { IDatabaseService } from '@db/services';
 
+import { EXPENSE_ERROR_MESSAGES } from '@expense/constants';
 import { DespesasDTO } from '@expense/dto';
 import { Despesas } from '@expense/entity';
 import { InsertExpenseException } from '@expense/exceptions';
@@ -40,6 +41,14 @@ export class InsertExpenseService implements IInsertExpenseService {
       expense.categoriaId,
       userId,
     );
+    if (
+      (expense.pagamento && !expense.pago) ||
+      (!expense.pagamento && expense.pago)
+    ) {
+      throw new InsertExpenseException(
+        EXPENSE_ERROR_MESSAGES.EXPENSE_PAYMENT_DATE_AND_FALG_PAYED_ERROR,
+      );
+    }
     if (expense.instalment === 1) {
       const entity = Despesas.build({
         ...expense,

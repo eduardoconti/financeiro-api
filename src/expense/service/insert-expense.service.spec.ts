@@ -272,4 +272,37 @@ describe('InsertExpenseService', () => {
       expect(databaseService.commitTransaction).not.toHaveBeenCalled();
     }
   });
+
+  it('should throw InsertExpenseException when payment date and flag not payed', async () => {
+    jest
+      .spyOn(expenseRepository, 'findOneByParams')
+      .mockResolvedValue(mockExpenseEntity);
+
+    await expect(
+      insertExpenseService.insert(
+        {
+          ...fakeInsertExpenseRequest,
+          pagamento: new Date('2022-05-26T18:59:18.026Z'),
+          pago: false,
+        },
+        mockExpenseEntity.userId,
+      ),
+    ).rejects.toThrowError(InsertExpenseException);
+  });
+
+  it('should throw InsertExpenseException when not payment date and flag payed', async () => {
+    jest
+      .spyOn(expenseRepository, 'findOneByParams')
+      .mockResolvedValue(mockExpenseEntity);
+
+    await expect(
+      insertExpenseService.insert(
+        {
+          ...fakeInsertExpenseRequest,
+          pago: true,
+        },
+        mockExpenseEntity.userId,
+      ),
+    ).rejects.toThrowError(InsertExpenseException);
+  });
 });

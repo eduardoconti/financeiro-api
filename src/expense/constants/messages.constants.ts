@@ -11,7 +11,7 @@ export const EXPENSE_ERROR_MESSAGES = {
   EXPENSE_NOT_FOUND: 'Despesa não encontrada!',
   UPDATE_INSTALMENT: 'Não é possivel atualizar despesa com parcelamento!',
   UPDATE_INSTALMENT_NUMBER: 'Não é possível alterar parcela!',
-  UPDATE_EXPENSE_PAYMENT_DATE_AND_FALG_PAYED_ERROR:
+  EXPENSE_PAYMENT_DATE_AND_FALG_PAYED_ERROR:
     'Data de pagamento não condiz com a flag pago!',
 };
 

@@ -64,7 +64,7 @@ export class UpdateExpenseService implements IUpdateExpenseService {
       (!despesa.pagamento && despesa.pago)
     ) {
       throw new UpdateExpenseException(
-        EXPENSE_ERROR_MESSAGES.UPDATE_EXPENSE_PAYMENT_DATE_AND_FALG_PAYED_ERROR,
+        EXPENSE_ERROR_MESSAGES.EXPENSE_PAYMENT_DATE_AND_FALG_PAYED_ERROR,
       );
     }
 
