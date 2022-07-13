@@ -144,26 +144,39 @@ describe('UpdateExpenseService', () => {
     ).rejects.toThrowError(UpdateExpenseException);
   });
 
-  it('should update expense with payment date and flag not payed', async () => {
+  it('should throw UpdateExpenseException when payment date and flag not payed', async () => {
     jest
       .spyOn(expenseRepository, 'findOneByParams')
       .mockResolvedValue(mockExpenseEntity);
+
+    await expect(
+      updateExpenseService.update(
+        mockExpenseEntity.id as number,
+        mockExpenseEntity.userId,
+        {
+          ...fakeInsertExpenseRequest,
+          pagamento: new Date('2022-05-26T18:59:18.026Z'),
+          pago: false,
+        },
+      ),
+    ).rejects.toThrowError(UpdateExpenseException);
+  });
+
+  it('should throw UpdateExpenseException when not payment date and flag payed', async () => {
     jest
-      .spyOn(expenseRepository, 'update')
-      .mockResolvedValue({ ...mockExpenseEntity, pago: true });
+      .spyOn(expenseRepository, 'findOneByParams')
+      .mockResolvedValue(mockExpenseEntity);
 
-    const data = await updateExpenseService.update(
-      mockExpenseEntity.id as number,
-      mockExpenseEntity.userId,
-      {
-        ...fakeInsertExpenseRequest,
-        pagamento: new Date('2022-05-26T18:59:18.026Z'),
-        pago: false,
-      },
-    );
-
-    expect(data).toBeDefined();
-    expect(data).toEqual({ ...mockExpenseEntity, pago: true });
+    await expect(
+      updateExpenseService.update(
+        mockExpenseEntity.id as number,
+        mockExpenseEntity.userId,
+        {
+          ...fakeInsertExpenseRequest,
+          pago: true,
+        },
+      ),
+    ).rejects.toThrowError(UpdateExpenseException);
   });
 
   it('should update paymenta date of expense payed', async () => {

@@ -59,9 +59,13 @@ export class UpdateExpenseService implements IUpdateExpenseService {
       );
     }
 
-    if (despesa.pagamento && !despesa.pago) {
-      despesa.pago = true;
-      despesa.pagamento = DateHelper.dateNow();
+    if (
+      (despesa.pagamento && !despesa.pago) ||
+      (!despesa.pagamento && despesa.pago)
+    ) {
+      throw new UpdateExpenseException(
+        EXPENSE_ERROR_MESSAGES.UPDATE_EXPENSE_PAYMENT_DATE_AND_FALG_PAYED_ERROR,
+      );
     }
 
     if (despesa.instalment !== expense.instalment) {
