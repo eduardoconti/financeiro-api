@@ -1,4 +1,5 @@
 import {
+  FindExpenseByQueryParamsDTO,
   GetExpenseAmountGroupByCategoryResponse,
   GetExpenseAmountGroupByWalletResponse,
   GetTotalExpenseResponseDTO,
@@ -8,9 +9,7 @@ import { ExpenseGroupMonth, FindExpenseByParams } from '@expense/types';
 export interface IGetExpenseService {
   getAllExpensesByUser(
     userId: string,
-    start?: string,
-    end?: string,
-    pago?: boolean,
+    params?: FindExpenseByQueryParamsDTO,
   ): Promise<Despesas[]>;
 
   getExpensesGroupByMonth(

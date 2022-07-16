@@ -68,12 +68,9 @@ export class ExpenseController {
     @User() user: UserPayloadInterface,
     @Query() params: FindExpenseByQueryParamsDTO,
   ): Promise<SuccessResponseData<Despesas[]>> {
-    const { start, end, pago } = params;
     const data = await this.getExpenseService.getAllExpensesByUser(
       user.userId,
-      start,
-      end,
-      pago,
+      params,
     );
 
     return new SuccessResponseData<Despesas[]>(

@@ -4,6 +4,7 @@ import { TYPES } from '@config/dependency-injection';
 
 import {
   ExpensesGroupMonthDTO,
+  FindExpenseByQueryParamsDTO,
   GetExpenseAmountGroupByCategoryResponse,
   GetExpenseAmountGroupByWalletResponse,
   GetTotalExpenseResponseDTO,
@@ -25,12 +26,10 @@ export class GetExpenseService implements IGetExpenseService {
   ) {}
   async getAllExpensesByUser(
     userId: string,
-    start?: string,
-    end?: string,
-    pago?: boolean,
+    params: FindExpenseByQueryParamsDTO,
   ): Promise<Despesas[]> {
     return await this.expenseRepository.findByParams(
-      buildParams(userId, start, end, pago),
+      buildParams(userId, params),
     );
   }
 

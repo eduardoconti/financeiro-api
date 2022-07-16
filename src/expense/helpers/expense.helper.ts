@@ -1,5 +1,6 @@
-import { DespesasDTO } from '@expense/dto';
+import { DespesasDTO, FindExpenseByQueryParamsDTO } from '@expense/dto';
 import { Despesas } from '@expense/entity';
+import { DateType } from '@expense/enums';
 import { FindExpenseByParams } from '@expense/types';
 
 import { DateHelper, OrmHelper } from '@shared/helpers';
@@ -61,19 +62,48 @@ export function buildExpenseEntityInstalment(
 
 export function buildParams(
   userId: string,
-  start?: string,
-  end?: string,
-  pago?: boolean,
+  queryParams: FindExpenseByQueryParamsDTO,
 ): FindExpenseByParams {
+  const {
+    start,
+    end,
+    pago,
+    categoryId,
+    walletId,
+    dateField = DateType.DUEDATE,
+  } = queryParams;
   const params: FindExpenseByParams = {};
+
   if (pago !== undefined) {
     params.pago = pago;
   }
 
-  if (start || end) {
-    params.vencimento = OrmHelper.buildDateWhere(start, end);
+  if (categoryId) {
+    params.categoriaId = categoryId;
   }
 
-  params.userId = userId;
-  return params;
+  if (walletId) {
+    params.carteiraId = walletId;
+  }
+
+  if (start || end) {
+    if (dateField === DateType.DUEDATE) {
+      params.vencimento = OrmHelper.buildDateWhere(start, end);
+    }
+    if (dateField === DateType.CREATEDAT) {
+      params.createdAt = OrmHelper.buildDateWhere(start, end);
+    }
+    if (dateField === DateType.PAYMENTDATE) {
+      params.pagamento = OrmHelper.buildDateWhere(start, end);
+    }
+    if (dateField === DateType.UPDATEDAT) {
+      params.updatedAt = OrmHelper.buildDateWhere(start, end);
+    }
+    if (dateField === DateType.UNPLANNED) {
+      params.vencimento = OrmHelper.buildDateWhere(start, end);
+      params.createdAt = OrmHelper.buildDateWhere(start, end);
+    }
+  }
+
+  return { ...params, userId };
 }

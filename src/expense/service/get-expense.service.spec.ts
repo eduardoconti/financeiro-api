@@ -69,16 +69,15 @@ describe('GetExpenseService', () => {
     jest
       .spyOn(expenseRepository, 'findByParams')
       .mockResolvedValue([mockExpenseEntity]);
-    const [data] = await getExpenseService.getAllExpensesByUser(
-      userId,
+    const [data] = await getExpenseService.getAllExpensesByUser(userId, {
       start,
       end,
       pago,
-    );
+    });
     expect(data).toBeDefined();
     expect(data).toEqual(mockExpenseEntity);
     expect(expenseRepository.findByParams).toHaveBeenCalledWith(
-      buildParams(userId, start, end, pago),
+      buildParams(userId, { start, end, pago }),
     );
     expect(data.userId).toEqual(userId);
   });
@@ -87,16 +86,14 @@ describe('GetExpenseService', () => {
     jest
       .spyOn(expenseRepository, 'findByParams')
       .mockResolvedValue([mockExpenseEntity]);
-    const [data] = await getExpenseService.getAllExpensesByUser(
-      userId,
-      undefined,
+    const [data] = await getExpenseService.getAllExpensesByUser(userId, {
       end,
       pago,
-    );
+    });
     expect(data).toBeDefined();
     expect(data).toEqual(mockExpenseEntity);
     expect(expenseRepository.findByParams).toHaveBeenCalledWith(
-      buildParams(userId, undefined, end, pago),
+      buildParams(userId, { end, pago }),
     );
     expect(data.userId).toEqual(userId);
   });

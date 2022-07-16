@@ -274,10 +274,10 @@ describe('InsertExpenseService', () => {
   });
 
   it('should throw InsertExpenseException when payment date and flag not payed', async () => {
+    jest.spyOn(getWalletService, 'findOne').mockResolvedValue(mockWalletEntity);
     jest
-      .spyOn(expenseRepository, 'findOneByParams')
-      .mockResolvedValue(mockExpenseEntity);
-
+      .spyOn(getCategoryService, 'findCategoryUserById')
+      .mockResolvedValue(fakeCategoryEntity);
     await expect(
       insertExpenseService.insert(
         {
@@ -291,9 +291,10 @@ describe('InsertExpenseService', () => {
   });
 
   it('should throw InsertExpenseException when not payment date and flag payed', async () => {
+    jest.spyOn(getWalletService, 'findOne').mockResolvedValue(mockWalletEntity);
     jest
-      .spyOn(expenseRepository, 'findOneByParams')
-      .mockResolvedValue(mockExpenseEntity);
+      .spyOn(getCategoryService, 'findCategoryUserById')
+      .mockResolvedValue(fakeCategoryEntity);
 
     await expect(
       insertExpenseService.insert(
