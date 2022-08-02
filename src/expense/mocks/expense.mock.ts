@@ -19,6 +19,7 @@ export const fakeInsertExpenseRequest = DespesasDTO.build({
   valor: 100,
   carteiraId: 1,
   categoriaId: 1,
+  subCategoryId: 1,
   instalment: 1,
   vencimento: createdAt,
   pago: false,

@@ -36,6 +36,11 @@ export class DespesasDTO {
   @IsNumber({}, { message: CONSTRAINTS_MESSAGES.IS_NUMBER })
   categoriaId!: number;
 
+  @ApiProperty({ description: 'Id da sub categoria', example: 1 })
+  @IsNotEmpty({ message: CONSTRAINTS_MESSAGES.IS_NOT_EMPTY })
+  @IsNumber({}, { message: CONSTRAINTS_MESSAGES.IS_NUMBER })
+  subCategoryId!: number;
+
   @ApiProperty({ description: 'Id da carteira', example: 1 })
   @IsNotEmpty({ message: CONSTRAINTS_MESSAGES.IS_NOT_EMPTY })
   @IsNumber({}, { message: CONSTRAINTS_MESSAGES.IS_NUMBER })

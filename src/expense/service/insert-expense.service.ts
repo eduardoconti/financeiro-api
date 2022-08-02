@@ -2,6 +2,7 @@ import { Inject } from '@nestjs/common';
 import { v4 as uuidv4 } from 'uuid';
 
 import { IGetCategoryService } from '@category/service';
+import { IGetSubCategoryService } from '@category/service/sub-category';
 
 import { IGetWalletService } from '@wallet/service';
 
@@ -30,6 +31,8 @@ export class InsertExpenseService implements IInsertExpenseService {
     private getWalletService: IGetWalletService,
     @Inject(TYPES.GetCategoryService)
     private getCategoryService: IGetCategoryService,
+    @Inject(TYPES.GetSubCategoryService)
+    private getSubCategoryService: IGetSubCategoryService,
   ) {}
 
   async insert(
@@ -39,6 +42,10 @@ export class InsertExpenseService implements IInsertExpenseService {
     await this.getWalletService.findOne(expense.carteiraId, userId);
     await this.getCategoryService.findCategoryUserById(
       expense.categoriaId,
+      userId,
+    );
+    await this.getSubCategoryService.findSubCategoryUserById(
+      expense.subCategoryId,
       userId,
     );
     if (

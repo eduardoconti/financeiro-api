@@ -13,6 +13,8 @@ import { Users } from '@users/entity';
 
 import { Despesas } from '@expense/entity';
 
+import { SubCategory } from './sub-category.entity';
+
 @Entity({ schema: 'public', name: 'categorias' })
 export class Category {
   @PrimaryGeneratedColumn()
@@ -33,12 +35,19 @@ export class Category {
   @OneToMany(() => Despesas, (despesas) => despesas.categoria, {
     nullable: false,
   })
+  @Exclude()
   categoria?: Despesas[];
 
   @ManyToOne(() => Users, (users) => users.id, { nullable: false })
   @JoinColumn({ name: 'user_id', referencedColumnName: 'id' })
   @Exclude()
   user?: Users;
+
+  @OneToMany(() => SubCategory, (despesas) => despesas.category, {
+    nullable: false,
+  })
+  @Exclude()
+  subCategories?: SubCategory[];
 
   private constructor(descricao: string, userId: string, id?: number) {
     this.descricao = descricao;

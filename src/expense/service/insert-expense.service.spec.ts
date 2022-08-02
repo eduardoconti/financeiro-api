@@ -1,7 +1,8 @@
 import { Test } from '@nestjs/testing';
 
-import { fakeCategoryEntity } from '@category/mocks';
+import { fakeCategoryEntity, fakeSubCategoryEntity } from '@category/mocks';
 import { IGetCategoryService } from '@category/service';
+import { IGetSubCategoryService } from '@category/service/sub-category';
 
 import { mockWalletEntity } from '@wallet/mocks';
 import { IGetWalletService } from '@wallet/service';
@@ -42,6 +43,7 @@ describe('InsertExpenseService', () => {
   let databaseService: IDatabaseService;
   let getWalletService: IGetWalletService;
   let getCategoryService: IGetCategoryService;
+  let getSubCategoryService: IGetSubCategoryService;
 
   beforeEach(async () => {
     const module = await Test.createTestingModule({
@@ -56,6 +58,12 @@ describe('InsertExpenseService', () => {
           provide: TYPES.GetCategoryService,
           useValue: {
             findCategoryUserById: jest.fn(),
+          },
+        },
+        {
+          provide: TYPES.GetSubCategoryService,
+          useValue: {
+            findSubCategoryUserById: jest.fn(),
           },
         },
         {
@@ -91,6 +99,9 @@ describe('InsertExpenseService', () => {
     getCategoryService = module.get<IGetCategoryService>(
       TYPES.GetCategoryService,
     );
+    getSubCategoryService = module.get<IGetSubCategoryService>(
+      TYPES.GetSubCategoryService,
+    );
     jest.clearAllMocks();
   });
 
@@ -100,6 +111,7 @@ describe('InsertExpenseService', () => {
     expect(databaseService).toBeDefined();
     expect(getWalletService).toBeDefined();
     expect(getCategoryService).toBeDefined();
+    expect(getSubCategoryService).toBeDefined();
   });
 
   it('should insert a new expense', async () => {
@@ -107,6 +119,9 @@ describe('InsertExpenseService', () => {
     jest
       .spyOn(getCategoryService, 'findCategoryUserById')
       .mockResolvedValue(fakeCategoryEntity);
+    jest
+      .spyOn(getSubCategoryService, 'findSubCategoryUserById')
+      .mockResolvedValue(fakeSubCategoryEntity);
     jest
       .spyOn(expenseRepository, 'insert')
       .mockResolvedValue(mockExpenseEntity);
@@ -278,6 +293,9 @@ describe('InsertExpenseService', () => {
     jest
       .spyOn(getCategoryService, 'findCategoryUserById')
       .mockResolvedValue(fakeCategoryEntity);
+    jest
+      .spyOn(getSubCategoryService, 'findSubCategoryUserById')
+      .mockResolvedValue(fakeSubCategoryEntity);
     await expect(
       insertExpenseService.insert(
         {
@@ -295,7 +313,9 @@ describe('InsertExpenseService', () => {
     jest
       .spyOn(getCategoryService, 'findCategoryUserById')
       .mockResolvedValue(fakeCategoryEntity);
-
+    jest
+      .spyOn(getSubCategoryService, 'findSubCategoryUserById')
+      .mockResolvedValue(fakeSubCategoryEntity);
     await expect(
       insertExpenseService.insert(
         {

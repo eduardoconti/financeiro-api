@@ -5,6 +5,7 @@ import { Entity, Column, PrimaryColumn, OneToMany } from 'typeorm';
 import { Earning } from '@earning/entity';
 
 import { Category } from '@category/entity';
+import { SubCategory } from '@category/entity/sub-category.entity';
 
 import { Carteiras } from '@wallet/entity';
 
@@ -51,6 +52,9 @@ export class Users {
 
   @OneToMany(() => Category, (categorias) => categorias.user)
   userCategorias?: Category[];
+
+  @OneToMany(() => SubCategory, (categorias) => categorias.user)
+  userSubCategories?: SubCategory[];
 
   constructor(partial: Partial<Users>) {
     Object.assign(this, partial);

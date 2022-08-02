@@ -53,7 +53,7 @@ from
 where
   d.user_id = $1
   and date_part('year', d.vencimento) = date_part('year', d.created_at)
-  and date_part('month', d.vencimento) = date_part('month', d.created_at)
+  and date_part('month', d.vencimento) <= date_part('month', d.created_at)
   AND CASE
     WHEN (cast($2 as date)) IS NOT NULL
     AND (cast($3 as date)) IS NOT NULL THEN d.vencimento BETWEEN $2

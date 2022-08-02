@@ -7,7 +7,7 @@ import {
   JoinColumn,
 } from 'typeorm';
 
-import { Category } from '@category/entity';
+import { Category, SubCategory } from '@category/entity';
 
 import { Carteiras } from '@wallet/entity';
 
@@ -68,6 +68,14 @@ export class Despesas {
   categoriaId!: number;
 
   @Column({
+    type: 'int',
+    nullable: false,
+    name: 'sub_category_id',
+  })
+  @Exclude()
+  subCategoryId!: number;
+
+  @Column({
     type: 'uuid',
     nullable: true,
     name: 'instalment_id',
@@ -92,66 +100,22 @@ export class Despesas {
   @JoinColumn({ name: 'categoria_id', referencedColumnName: 'id' })
   categoria?: Category;
 
+  @ManyToOne(() => SubCategory, (categorias) => categorias.id, {
+    nullable: false,
+  })
+  @JoinColumn({ name: 'sub_category_id', referencedColumnName: 'id' })
+  subCategory?: SubCategory;
+
   @ManyToOne(() => Users, (users) => users.id, { nullable: false })
   @Exclude()
   @JoinColumn({ name: 'user_id', referencedColumnName: 'id' })
   user?: Users;
 
-  constructor(
-    userId: string,
-    descricao: string,
-    valor: number,
-    categoriaId: number,
-    carteiraId: number,
-    instalment: number,
-    instalmentId?: string,
-    vencimento?: Date,
-    pagamento?: Date,
-    pago?: boolean,
-    createdAt?: Date,
-    updatedAt?: Date,
-  ) {
-    this.userId = userId;
-    this.descricao = descricao;
-    this.valor = valor;
-    this.categoriaId = categoriaId;
-    this.carteiraId = carteiraId;
-    this.instalment = instalment;
-    this.instalmentId = instalmentId;
-    this.vencimento = vencimento;
-    this.pagamento = pagamento;
-    this.pago = pago;
-    this.createdAt = createdAt;
-    this.updatedAt = updatedAt;
+  constructor(expense: Despesas) {
+    Object.assign(this, expense);
   }
 
-  static build = ({
-    userId,
-    descricao,
-    valor,
-    categoriaId,
-    carteiraId,
-    instalment,
-    instalmentId,
-    vencimento,
-    pagamento,
-    pago,
-    createdAt,
-    updatedAt,
-  }: Despesas): Despesas => {
-    return new Despesas(
-      userId,
-      descricao,
-      valor,
-      categoriaId,
-      carteiraId,
-      instalment,
-      instalmentId,
-      vencimento,
-      pagamento,
-      pago,
-      createdAt,
-      updatedAt,
-    );
+  static build = (dto: Despesas): Despesas => {
+    return new Despesas(dto);
   };
 }

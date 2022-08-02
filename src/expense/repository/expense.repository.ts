@@ -29,7 +29,7 @@ export class ExpenseRepository implements IExpenseRepository {
   async findByParams(params: FindExpenseByParams): Promise<Despesas[]> {
     return await this.repository
       .find({
-        relations: ['user', 'categoria', 'carteira'],
+        relations: ['user', 'categoria', 'carteira', 'subCategory'],
         where: params,
         order: { valor: 'DESC' },
       })
@@ -41,7 +41,7 @@ export class ExpenseRepository implements IExpenseRepository {
   async findOneByParams(params: FindExpenseByParams): Promise<Despesas | null> {
     return await this.repository
       .findOne({
-        relations: ['user', 'categoria', 'carteira'],
+        relations: ['user', 'categoria', 'carteira', 'subCategory'],
         where: params,
         order: { valor: 'DESC' },
       })

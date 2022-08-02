@@ -8,6 +8,7 @@ import {
   GetExpenseAmountGroupByCategoryResponse,
   GetExpenseAmountGroupByWalletResponse,
 } from '@expense/dto';
+import { DateType } from '@expense/enums';
 import { ExpenseNotFoundException } from '@expense/exceptions';
 import { buildParams } from '@expense/helpers';
 import { mockExpenseEntity } from '@expense/mocks';
@@ -82,18 +83,84 @@ describe('GetExpenseService', () => {
     expect(data.userId).toEqual(userId);
   });
 
-  it('should be able to getAllExpensesByUser by params without start date', async () => {
+  it('should be able to getAllExpensesByUser search for payment date', async () => {
+    jest
+      .spyOn(expenseRepository, 'findByParams')
+      .mockResolvedValue([mockExpenseEntity]);
+    const [data] = await getExpenseService.getAllExpensesByUser(userId, {
+      start,
+      dateField: DateType.PAYMENTDATE,
+    });
+    expect(data).toBeDefined();
+    expect(data).toEqual(mockExpenseEntity);
+    expect(expenseRepository.findByParams).toHaveBeenCalledWith(
+      buildParams(userId, {
+        start,
+        dateField: DateType.PAYMENTDATE,
+      }),
+    );
+    expect(data.userId).toEqual(userId);
+  });
+
+  it('should be able to getAllExpensesByUser search for update at', async () => {
+    jest
+      .spyOn(expenseRepository, 'findByParams')
+      .mockResolvedValue([mockExpenseEntity]);
+    const [data] = await getExpenseService.getAllExpensesByUser(userId, {
+      start,
+      dateField: DateType.UPDATEDAT,
+    });
+    expect(data).toBeDefined();
+    expect(data).toEqual(mockExpenseEntity);
+    expect(expenseRepository.findByParams).toHaveBeenCalledWith(
+      buildParams(userId, {
+        start,
+        dateField: DateType.UPDATEDAT,
+      }),
+    );
+    expect(data.userId).toEqual(userId);
+  });
+
+  it('should be able to getAllExpensesByUser search for created at', async () => {
+    jest
+      .spyOn(expenseRepository, 'findByParams')
+      .mockResolvedValue([mockExpenseEntity]);
+    const [data] = await getExpenseService.getAllExpensesByUser(userId, {
+      start,
+      dateField: DateType.CREATEDAT,
+    });
+    expect(data).toBeDefined();
+    expect(data).toEqual(mockExpenseEntity);
+    expect(expenseRepository.findByParams).toHaveBeenCalledWith(
+      buildParams(userId, {
+        start,
+        dateField: DateType.CREATEDAT,
+      }),
+    );
+    expect(data.userId).toEqual(userId);
+  });
+
+  it('should be able to getAllExpensesByUser unplanend by params without start date', async () => {
     jest
       .spyOn(expenseRepository, 'findByParams')
       .mockResolvedValue([mockExpenseEntity]);
     const [data] = await getExpenseService.getAllExpensesByUser(userId, {
       end,
       pago,
+      categoryId: 1,
+      walletId: 1,
+      dateField: DateType.UNPLANNED,
     });
     expect(data).toBeDefined();
     expect(data).toEqual(mockExpenseEntity);
     expect(expenseRepository.findByParams).toHaveBeenCalledWith(
-      buildParams(userId, { end, pago }),
+      buildParams(userId, {
+        end,
+        pago,
+        categoryId: 1,
+        walletId: 1,
+        dateField: DateType.UNPLANNED,
+      }),
     );
     expect(data.userId).toEqual(userId);
   });

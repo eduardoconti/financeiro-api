@@ -30,6 +30,7 @@ async function bootstrap() {
     .addTag('Earnings', 'Gathers endpoints to handle earnings')
     .addTag('Transference', 'Gathers endpoints to handle transference')
     .addTag('Categories', 'Gathers endpoints to handle categories')
+    .addTag('Sub Categories', 'Gathers endpoints to handle sub categories')
     .addTag('Wallets', 'Gathers endpoints to handle wallets')
     .addTag('Graphic', 'Gathers endpoints to handle graphics')
     .build();
