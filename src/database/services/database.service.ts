@@ -24,32 +24,32 @@ export class DatabaseService implements IDatabaseService {
     try {
       this.queryRunner = this.dataSource.createQueryRunner();
       await this.queryRunner.connect();
-    } catch (error) {
-      throw new ConnectDatabaseException(undefined, error);
+    } catch (err: any) {
+      throw new ConnectDatabaseException(err.message ?? '', err);
     }
   };
 
   public startTransaction = async (): Promise<void> => {
     try {
       await this.queryRunner.startTransaction();
-    } catch (error) {
-      throw new StartTransactionDatabaseException(undefined, error);
+    } catch (err: any) {
+      throw new StartTransactionDatabaseException(err.message ?? '', err);
     }
   };
 
   public commitTransaction = async (): Promise<void> => {
     try {
       await this.queryRunner.commitTransaction();
-    } catch (error) {
-      throw new CommitTransactionDatabaseException(undefined, error);
+    } catch (err: any) {
+      throw new CommitTransactionDatabaseException(err.message ?? '', err);
     }
   };
 
   public rollbackTransaction = async (): Promise<void> => {
     try {
       await this.queryRunner.rollbackTransaction();
-    } catch (error) {
-      throw new RollbackTransactionDatabaseException(undefined, error);
+    } catch (err: any) {
+      throw new RollbackTransactionDatabaseException(err.message ?? '', err);
     }
   };
 
@@ -57,8 +57,8 @@ export class DatabaseService implements IDatabaseService {
     try {
       await this.queryRunner.release();
       //this.queryRunner = undefined;
-    } catch (error) {
-      throw new ReleaseTransactionDatabaseException(undefined, error);
+    } catch (err: any) {
+      throw new ReleaseTransactionDatabaseException(err.message ?? '', err);
     }
   };
 
@@ -66,8 +66,8 @@ export class DatabaseService implements IDatabaseService {
     try {
       const result = await this.queryRunner.manager.save<E>(entity);
       return result as E;
-    } catch (err) {
-      throw new SaveDatabaseException(undefined, err);
+    } catch (err: any) {
+      throw new SaveDatabaseException(err.message ?? '', err);
     }
   };
 
@@ -75,8 +75,8 @@ export class DatabaseService implements IDatabaseService {
     try {
       await this.queryRunner.manager.remove<E>(entity);
       return entity as E;
-    } catch (err) {
-      throw new RemoveDatabaseException(undefined, err);
+    } catch (err: any) {
+      throw new RemoveDatabaseException(err.message ?? '', err);
     }
   };
 }
