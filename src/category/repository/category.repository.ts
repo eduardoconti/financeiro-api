@@ -39,7 +39,7 @@ export class CategoryRepository implements ICategoryRepository {
     return await this.repository
       .findOne({
         where: { id: id },
-        relations: ['user'],
+        relations: ['user', 'subCategories'],
       })
       .catch((error) => {
         throw new FindCategoryException(error);
@@ -49,7 +49,7 @@ export class CategoryRepository implements ICategoryRepository {
   async findByParams(params: FindCategoryByParams): Promise<Category[] | null> {
     return await this.repository
       .find({
-        relations: ['user'],
+        relations: ['user', 'subCategories'],
         where: params,
         order: { descricao: 'ASC' },
       })

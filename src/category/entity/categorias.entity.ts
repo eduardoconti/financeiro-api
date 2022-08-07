@@ -46,7 +46,6 @@ export class Category {
   @OneToMany(() => SubCategory, (despesas) => despesas.category, {
     nullable: false,
   })
-  @Exclude()
   subCategories?: SubCategory[];
 
   private constructor(descricao: string, userId: string, id?: number) {

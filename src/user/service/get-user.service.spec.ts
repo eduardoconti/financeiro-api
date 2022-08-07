@@ -73,6 +73,15 @@ describe('GetUserService', () => {
     );
   });
 
+  it('should throw UserNotFoundException when call getAll', async () => {
+    jest.spyOn(userRepository, 'findByParams').mockImplementation(() => {
+      return Promise.resolve([]);
+    });
+    await expect(getUserService.getAll()).rejects.toThrow(
+      new UserNotFoundException('any'),
+    );
+  });
+
   it('should be able to get user by login', async () => {
     jest.spyOn(userRepository, 'findByParams').mockImplementation(() => {
       return Promise.resolve([fakeUserEntity]);

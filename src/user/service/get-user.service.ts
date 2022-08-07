@@ -26,7 +26,7 @@ export class GetUserService implements IGetUserService {
 
   async getUserByLogin(login: string): Promise<Users> {
     const user = await this.userRepository.findByParams({ login });
-    if (!user) {
+    if (!user || !user[0]) {
       throw new UserNotFoundException(ERROR_MESSAGES.USER_NOT_FOUND);
     }
     return user[0];
@@ -34,7 +34,7 @@ export class GetUserService implements IGetUserService {
 
   async getUserById(id: string): Promise<Users> {
     const user = await this.userRepository.findByParams({ id });
-    if (!user) {
+    if (!user || !user[0]) {
       throw new UserNotFoundException(ERROR_MESSAGES.USER_NOT_FOUND);
     }
     return user[0];
