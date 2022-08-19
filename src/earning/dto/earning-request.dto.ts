@@ -7,6 +7,7 @@ import {
   IsOptional,
   IsString,
   Length,
+  Min,
 } from 'class-validator';
 
 import { CONSTRAINTS_LIMITS, CONSTRAINTS_MESSAGES } from '@shared/constants';
@@ -46,6 +47,7 @@ export class ReceitasDTO {
   @ApiProperty()
   @IsNotEmpty({ message: CONSTRAINTS_MESSAGES.IS_NOT_EMPTY })
   @IsInt({ message: CONSTRAINTS_MESSAGES.IS_INTEGER })
+  @Min(1)
   carteiraId!: number;
 
   constructor(partial: Partial<ReceitasDTO>) {
