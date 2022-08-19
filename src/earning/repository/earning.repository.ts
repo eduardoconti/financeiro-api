@@ -58,7 +58,11 @@ export class EarningRepository implements IEarningRepository {
     await this.repository.save(newEarning).catch((e) => {
       throw new InsertEarningException(e, expense);
     });
-    return newEarning;
+    return await this.repository
+      .findOneOrFail({ where: { id: newEarning.id } })
+      .catch((e) => {
+        throw new InsertEarningException(e, expense);
+      });
   }
 
   async delete(id: number): Promise<EarningDeleteResponseDTO> {
