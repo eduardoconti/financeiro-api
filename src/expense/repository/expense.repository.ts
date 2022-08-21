@@ -78,7 +78,10 @@ export class ExpenseRepository implements IExpenseRepository {
       throw new UpdateExpenseException(undefined, e, expense);
     });
     const updated = await this.repository
-      .findOneOrFail({ where: { id: id } })
+      .findOneOrFail({
+        where: { id: id },
+        relations: ['categoria', 'carteira', 'subCategory'],
+      })
       .catch((e) => {
         throw new UpdateExpenseException(undefined, e, expense);
       });
