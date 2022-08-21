@@ -59,7 +59,7 @@ export class EarningRepository implements IEarningRepository {
       throw new InsertEarningException(e, expense);
     });
     return await this.repository
-      .findOneOrFail({ where: { id: newEarning.id } })
+      .findOneOrFail({ where: { id: newEarning.id }, relations: ['carteira'] })
       .catch((e) => {
         throw new InsertEarningException(e, expense);
       });
