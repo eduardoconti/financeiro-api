@@ -59,7 +59,14 @@ export class ExpenseRepository implements IExpenseRepository {
     try {
       const newExpense = await this.repository.create(expense);
       await this.repository.save(newExpense);
-      return newExpense;
+      return this.repository
+        .findOneOrFail({
+          where: { id: newExpense.id },
+          relations: ['categoria', 'carteira', 'subCategory'],
+        })
+        .catch((e) => {
+          throw new InsertExpenseException(e, newExpense);
+        });
     } catch (e) {
       throw new InsertExpenseException(e, expense);
     }
