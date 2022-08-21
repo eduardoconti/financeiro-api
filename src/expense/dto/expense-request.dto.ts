@@ -46,6 +46,7 @@ export class DespesasDTO {
   @ApiProperty({ description: 'Id da carteira', example: 1 })
   @IsNotEmpty({ message: CONSTRAINTS_MESSAGES.IS_NOT_EMPTY })
   @IsNumber({}, { message: CONSTRAINTS_MESSAGES.IS_NUMBER })
+  @Min(1)
   carteiraId!: number;
 
   @ApiProperty({ description: 'Numero de parcelas', default: 1, example: 1 })
