@@ -18,6 +18,8 @@ import { TYPES as GRAPHIC_TYPES } from '@graphic/config/dependency-injection';
 
 import { TYPES as TRANSFERENCE_TYPES } from '@transference/config/dependency-injection';
 
+import { TYPES as DASHBOARD_TYPES } from '@dashboard/config/dependency-injection';
+
 export const TYPES: { [keys: string]: symbol } = {
   ...USER_TYPES,
   ...APP_TYPES,
@@ -29,4 +31,5 @@ export const TYPES: { [keys: string]: symbol } = {
   ...EARNING_TYPES,
   ...TRANSFERENCE_TYPES,
   ...DATABASE_TYPES,
+  ...DASHBOARD_TYPES,
 };

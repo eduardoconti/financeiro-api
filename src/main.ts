@@ -33,6 +33,7 @@ async function bootstrap() {
     .addTag('Sub Categories', 'Gathers endpoints to handle sub categories')
     .addTag('Wallets', 'Gathers endpoints to handle wallets')
     .addTag('Graphic', 'Gathers endpoints to handle graphics')
+    .addTag('DashBoard', 'Gathers endpoints to dashboard values')
     .build();
   const document = SwaggerModule.createDocument(app, options);
 

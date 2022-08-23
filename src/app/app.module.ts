@@ -22,6 +22,8 @@ import { GraphicModule } from '@graphic/graphic.module';
 
 import { TransferenceModule } from '@transference/transference.module';
 
+import { DashBoardModule } from '@dashboard/dashboard.module';
+
 import { AppController } from './app.controller';
 import { AppService } from './service';
 
@@ -36,6 +38,7 @@ import { AppService } from './service';
     AuthModule,
     GraphicModule,
     DatabaseModule,
+    DashBoardModule,
     ConfigModule.forRoot({
       envFilePath: [`.env`],
     }),
@@ -52,7 +55,7 @@ import { AppService } from './service';
         password: configService.get('POSTGRES_PASSWORD'),
         database: configService.get('POSTGRES_DB'),
         entities: [__dirname + '/../**/*.entity{.ts,.js}'],
-        ssl: { rejectUnauthorized: false },
+        //ssl: { rejectUnauthorized: false },
       }),
     }),
   ],

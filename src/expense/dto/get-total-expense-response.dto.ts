@@ -3,17 +3,17 @@ export class GetTotalExpenseResponseDTO {
   readonly totalOpen: number;
   readonly totalPayed: number;
 
-  private constructor(total: number, totalOpen: number, totalPayed: number) {
-    this.total = total;
-    this.totalOpen = totalOpen;
-    this.totalPayed = totalPayed;
+  private constructor(total: string, totalOpen: string, totalPayed: string) {
+    this.total = parseInt(total);
+    this.totalOpen = parseInt(totalOpen);
+    this.totalPayed = parseInt(totalPayed);
   }
 
   static build = ({
     total,
     totalOpen,
     totalPayed,
-  }: GetTotalExpenseResponseDTO): GetTotalExpenseResponseDTO => {
+  }: any): GetTotalExpenseResponseDTO => {
     return new GetTotalExpenseResponseDTO(total, totalOpen, totalPayed);
   };
 }

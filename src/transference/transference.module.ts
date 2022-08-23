@@ -35,5 +35,8 @@ import { TransferenceController } from './transference.controller';
       useClass: TransferenceRepository,
     },
   ],
+  exports: [
+    { provide: TYPES.GetTransferenceService, useClass: GetTransferenceService },
+  ],
 })
 export class TransferenceModule {}

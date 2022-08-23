@@ -46,6 +46,7 @@ module.exports = {
           '/^@graphic/',
           '/^@transference/',
           '/^@shared/',
+          '/^@dashboard/',
           ['parent', 'sibling', 'index'],
         ],
         alphabetize: { order: 'asc', ignoreCase: true },
