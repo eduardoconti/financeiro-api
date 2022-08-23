@@ -81,5 +81,13 @@ describe('DashBoardService', () => {
     expect(result).toBeDefined();
     expect(expenseService.getTotalExpenses).toBeCalledTimes(2);
     expect(earningService.getTotalEarnings).toBeCalledTimes(2);
+    expect(result).toEqual({
+      earningsOpen: 0,
+      earningsPayed: 6000,
+      expensesOpen: 3000,
+      expensesPayed: 2000,
+      ballance: 1000,
+      amount: 4000,
+    });
   });
 });

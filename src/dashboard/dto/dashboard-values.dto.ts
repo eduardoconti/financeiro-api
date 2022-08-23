@@ -2,9 +2,13 @@ import { ApiResponseProperty } from '@nestjs/swagger';
 
 export class DashBoardValues {
   @ApiResponseProperty()
-  expenses!: number;
+  expensesOpen!: number;
   @ApiResponseProperty()
-  earnings!: number;
+  expensesPayed!: number;
+  @ApiResponseProperty()
+  earningsOpen!: number;
+  @ApiResponseProperty()
+  earningsPayed!: number;
   @ApiResponseProperty()
   amount!: number;
   @ApiResponseProperty()

@@ -26,22 +26,26 @@ export class DashBoardService implements IDashBoardService {
     userId: string,
     params: GetDashBoardValuesParams,
   ): Promise<DashBoardValues> {
-    const { total: earnings } = await this.getEarningService.getTotalEarnings(
-      userId,
-      params.start,
-      params.end,
-    );
+    const { totalPayed: earningsPayed, totalOpen: earningsOpen } =
+      await this.getEarningService.getTotalEarnings(
+        userId,
+        params.start,
+        params.end,
+      );
 
-    const { total: expenses } = await this.getExpenseService.getTotalExpenses(
-      userId,
-      params.start,
-      params.end,
-    );
+    const { totalOpen: expensesOpen, totalPayed: expensesPayed } =
+      await this.getExpenseService.getTotalExpenses(
+        userId,
+        params.start,
+        params.end,
+      );
     return DashBoardValues.build({
-      earnings,
-      expenses,
+      expensesOpen,
+      expensesPayed,
+      earningsPayed,
+      earningsOpen,
       amount: await this.calculateAmount(userId),
-      ballance: earnings - expenses,
+      ballance: earningsPayed + earningsOpen - (expensesPayed + expensesOpen),
     });
   }
 
