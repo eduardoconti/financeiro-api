@@ -58,8 +58,14 @@ export class TransferenceRepository implements ITransferenceRepository {
   async insert(expense: Transferencias): Promise<Transferencias> {
     try {
       const newTransference = await this.repository.create(expense);
-      await this.repository.save(newTransference);
-      return newTransference;
+      const insertedTransference = await this.repository.save(newTransference);
+      const transference = await this.repository.findOneOrFail({
+        where: {
+          id: insertedTransference.id,
+        },
+        relations: ['carteiraOrigem', 'carteiraDestino'],
+      });
+      return transference;
     } catch (e) {
       throw new InsertTransferenceException(e, expense);
     }
@@ -81,7 +87,10 @@ export class TransferenceRepository implements ITransferenceRepository {
       throw new UpdateTransferenceException(e, expense);
     });
     const updated = this.repository
-      .findOneOrFail({ where: { id: id } })
+      .findOneOrFail({
+        where: { id: id },
+        relations: ['carteiraOrigem', 'carteiraDestino'],
+      })
       .catch((e) => {
         throw new UpdateTransferenceException(e, expense);
       });

@@ -128,7 +128,7 @@ export class TransferenceController {
     );
   }
 
-  @Patch('flag/:id')
+  @Patch(':id')
   async updateFlagPayed(
     @Param('id') id: number,
     @Body() transference: TransferencePatchFlagPayedDTO,
