@@ -19,7 +19,6 @@ import { IExpenseRepository } from '@expense/repository';
 
 import { DateHelper } from '@shared/helpers';
 
-import { IGetExpenseService } from './get-expense.service.interface';
 import { IInsertExpenseService } from './insert-expense.service.interface';
 
 export class InsertExpenseService implements IInsertExpenseService {
@@ -34,8 +33,6 @@ export class InsertExpenseService implements IInsertExpenseService {
     private getCategoryService: IGetCategoryService,
     @Inject(TYPES.GetSubCategoryService)
     private getSubCategoryService: IGetSubCategoryService,
-    @Inject(TYPES.GetExpenseService)
-    private getExpenseService: IGetExpenseService,
   ) {}
 
   async insert(
