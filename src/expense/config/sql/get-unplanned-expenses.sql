@@ -55,11 +55,11 @@ where
   and date_part('year', d.vencimento) = date_part('year', d.created_at)
   and date_part('month', d.vencimento) <= date_part('month', d.created_at)
   AND CASE
-    WHEN (cast($2 as date)) IS NOT NULL
-    AND (cast($3 as date)) IS NOT NULL THEN d.vencimento BETWEEN $2
+    WHEN (cast($2 as timestamp)) IS NOT NULL
+    AND (cast($3 as timestamp)) IS NOT NULL THEN d.vencimento BETWEEN $2
     AND $3
-    WHEN(cast($2 as date)) IS NOT NULL
-    AND (cast($3 as date)) IS NULL THEN d.vencimento >= $2
+    WHEN(cast($2 as timestamp)) IS NOT NULL
+    AND (cast($3 as timestamp)) IS NULL THEN d.vencimento >= $2
     ELSE true
   END
 group by

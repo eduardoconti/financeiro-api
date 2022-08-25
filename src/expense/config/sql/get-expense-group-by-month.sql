@@ -61,11 +61,11 @@ FROM
 WHERE
     d.user_id = $1
     AND CASE
-        WHEN (cast($2 as date)) IS NOT NULL
-        AND (cast($3 as date)) IS NOT NULL THEN d.vencimento BETWEEN $2
+        WHEN (cast($2 as timestamp)) IS NOT NULL
+        AND (cast($3 as timestamp)) IS NOT NULL THEN d.vencimento BETWEEN $2
         AND $3
-        WHEN(cast($2 as date)) IS NOT NULL
-        AND (cast($3 as date)) IS NULL THEN d.vencimento >= $2
+        WHEN(cast($2 as timestamp)) IS NOT NULL
+        AND (cast($3 as timestamp)) IS NULL THEN d.vencimento >= $2
         ELSE true
     END
 GROUP BY 

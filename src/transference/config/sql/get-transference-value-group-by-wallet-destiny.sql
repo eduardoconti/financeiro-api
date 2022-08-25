@@ -8,11 +8,11 @@ FROM
 WHERE
     t.user_id = $1
     AND CASE
-        WHEN (cast($2 as date)) IS NOT NULL
-        AND (cast($3 as date)) IS NOT NULL THEN t.transferencia BETWEEN $2
+        WHEN (cast($2 as timestamp)) IS NOT NULL
+        AND (cast($3 as timestamp)) IS NOT NULL THEN t.transferencia BETWEEN $2
         AND $3
-        WHEN(cast($2 as date)) IS NOT NULL
-        AND (cast($3 as date)) IS NULL THEN t.transferencia >= $2
+        WHEN(cast($2 as timestamp)) IS NOT NULL
+        AND (cast($3 as timestamp)) IS NULL THEN t.transferencia >= $2
         ELSE true
     END
     AND CASE
