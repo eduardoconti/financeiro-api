@@ -23,16 +23,17 @@ export class CategoryRepository implements ICategoryRepository {
 
   async insert(category: Category): Promise<Category> {
     const newCategory = this.repository.create(category);
-
-    return await this.repository.save(newCategory).catch((error) => {
+    const { id } = await this.repository.save(newCategory).catch((error) => {
       throw new InsertCategoryException(error, category);
     });
+    return await this.findOneOrFail(id as number);
   }
 
   async update(category: Category): Promise<Category> {
-    return await this.repository.save(category).catch((error) => {
+    const { id } = await this.repository.save(category).catch((error) => {
       throw new UpdateCategoryException(error, category);
     });
+    return await this.findOneOrFail(id as number);
   }
 
   async findById(id: number): Promise<Category | null> {
@@ -63,5 +64,16 @@ export class CategoryRepository implements ICategoryRepository {
       throw new DeleteCategoryException(error);
     });
     return new CategoryDeleteResponseDTO(true);
+  }
+
+  async findOneOrFail(id: number): Promise<Category> {
+    return await this.repository
+      .findOneOrFail({
+        where: { id: id },
+        relations: ['user', 'subCategories'],
+      })
+      .catch((error) => {
+        throw new FindCategoryException(error);
+      });
   }
 }
