@@ -45,7 +45,7 @@ export class GraphicService implements IGraphicService {
     const receitasProperties = Object.getOwnPropertyNames(receitas);
     const properties = [
       ...new Set([...expensesProperties, ...receitasProperties]),
-    ];
+    ].sort((a, b) => (a > b ? 1 : b > a ? -1 : 0));
 
     properties.forEach((key) => {
       receitas[key] ??
@@ -85,10 +85,10 @@ export class GraphicService implements IGraphicService {
       graphicData.months.push(
         GeneralGraphicResponseDataDTO.build({
           month: this.getMonthName(key),
-          earnings: earnings,
-          expenses: expenses,
-          ballance: ballance,
-          totalBallance: totalBallance,
+          earnings,
+          expenses,
+          ballance,
+          totalBallance,
         }),
       );
     });
