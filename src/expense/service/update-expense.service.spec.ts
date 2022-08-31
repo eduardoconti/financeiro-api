@@ -6,6 +6,8 @@ import { IGetWalletService } from '@wallet/service';
 
 import { TYPES } from '@config/dependency-injection';
 
+import { IDatabaseService } from '@db/services';
+
 import {
   ExpenseNotFoundException,
   UpdateExpenseException,
@@ -36,6 +38,7 @@ describe('UpdateExpenseService', () => {
   let expenseRepository: IExpenseRepository;
   let getWalletService: IGetWalletService;
   let getCategoryService: IGetCategoryService;
+  let databaseService: IDatabaseService;
 
   beforeEach(async () => {
     const module = await Test.createTestingModule({
@@ -45,6 +48,7 @@ describe('UpdateExpenseService', () => {
           useValue: {
             findOneByParams: jest.fn(),
             update: jest.fn(),
+            findByParams: jest.fn(),
           },
         },
         {
@@ -63,6 +67,17 @@ describe('UpdateExpenseService', () => {
           provide: TYPES.UpdateExpenseService,
           useClass: UpdateExpenseService,
         },
+        {
+          provide: TYPES.DatabaseService,
+          useValue: {
+            connect: jest.fn(),
+            startTransaction: jest.fn(),
+            commitTransaction: jest.fn(),
+            rollbackTransaction: jest.fn(),
+            release: jest.fn(),
+            save: jest.fn(),
+          },
+        },
       ],
     }).compile();
 
@@ -74,6 +89,7 @@ describe('UpdateExpenseService', () => {
     getCategoryService = module.get<IGetCategoryService>(
       TYPES.GetCategoryService,
     );
+    databaseService = module.get<IDatabaseService>(TYPES.DatabaseService);
   });
 
   it('should be defined', () => {
@@ -81,6 +97,7 @@ describe('UpdateExpenseService', () => {
     expect(expenseRepository).toBeDefined();
     expect(getWalletService).toBeDefined();
     expect(getCategoryService).toBeDefined();
+    expect(databaseService).toBeDefined();
   });
 
   it('should update an expense', async () => {

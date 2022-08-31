@@ -5,6 +5,9 @@ import { IGetCategoryService } from '@category/service';
 import { IGetWalletService } from '@wallet/service';
 
 import { TYPES } from '@config/dependency-injection';
+import { BaseException } from '@config/exceptions';
+
+import { IDatabaseService } from '@db/services';
 
 import { EXPENSE_ERROR_MESSAGES } from '@expense/constants';
 import { DespesasDTO, ExpensePatchFlagPayedDTO } from '@expense/dto';
@@ -29,6 +32,8 @@ export class UpdateExpenseService implements IUpdateExpenseService {
     private getWalletService: IGetWalletService,
     @Inject(TYPES.GetCategoryService)
     private getCategoryService: IGetCategoryService,
+    @Inject(TYPES.DatabaseService)
+    private readonly databaseService: IDatabaseService,
   ) {}
 
   async update(
@@ -40,12 +45,9 @@ export class UpdateExpenseService implements IUpdateExpenseService {
       id,
       userId,
     });
+
     if (!expense) {
       throw new ExpenseNotFoundException();
-    }
-
-    if (expense.instalmentId) {
-      throw new UpdateInstalmentException();
     }
 
     if (despesa.carteiraId) {
@@ -74,9 +76,23 @@ export class UpdateExpenseService implements IUpdateExpenseService {
       );
     }
 
+    if (expense.instalmentId) {
+      if (
+        expense.valor !== despesa.valor ||
+        expense.descricao !== despesa.descricao
+      ) {
+        throw new UpdateInstalmentException();
+      }
+
+      return await this.updateInstalment(userId, expense.instalmentId, despesa);
+    }
+
     return await this.expenseRepository.update(id, {
       ...despesa,
-      updatedAt: DateHelper.dateNow(),
+      updatedAt:
+        expense.valor !== despesa.valor
+          ? DateHelper.dateNow()
+          : expense.updatedAt,
       pagamento: despesa.pagamento ?? expense.pagamento,
     });
   }
@@ -101,5 +117,64 @@ export class UpdateExpenseService implements IUpdateExpenseService {
     }
 
     return expense;
+  }
+
+  private async updateInstalment(
+    userId: string,
+    instalmentId: string,
+    despesa: Partial<DespesasDTO>,
+  ) {
+    try {
+      await this.databaseService.connect();
+      await this.databaseService.startTransaction();
+      const expenses = await this.expenseRepository.findByParams({
+        userId: userId,
+        instalmentId: instalmentId,
+      });
+
+      for (const entity of expenses) {
+        const {
+          id,
+          userId,
+          pago,
+          pagamento,
+          categoriaId,
+          carteiraId,
+          subCategoryId,
+          valor,
+          instalment,
+          instalmentId,
+          descricao,
+        } = entity;
+        await this.databaseService.save(
+          Despesas.build({
+            id,
+            userId,
+            pago,
+            pagamento,
+            carteiraId,
+            valor,
+            instalment,
+            instalmentId,
+            categoriaId: despesa.categoriaId ?? categoriaId,
+            subCategoryId: despesa.subCategoryId ?? subCategoryId,
+            descricao,
+          }),
+        );
+      }
+      await this.databaseService.commitTransaction();
+      const entitiesSaved = await this.expenseRepository.findByParams({
+        instalmentId: instalmentId,
+      });
+      return entitiesSaved[0];
+    } catch (e: any) {
+      await this.databaseService.rollbackTransaction();
+      if (e instanceof BaseException) {
+        throw e;
+      }
+      throw new UpdateExpenseException(e.message);
+    } finally {
+      await this.databaseService.release();
+    }
   }
 }

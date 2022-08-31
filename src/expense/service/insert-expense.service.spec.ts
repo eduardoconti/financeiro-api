@@ -52,6 +52,7 @@ describe('InsertExpenseService', () => {
           provide: TYPES.ExpenseRepository,
           useValue: {
             insert: jest.fn(),
+            findByParams: jest.fn(),
           },
         },
         {
@@ -149,6 +150,7 @@ describe('InsertExpenseService', () => {
       .spyOn(databaseService, 'save')
       .mockResolvedValueOnce(entity[0])
       .mockResolvedValueOnce(entity[1]);
+    jest.spyOn(expenseRepository, 'findByParams').mockResolvedValue(entity);
     const data = await insertExpenseService.insert(
       fakeInsertExpenseRequestWithInstalment,
       fakeUserId,
@@ -184,6 +186,7 @@ describe('InsertExpenseService', () => {
       .spyOn(databaseService, 'save')
       .mockResolvedValueOnce(entities[0])
       .mockResolvedValueOnce(entities[1]);
+    jest.spyOn(expenseRepository, 'findByParams').mockResolvedValue(entities);
 
     const data = await insertExpenseService.insert(fakeRequest, fakeUserId);
 
@@ -216,6 +219,7 @@ describe('InsertExpenseService', () => {
       .mockResolvedValueOnce(entities[1])
       .mockResolvedValueOnce(entities[2])
       .mockResolvedValueOnce(entities[3]);
+    jest.spyOn(expenseRepository, 'findByParams').mockResolvedValue(entities);
 
     const data = await insertExpenseService.insert(fakeRequest, fakeUserId);
     expect(databaseService.connect).toHaveBeenCalledTimes(1);
@@ -250,6 +254,7 @@ describe('InsertExpenseService', () => {
       .mockResolvedValueOnce(entities[2])
       .mockResolvedValueOnce(entities[3])
       .mockResolvedValueOnce(entities[4]);
+    jest.spyOn(expenseRepository, 'findByParams').mockResolvedValue(entities);
 
     const data = await insertExpenseService.insert(fakeRequest, fakeUserId);
     expect(databaseService.connect).toHaveBeenCalledTimes(1);
