@@ -50,9 +50,14 @@ export class CategoryRepository implements ICategoryRepository {
   async findByParams(params: FindCategoryByParams): Promise<Category[] | null> {
     return await this.repository
       .find({
-        relations: ['user', 'subCategories'],
+        relations: { user: true, subCategories: true },
         where: params,
-        order: { descricao: 'ASC' },
+        order: {
+          descricao: 'ASC',
+          subCategories: {
+            description: 'ASC',
+          },
+        },
       })
       .catch((error) => {
         throw new FindCategoryException(error, { params: params });
