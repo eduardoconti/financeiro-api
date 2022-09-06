@@ -116,5 +116,6 @@ export const getExpenseAmountGroupByCategoryResponseMock = [
     id: 1,
     valor: 1,
     descricao: 'teste',
+    subCategoryData: [{}],
   }),
 ];

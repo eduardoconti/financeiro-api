@@ -1,19 +1,22 @@
 export class GetExpenseAmountGroupByCategoryResponse {
-  readonly valor: number;
-  readonly descricao: string;
-  readonly id: number;
+  readonly valor!: number;
+  readonly descricao!: string;
+  readonly id!: number;
+  readonly subCategoryData!: SubCategoryData[];
 
-  private constructor(valor: number, descricao: string, id: number) {
-    this.valor = valor;
-    this.descricao = descricao;
-    this.id = id;
+  private constructor(dto: GetExpenseAmountGroupByCategoryResponse) {
+    Object.assign(this, dto);
   }
 
-  static build = ({
-    valor,
-    descricao,
-    id,
-  }: GetExpenseAmountGroupByCategoryResponse): GetExpenseAmountGroupByCategoryResponse => {
-    return new GetExpenseAmountGroupByCategoryResponse(valor, descricao, id);
+  static build = (
+    dto: GetExpenseAmountGroupByCategoryResponse,
+  ): GetExpenseAmountGroupByCategoryResponse => {
+    return new GetExpenseAmountGroupByCategoryResponse(dto);
   };
 }
+
+export type SubCategoryData = {
+  id?: number;
+  description?: string;
+  value?: number;
+};

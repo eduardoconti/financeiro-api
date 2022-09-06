@@ -88,7 +88,7 @@ export class GetExpenseService implements IGetExpenseService {
   ): Promise<GetExpenseAmountGroupByCategoryResponse[]> {
     const sqlString = SqlFileManager.readFile(
       __dirname,
-      'get-expense-value-group-by-category.sql',
+      'get-expense-value-group-by-category-and-subcategory.sql',
     );
 
     const despesas =
