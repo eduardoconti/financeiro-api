@@ -74,3 +74,4 @@ group by
   cat.id,
   cat.value,
   cat.descricao
+order by cat.value  
