@@ -114,8 +114,8 @@ export const getExpenseAmountGroupByWalletResponseMock = [
 export const getExpenseAmountGroupByCategoryResponseMock = [
   GetExpenseAmountGroupByCategoryResponse.build({
     id: 1,
-    valor: 1,
-    descricao: 'teste',
+    value: 1,
+    description: 'teste',
     subCategoryData: [{}],
   }),
 ];

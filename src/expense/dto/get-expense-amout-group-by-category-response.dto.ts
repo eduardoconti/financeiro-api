@@ -1,6 +1,6 @@
 export class GetExpenseAmountGroupByCategoryResponse {
-  readonly valor!: number;
-  readonly descricao!: string;
+  readonly value!: number;
+  readonly description!: string;
   readonly id!: number;
   readonly subCategoryData!: SubCategoryData[];
 

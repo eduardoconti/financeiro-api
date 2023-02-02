@@ -29,6 +29,7 @@ export default {
     "@shared/*": ["src/shared/*"],
     "@transference/*": ["src/transference/*"],
     "@dashboard/*": ["src/dashboard/*"],
+    "@domain/*":["src/domain/*"]
   }, {
     prefix: '<rootDir>/../',
   }),
