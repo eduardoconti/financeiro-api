@@ -210,6 +210,7 @@ describe('GetExpenseService', () => {
       id: 1,
       valor: 1,
       descricao: 'teste',
+      subCategoryData: [],
     });
     jest.spyOn(expenseRepository, 'query').mockResolvedValue([fake]);
 

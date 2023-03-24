@@ -10,6 +10,10 @@ import { TYPES } from '@config/dependency-injection';
 import { PasswordManagerService } from './password-mannager.service';
 import { IPasswordManagerService } from './password-mannager.service.interface';
 
+jest.mock('bcrypt', () => ({
+  compare: jest.fn(),
+  hash: jest.fn(),
+}));
 describe('PasswordMannagerService', () => {
   let passwordManagerService: IPasswordManagerService;
 

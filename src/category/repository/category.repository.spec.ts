@@ -54,6 +54,10 @@ describe('CategoryRepository', () => {
     jest
       .spyOn(ormRepository, 'save')
       .mockImplementation(() => Promise.resolve(fakeCategoryEntity));
+
+    jest
+      .spyOn(ormRepository, 'findOneOrFail')
+      .mockImplementation(() => Promise.resolve(fakeCategoryEntity));
     const result = await categoryRepository.insert(fakeCategoryEntity);
 
     expect(result).toEqual(fakeCategoryEntity);
@@ -76,6 +80,10 @@ describe('CategoryRepository', () => {
   it('should be update a category', async () => {
     jest
       .spyOn(ormRepository, 'save')
+      .mockImplementation(() => Promise.resolve(fakeCategoryEntity));
+
+    jest
+      .spyOn(ormRepository, 'findOneOrFail')
       .mockImplementation(() => Promise.resolve(fakeCategoryEntity));
 
     const result = await categoryRepository.update(fakeCategoryEntity);

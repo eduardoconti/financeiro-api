@@ -92,7 +92,6 @@ export class InsertExpenseService implements IInsertExpenseService {
       });
       return entitiesSaved;
     } catch (e) {
-      console.log(e);
       await this.databaseService.rollbackTransaction();
       throw new InsertExpenseException(e);
     } finally {

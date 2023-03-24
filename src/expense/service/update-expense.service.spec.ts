@@ -214,6 +214,7 @@ describe('UpdateExpenseService', () => {
       mockExpenseEntity.userId,
       {
         ...fakeInsertExpenseRequest,
+        valor: 101,
         pago: true,
         pagamento: DateHelper.date('2022-05-25T18:59:18.026Z'),
       },
@@ -228,6 +229,7 @@ describe('UpdateExpenseService', () => {
     });
     expect(expenseRepository.update).toBeCalledWith(mockExpenseEntity.id, {
       ...fakeInsertExpenseRequest,
+      valor: 101,
       updatedAt: DateHelper.dateNow(),
       pagamento: DateHelper.date('2022-05-25T18:59:18.026Z'),
       pago: true,
