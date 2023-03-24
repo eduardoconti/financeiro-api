@@ -19,9 +19,16 @@ export class UserRepository implements IUserRepository {
   ) {}
 
   async findByParams(params?: FindUserByParams): Promise<Users[] | undefined> {
-    return await this.userRepository.find({ where: params }).catch((error) => {
-      throw new GetUserException(ERROR_MESSAGES.USER_FIND_ERROR, error, params);
-    });
+    const result = await this.userRepository
+      .find({ where: params })
+      .catch((error) => {
+        throw new GetUserException(
+          ERROR_MESSAGES.USER_FIND_ERROR,
+          error,
+          params,
+        );
+      });
+    return result.length > 0 ? result : undefined;
   }
 
   async delete(user: Users): Promise<UserDeleteResponseDTO> {

@@ -11,8 +11,6 @@ import {
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags, ApiOperation } from '@nestjs/swagger';
 
-import { JwtAuthGuard } from '@auth/guard';
-
 import { TYPES } from '@config/dependency-injection';
 
 import { SuccessResponseData } from '@shared/dto';
@@ -28,7 +26,6 @@ import {
 
 @ApiTags('Users')
 @Controller('users')
-@UseGuards(JwtAuthGuard)
 @ApiBearerAuth()
 export class UsersController {
   constructor(
@@ -47,6 +44,7 @@ export class UsersController {
   })
   @UseGuards(MasterUserGuard)
   @Get()
+  @UseGuards(MasterUserGuard)
   async getAllUsers(): Promise<SuccessResponseData<Users[]>> {
     const data = await this.getUserService.getAll();
     return new SuccessResponseData(data, HttpStatus.OK);
@@ -57,7 +55,6 @@ export class UsersController {
     summary: 'Insert user.',
     description: 'Create an user. This endpoint is authorized for admin user.',
   })
-  //@UseGuards(MasterUserGuard)
   async createUser(@Body() user: UserDTO): Promise<SuccessResponseData<Users>> {
     const data = await this.insertUserService.insert(user);
     return new SuccessResponseData(data, HttpStatus.CREATED);

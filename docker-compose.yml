@@ -4,14 +4,11 @@ services:
   financeiro:
     container_name: financeiro
     restart: on-failure
-    build:
-      context: .
-      target: development
+    build: .
     volumes:
-      - .:/usr/src/app
-      - /usr/src/app/node_modules
+      - .:/app
     ports:
-      - ${PORT}:3005
+      - ${PORT}:${PORT}
     command: yarn start:dev
     env_file:
       - .env
@@ -32,12 +29,13 @@ services:
       - TZ=GMT
       - PG_DATA=/var/lib/postgresql/data
     ports:
-      - ${POSTGRES_EXTERNAL_PORT}:${POSTGRES_PORT}
+      - ${POSTGRES_PORT}:${POSTGRES_PORT}
     volumes:
       - pgdata:/var/lib/postgresql/data
 
 networks:
   financeiro:
+
 
 volumes:
   pgdata:

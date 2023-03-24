@@ -24,5 +24,6 @@ export class OrmHelper {
     if (end) {
       return LessThanOrEqual(DateHelper.date(end));
     }
+    return undefined;
   }
 }

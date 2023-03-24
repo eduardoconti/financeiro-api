@@ -1,4 +1,4 @@
-import { Injectable, Inject, BadRequestException } from '@nestjs/common';
+import { Injectable, Inject } from '@nestjs/common';
 
 import { CarteirasDeleteResponseDTO } from '@wallet/dto';
 import { IWalletRepository } from '@wallet/repository';

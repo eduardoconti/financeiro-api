@@ -6,8 +6,6 @@ import { TYPES } from '@config/dependency-injection';
 
 import { IGetExpenseService } from '@expense/service';
 
-import { IGetTransferenceService } from '@transference/service';
-
 import { DashBoardValues, GetDashBoardValuesParams } from '@dashboard/dto';
 
 import { IDashBoardService } from './dashboard.service.interface';
@@ -18,8 +16,6 @@ export class DashBoardService implements IDashBoardService {
     private readonly getExpenseService: IGetExpenseService,
     @Inject(TYPES.GetEarningService)
     private readonly getEarningService: IGetEarningService,
-    @Inject(TYPES.GetTransferenceService)
-    private readonly getTransferenceService: IGetTransferenceService,
   ) {}
 
   async getValues(

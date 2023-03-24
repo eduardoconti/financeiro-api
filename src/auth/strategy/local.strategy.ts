@@ -19,7 +19,7 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
   async validate(
     login: string,
     password: string,
-  ): Promise<UserPayloadDto | undefined> {
+  ): Promise<UserPayloadDto | void> {
     const user = await this.authService.validateUser(login, password);
     if (user) {
       return new UserPayloadDto(user);

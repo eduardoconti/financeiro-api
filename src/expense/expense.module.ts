@@ -1,4 +1,4 @@
-import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { CategoryModule } from '@category/category.module';
@@ -11,7 +11,6 @@ import { DatabaseModule } from '@db/database.module';
 
 import { Despesas } from './entity';
 import { ExpenseController } from './expense.controller';
-import { DespesasMiddleware } from './middleware/expense.middleware';
 import { ExpenseRepository } from './repository';
 import {
   DeleteExpenseService,
@@ -57,8 +56,4 @@ import { UpdateExpenseService } from './service/update-expense.service';
     },
   ],
 })
-export class DespesasModule implements NestModule {
-  configure(consumer: MiddlewareConsumer) {
-    consumer.apply(DespesasMiddleware).forRoutes(ExpenseController);
-  }
-}
+export class DespesasModule {}

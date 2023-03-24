@@ -1,6 +1,6 @@
 import 'moment/locale/pt-br';
 import { Inject, Injectable } from '@nestjs/common';
-import * as moment from 'moment';
+import moment from 'moment';
 
 import { EarningsGroupMonthDTO } from '@earning/dto';
 import { IGetEarningService } from '@earning/service';

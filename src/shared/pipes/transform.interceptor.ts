@@ -10,7 +10,7 @@ import { map, Observable } from 'rxjs';
 @Injectable()
 export class TransformInterceptor implements NestInterceptor {
   intercept(
-    context: ExecutionContext,
+    _context: ExecutionContext,
     next: CallHandler<any>,
   ): Observable<any> {
     return next

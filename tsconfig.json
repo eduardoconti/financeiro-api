@@ -1,32 +1,77 @@
 {
   "compilerOptions": {
     "module": "commonjs",
-    "declaration": false,
+    "declaration": true,
     "removeComments": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "allowSyntheticDefaultImports": true,
-    "resolveJsonModule": true,
-    "incremental": false,
     "target": "es2017",
     "sourceMap": true,
     "outDir": "./dist",
     "baseUrl": "./",
     "strict": true,
+    "incremental": true,
+    "skipLibCheck": true,
+    "strictBindCallApply": false,
+    "strictPropertyInitialization": true,
+    "strictNullChecks": true,
+    "noImplicitAny": true,
+    "forceConsistentCasingInFileNames": true,
+    "noFallthroughCasesInSwitch": false,
+    "allowJs": false,
+    "esModuleInterop": true,
+    "noImplicitThis": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitReturns": true,
     "paths": {
-      "@app/*": ["src/app/*"],
-      "@users/*": ["src/user/*"],
-      "@auth/*": ["src/auth/*"],
-      "@wallet/*": ["src/wallet/*"],
-      "@category/*": ["src/category/*"],
-      "@config/*": ["src/config/*"],
-      "@db/*": ["src/database/*"],
-      "@expense/*": ["src/expense/*"],
-      "@graphic/*": ["src/graphic/*"],
-      "@earning/*": ["src/earning/*"],
-      "@shared/*": ["src/shared/*"],
-      "@transference/*": ["src/transference/*"],
-      "@dashboard/*": ["src/dashboard/*"],
-    }
-  }
+      "@app/*": [
+        "src/app/*"
+      ],
+      "@users/*": [
+        "src/user/*"
+      ],
+      "@auth/*": [
+        "src/auth/*"
+      ],
+      "@wallet/*": [
+        "src/wallet/*"
+      ],
+      "@category/*": [
+        "src/category/*"
+      ],
+      "@config/*": [
+        "src/config/*"
+      ],
+      "@db/*": [
+        "src/database/*"
+      ],
+      "@expense/*": [
+        "src/expense/*"
+      ],
+      "@graphic/*": [
+        "src/graphic/*"
+      ],
+      "@earning/*": [
+        "src/earning/*"
+      ],
+      "@shared/*": [
+        "src/shared/*"
+      ],
+      "@transference/*": [
+        "src/transference/*"
+      ],
+      "@dashboard/*": [
+        "src/dashboard/*"
+      ],
+    },
+  },
+  "include": [
+    "src/**/*",
+    "test/**/*"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
 }

@@ -1,4 +1,4 @@
-import * as moment from 'moment';
+import moment from 'moment';
 moment().locale('pb-br');
 export class DateHelper {
   static dateIso8601(dateString?: string): string {

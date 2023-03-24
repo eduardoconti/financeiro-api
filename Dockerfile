@@ -1,51 +1,24 @@
-ARG PORT=3000
+FROM node:18.12.0-alpine AS build
 
-FROM node:14.17.0 As development
+WORKDIR /app
 
-ENV NODE_ENV=development
+COPY package.json yarn.lock ./
 
-WORKDIR /usr/src
-
-ENV PATH /usr/src/node_modules/.bin/:$PATH
-
-COPY package*.json ./
-
-RUN yarn && yarn cache clean --force
-
-WORKDIR /usr/src/app
+RUN yarn 
 
 COPY . .
 
-EXPOSE ${PORT}
-
-FROM development as builder
-
 RUN yarn build
 
-FROM node:14.15.0 as production
+FROM node:18.12.0-alpine
 
-ARG NODE_ENV=production
-ENV NODE_ENV=${NODE_ENV}
+WORKDIR /app
 
-# Update the system
-RUN apk --no-cache -U upgrade
-
-# Prepare destination directory and ensure user node owns 
-RUN mkdir -p /usr/src/app/dist && chown -R node:node /usr/src/app
-
-WORKDIR /usr/src/app
-
-COPY package*.json .env ./
-
-# Switch to user node
-USER node
-
-RUN yarn --production=true
-
-# Copy js files and change ownership to user node
-COPY --chown=node:node --from=builder /usr/src/app/dist ./dist
+COPY --from=build /app/node_modules ./node_modules
+COPY --from=build /app/dist ./dist
+COPY --from=build /app/package.json ./package.json
+COPY --from=build /app/yarn.lock ./yarn.lock
 
 EXPOSE ${PORT}
-ENV NODE_PATH=dist
 
-CMD ["node", "dist/main"]
+CMD ["yarn", "start:prod"]

@@ -4,7 +4,7 @@ module.exports = {
     project: 'tsconfig.json',
     sourceType: 'module',
   },
-  plugins: ['@typescript-eslint/eslint-plugin', 'eslint-plugin-import-helpers'],
+  plugins: ['@typescript-eslint','eslint-plugin-import-helpers'],
   extends: [
     'plugin:@typescript-eslint/recommended',
     'prettier/@typescript-eslint',
@@ -52,5 +52,7 @@ module.exports = {
         alphabetize: { order: 'asc', ignoreCase: true },
       },
     ],
+   "no-unused-vars": "off",
   },
+
 };
