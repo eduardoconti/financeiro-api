@@ -33,6 +33,13 @@ export class Carteiras {
   })
   userId!: string;
 
+  @Column({
+    type: 'boolean',
+    nullable: false,
+    default: true,
+  })
+  active!: boolean;
+
   @OneToMany(() => Despesas, (despesas) => despesas.carteira, {
     nullable: false,
   })

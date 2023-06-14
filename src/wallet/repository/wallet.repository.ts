@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
-import { CarteirasDeleteResponseDTO, CarteirasDTO } from '@wallet/dto';
+import { CarteirasDeleteResponseDTO } from '@wallet/dto';
 import { Carteiras } from '@wallet/entity';
 import {
   DeleteWalletException,
@@ -10,6 +10,7 @@ import {
   ForbiddenWalletException,
   InsertWalletException,
   UpdateWalletException,
+  WalletNotFoundException,
 } from '@wallet/exception';
 
 import { IWalletRepository } from './wallet.repository.interface';
@@ -21,7 +22,7 @@ export class WalletRepository implements IWalletRepository {
     private readonly repository: Repository<Carteiras>,
   ) {}
 
-  async insert(walletRequest: CarteirasDTO): Promise<Carteiras> {
+  async insert(walletRequest: Carteiras): Promise<Carteiras> {
     try {
       const wallet = this.repository.create(walletRequest);
       return await this.repository.save(wallet);
@@ -30,17 +31,9 @@ export class WalletRepository implements IWalletRepository {
     }
   }
 
-  async update(
-    id: number,
-    userId: string,
-    walletRequest: CarteirasDTO,
-  ): Promise<Carteiras> {
-    const entity = await this.findById(id);
-    if (userId !== entity.userId) {
-      throw new ForbiddenWalletException();
-    }
+  async update(walletEntity: Carteiras): Promise<Carteiras> {
     try {
-      const wallet = this.repository.create({ ...entity, ...walletRequest });
+      const wallet = this.repository.create(walletEntity);
       return await this.repository.save(wallet);
     } catch (error) {
       throw new UpdateWalletException(error);
@@ -48,24 +41,28 @@ export class WalletRepository implements IWalletRepository {
   }
 
   async findById(id: number): Promise<Carteiras> {
-    try {
-      const wallet = await this.repository.findOneOrFail({
+    const wallet = await this.repository
+      .findOne({
         relations: ['user'],
         where: { id: id },
+      })
+      .catch((error) => {
+        throw new FindWalletException(error);
       });
 
-      return wallet;
-    } catch (error) {
-      throw new FindWalletException(error);
+    if (!wallet) {
+      throw new WalletNotFoundException();
     }
+
+    return wallet;
   }
 
-  async find(userId: string): Promise<Carteiras[]> {
+  async find({ userId, active }: Partial<Carteiras>): Promise<Carteiras[]> {
     return await this.repository
       .find({
-        order: { descricao: 'ASC' },
+        order: { active: 'DESC', descricao: 'ASC' },
         relations: ['user'],
-        where: { userId: userId },
+        where: { userId: userId, active: active },
       })
       .catch((error) => {
         throw new FindWalletException(error);

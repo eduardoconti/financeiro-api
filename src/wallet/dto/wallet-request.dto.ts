@@ -22,6 +22,8 @@ export class CarteirasDTO {
   })
   descricao!: string;
 
+  active?: boolean;
+
   constructor(partial: Partial<CarteirasDTO>) {
     Object.assign(this, partial);
   }

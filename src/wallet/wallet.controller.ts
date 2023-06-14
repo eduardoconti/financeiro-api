@@ -9,6 +9,7 @@ import {
   UseGuards,
   Inject,
   HttpStatus,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
@@ -22,13 +23,19 @@ import { TYPES } from '@config/dependency-injection';
 import { SuccessResponseData } from '@shared/dto';
 
 import { SUCCESS_MESSAGES } from './constants';
-import { CarteirasDeleteResponseDTO, CarteirasDTO } from './dto';
+import {
+  CarteirasDeleteResponseDTO,
+  CarteirasDTO,
+  UpdateWalletRequest,
+  WalletResponse,
+} from './dto';
 import { Carteiras } from './entity';
 import {
   IDeleteWalletService,
   IGetWalletService,
   IInsertWalletService,
   IUpdateWalletService,
+  UpdateWalletServiceInput,
 } from './service';
 
 @Controller('wallet')
@@ -90,17 +97,19 @@ export class WalletController {
 
   @Put(':id')
   async update(
-    @Param('id') id: number,
-    @User() user: UserPayloadInterface,
-    @Body() wallet: CarteirasDTO,
-  ): Promise<SuccessResponseData<Carteiras>> {
-    const data = await this.updateWalletService.updateWallet(
+    @Param('id', new ParseIntPipe()) id: number,
+    @User() { userId }: UserPayloadInterface,
+    @Body() { active, description }: UpdateWalletRequest,
+  ): Promise<SuccessResponseData<WalletResponse>> {
+    const serviceInput: UpdateWalletServiceInput = {
       id,
-      user.userId,
-      wallet,
-    );
-    return new SuccessResponseData<Carteiras>(
-      data,
+      userId,
+      active,
+      description,
+    };
+    const updated = await this.updateWalletService.updateWallet(serviceInput);
+    return new SuccessResponseData<WalletResponse>(
+      { id, active: updated.active, descricao: updated.descricao },
       HttpStatus.OK,
       SUCCESS_MESSAGES.WALLET_UPDATE_SUCCESS,
     );

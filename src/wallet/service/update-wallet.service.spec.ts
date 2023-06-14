@@ -1,11 +1,9 @@
 import { Test } from '@nestjs/testing';
 
-import { mockWalletEntity, mockWalletRequest } from '@wallet/mocks';
+import { mockWalletEntity, mockWalletUpdateInput } from '@wallet/mocks';
 import { IWalletRepository } from '@wallet/repository';
 
 import { TYPES } from '@config/dependency-injection';
-
-import { fakeUserId } from '@expense/mocks';
 
 import { UpdateWalletService } from './update-wallet.service';
 import { IUpdateWalletService } from './update-wallet.service.interface';
@@ -20,7 +18,7 @@ describe('UpdateWalletService', () => {
         {
           provide: TYPES.WalletRepository,
           useValue: {
-            findOneByParams: jest.fn(),
+            findById: jest.fn(),
             update: jest.fn(),
           },
         },
@@ -44,12 +42,11 @@ describe('UpdateWalletService', () => {
 
   it('should update a wallet', async () => {
     jest.spyOn(walletRepository, 'update').mockResolvedValue(mockWalletEntity);
+    jest
+      .spyOn(walletRepository, 'findById')
+      .mockResolvedValue(mockWalletEntity);
 
-    const data = await updateWalletService.updateWallet(
-      mockWalletEntity.id as number,
-      fakeUserId,
-      mockWalletRequest,
-    );
+    const data = await updateWalletService.updateWallet(mockWalletUpdateInput);
 
     expect(data).toBeDefined();
     expect(data).toEqual(mockWalletEntity);

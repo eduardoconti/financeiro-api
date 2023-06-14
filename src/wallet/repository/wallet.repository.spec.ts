@@ -10,11 +10,9 @@ import {
   InsertWalletException,
   UpdateWalletException,
 } from '@wallet/exception';
-import { mockWalletEntity, mockWalletRequest } from '@wallet/mocks';
+import { mockWalletEntity } from '@wallet/mocks';
 
 import { TYPES } from '@config/dependency-injection';
-
-import { fakeUserId } from '@expense/mocks';
 
 import { WalletRepository } from './wallet.repository';
 import { IWalletRepository } from './wallet.repository.interface';
@@ -52,7 +50,7 @@ describe('WalletRepository', () => {
       .spyOn(ormRepository, 'save')
       .mockImplementation(() => Promise.resolve(mockWalletEntity));
 
-    const result = await walletRepository.insert(mockWalletRequest);
+    const result = await walletRepository.insert(mockWalletEntity);
     expect(result).toEqual(mockWalletEntity);
   });
 
@@ -65,13 +63,13 @@ describe('WalletRepository', () => {
       .mockImplementation(() => Promise.reject(new Error('error')));
 
     await expect(
-      walletRepository.insert(mockWalletRequest),
+      walletRepository.insert(mockWalletEntity),
     ).rejects.toThrowError(InsertWalletException);
   });
 
   it('should update wallet', async () => {
     jest
-      .spyOn(ormRepository, 'findOneOrFail')
+      .spyOn(ormRepository, 'findOne')
       .mockImplementation(() => Promise.resolve(mockWalletEntity));
     jest
       .spyOn(ormRepository, 'create')
@@ -80,17 +78,13 @@ describe('WalletRepository', () => {
       .spyOn(ormRepository, 'save')
       .mockImplementation(() => Promise.resolve(mockWalletEntity));
 
-    const result = await walletRepository.update(
-      mockWalletEntity.id as number,
-      fakeUserId,
-      mockWalletRequest,
-    );
+    const result = await walletRepository.update(mockWalletEntity);
     expect(result).toEqual(mockWalletEntity);
   });
 
   it('should throw UpdateWalletException', async () => {
     jest
-      .spyOn(ormRepository, 'findOneOrFail')
+      .spyOn(ormRepository, 'findOne')
       .mockImplementation(() => Promise.resolve(mockWalletEntity));
     jest
       .spyOn(ormRepository, 'create')
@@ -100,38 +94,20 @@ describe('WalletRepository', () => {
       .mockImplementation(() => Promise.reject(new Error('error')));
 
     await expect(
-      walletRepository.update(
-        mockWalletEntity.id as number,
-        fakeUserId,
-        mockWalletRequest,
-      ),
+      walletRepository.update(mockWalletEntity),
     ).rejects.toThrowError(UpdateWalletException);
-  });
-
-  it('should throw ForbiddenWalletException when call update', async () => {
-    jest
-      .spyOn(ormRepository, 'findOneOrFail')
-      .mockImplementation(() => Promise.resolve(mockWalletEntity));
-
-    await expect(
-      walletRepository.update(
-        mockWalletEntity.id as number,
-        'another userid',
-        mockWalletRequest,
-      ),
-    ).rejects.toThrowError(ForbiddenWalletException);
   });
 
   it('should call findById', async () => {
     jest
-      .spyOn(ormRepository, 'findOneOrFail')
+      .spyOn(ormRepository, 'findOne')
       .mockImplementation(() => Promise.resolve(mockWalletEntity));
 
     const result = await walletRepository.findById(
       mockWalletEntity.id as number,
     );
     expect(result).toEqual(mockWalletEntity);
-    expect(ormRepository.findOneOrFail).toHaveBeenCalledWith({
+    expect(ormRepository.findOne).toHaveBeenCalledWith({
       relations: ['user'],
       where: { id: mockWalletEntity.id as number },
     });
@@ -139,7 +115,7 @@ describe('WalletRepository', () => {
 
   it('should throw FindWalletException when call findById', async () => {
     jest
-      .spyOn(ormRepository, 'findOneOrFail')
+      .spyOn(ormRepository, 'findOne')
       .mockImplementation(() => Promise.reject(new Error('error')));
     await expect(
       walletRepository.findById(mockWalletEntity.id as number),
@@ -151,12 +127,14 @@ describe('WalletRepository', () => {
       .spyOn(ormRepository, 'find')
       .mockImplementation(() => Promise.resolve([mockWalletEntity]));
 
-    const result = await walletRepository.find(mockWalletEntity.userId);
+    const result = await walletRepository.find({
+      userId: mockWalletEntity.userId,
+    });
     expect(result).toEqual([mockWalletEntity]);
     expect(ormRepository.find).toHaveBeenCalledWith({
-      order: { descricao: 'ASC' },
+      order: { active: 'DESC', descricao: 'ASC' },
       relations: ['user'],
-      where: { userId: mockWalletEntity.userId },
+      where: { userId: mockWalletEntity.userId, active: undefined },
     });
   });
 
@@ -165,13 +143,13 @@ describe('WalletRepository', () => {
       .spyOn(ormRepository, 'find')
       .mockImplementation(() => Promise.reject(new Error('error')));
     await expect(
-      walletRepository.find(mockWalletEntity.userId),
+      walletRepository.find({ userId: mockWalletEntity.userId }),
     ).rejects.toThrowError(FindWalletException);
   });
 
   it('should call delete', async () => {
     jest
-      .spyOn(ormRepository, 'findOneOrFail')
+      .spyOn(ormRepository, 'findOne')
       .mockImplementation(() => Promise.resolve(mockWalletEntity));
     jest
       .spyOn(ormRepository, 'remove')
@@ -186,7 +164,7 @@ describe('WalletRepository', () => {
 
   it('should throw ForbiddenWalletException when call delete', async () => {
     jest
-      .spyOn(ormRepository, 'findOneOrFail')
+      .spyOn(ormRepository, 'findOne')
       .mockImplementation(() => Promise.resolve(mockWalletEntity));
     await expect(
       walletRepository.delete(mockWalletEntity.id as number, 'otherUserId'),
@@ -195,9 +173,8 @@ describe('WalletRepository', () => {
 
   it('should throw DeleteWalletException when call delete', async () => {
     jest
-      .spyOn(ormRepository, 'findOneOrFail')
+      .spyOn(ormRepository, 'findOne')
       .mockImplementation(() => Promise.resolve(mockWalletEntity));
-
     jest
       .spyOn(ormRepository, 'remove')
       .mockImplementation(() => Promise.reject(new Error('orm error')));

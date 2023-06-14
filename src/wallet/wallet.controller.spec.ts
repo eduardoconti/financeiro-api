@@ -7,7 +7,11 @@ import { TYPES } from '@config/dependency-injection';
 
 import { fakeUserId } from '@expense/mocks';
 
-import { mockWalletEntity, mockWalletRequest } from './mocks';
+import {
+  mockUpdateWalletRequest,
+  mockWalletEntity,
+  mockWalletRequest,
+} from './mocks';
 import {
   IDeleteWalletService,
   IGetWalletService,
@@ -123,9 +127,13 @@ describe('WalletController', () => {
     const result = await walletController.update(
       mockWalletEntity.id as number,
       userPayloadInterfaceMock,
-      mockWalletRequest,
+      mockUpdateWalletRequest,
     );
-    expect(result.data).toEqual(mockWalletEntity);
+    expect(result.data).toEqual({
+      id: 9999,
+      descricao: 'Carteira Teste',
+      active: true,
+    });
     expect(result.getStatus()).toEqual(HttpStatus.OK);
   });
 });

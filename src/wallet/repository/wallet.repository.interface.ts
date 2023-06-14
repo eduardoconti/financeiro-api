@@ -1,14 +1,10 @@
-import { CarteirasDeleteResponseDTO, CarteirasDTO } from '@wallet/dto';
+import { CarteirasDeleteResponseDTO } from '@wallet/dto';
 import { Carteiras } from '@wallet/entity';
 
 export interface IWalletRepository {
-  insert(walletRequest: CarteirasDTO): Promise<Carteiras>;
-  update(
-    id: number,
-    userId: string,
-    walletRequest: CarteirasDTO,
-  ): Promise<Carteiras>;
+  insert(walletRequest: Carteiras): Promise<Carteiras>;
+  update(walletEntity: Carteiras): Promise<Carteiras>;
   findById(id: number): Promise<Carteiras>;
-  find(userId: string): Promise<Carteiras[]>;
+  find(params: Partial<Carteiras>): Promise<Carteiras[]>;
   delete(id: number, userId: string): Promise<CarteirasDeleteResponseDTO>;
 }

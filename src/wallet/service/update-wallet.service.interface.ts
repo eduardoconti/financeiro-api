@@ -1,10 +1,11 @@
-import { CarteirasDTO } from '@wallet/dto';
 import { Carteiras } from '@wallet/entity';
 
+export type UpdateWalletServiceInput = {
+  id: number;
+  userId: string;
+  description?: string;
+  active?: boolean;
+};
 export interface IUpdateWalletService {
-  updateWallet(
-    id: number,
-    userId: string,
-    carteira: CarteirasDTO,
-  ): Promise<Carteiras>;
+  updateWallet(input: UpdateWalletServiceInput): Promise<Carteiras>;
 }

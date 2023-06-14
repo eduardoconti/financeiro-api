@@ -15,7 +15,12 @@ export class InsertWalletService implements IInsertWalletService {
     private walletRepository: IWalletRepository,
   ) {}
 
-  async insertWallet(wallet: CarteirasDTO | Carteiras): Promise<Carteiras> {
-    return await this.walletRepository.insert(wallet);
+  async insertWallet({ descricao, userId }: CarteirasDTO): Promise<Carteiras> {
+    const walletEntity = new Carteiras({
+      active: true,
+      descricao: descricao,
+      userId: userId,
+    });
+    return await this.walletRepository.insert(walletEntity);
   }
 }
