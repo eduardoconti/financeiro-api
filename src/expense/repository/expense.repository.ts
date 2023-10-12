@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, SelectQueryBuilder } from 'typeorm';
+import { In, Repository, SelectQueryBuilder } from 'typeorm';
 
 import { ExpenseDeleteResponseDTO } from '@expense/dto';
 import { Despesas } from '@expense/entity';
@@ -29,7 +29,7 @@ export class ExpenseRepository implements IExpenseRepository {
   async findByParams(params: FindExpenseByParams): Promise<Despesas[]> {
     return await this.repository
       .find({
-        relations: ['user', 'categoria', 'carteira', 'subCategory'],
+        relations: ['categoria', 'carteira', 'subCategory'],
         where: params,
         order: { valor: 'DESC' },
       })
@@ -49,6 +49,7 @@ export class ExpenseRepository implements IExpenseRepository {
         throw new FindExpenseException(e);
       });
   }
+
   async query(query: string, parameters?: any[]): Promise<any> {
     return await this.repository.query(query, parameters).catch((e) => {
       throw new GetByQueryException(e);
@@ -59,14 +60,24 @@ export class ExpenseRepository implements IExpenseRepository {
     try {
       const newExpense = await this.repository.create(expense);
       await this.repository.save(newExpense);
-      return this.repository
-        .findOneOrFail({
+
+      const result = await this.repository
+        .find({
           where: { id: newExpense.id },
           relations: ['categoria', 'carteira', 'subCategory'],
         })
         .catch((e) => {
           throw new InsertExpenseException(e, newExpense);
         });
+      return result[0];
+    } catch (e) {
+      throw new InsertExpenseException(e, expense);
+    }
+  }
+
+  async insertMany(expense: Despesas[]): Promise<Despesas[]> {
+    try {
+      return await this.repository.save(expense);
     } catch (e) {
       throw new InsertExpenseException(e, expense);
     }
@@ -74,6 +85,14 @@ export class ExpenseRepository implements IExpenseRepository {
 
   async delete(id: number): Promise<ExpenseDeleteResponseDTO> {
     await this.repository.delete({ id }).catch((e) => {
+      throw new DeleteExpenseException(e, id);
+    });
+
+    return new ExpenseDeleteResponseDTO();
+  }
+
+  async deleteMany(id: number[]): Promise<ExpenseDeleteResponseDTO> {
+    await this.repository.delete({ id: In(id) }).catch((e) => {
       throw new DeleteExpenseException(e, id);
     });
 

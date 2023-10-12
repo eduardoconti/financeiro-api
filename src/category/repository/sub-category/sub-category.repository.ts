@@ -66,4 +66,21 @@ export class SubCategoryRepository implements ISubCategoryRepository {
     });
     return new SubCategoryDeleteResponseDTO(true);
   }
+
+  async exists({
+    id,
+    userId,
+  }: Pick<SubCategory, 'id' | 'userId'>): Promise<boolean> {
+    const result = await this.repository
+      .find({
+        where: { id, userId },
+        select: { id: true },
+      })
+      .catch((error) => {
+        throw new FindSubCategoryException(error);
+      });
+
+    if (!result || !result.length) return false;
+    return true;
+  }
 }

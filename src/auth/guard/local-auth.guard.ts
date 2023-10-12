@@ -12,15 +12,10 @@ import {
 @Injectable()
 export class LocalAuthGuard extends AuthGuard('local') {
   canActivate(context: ExecutionContext) {
-    // Add your custom authentication logic here
-    // for example, call super.logIn(request) to establish a session.
-    //console.log(context.switchToHttp().getRequest().body);
     return super.canActivate(context);
   }
 
   handleRequest<D>(error: any, userDatabase: D) {
-    // You can throw an exception based on either "info" or "error" arguments
-
     if (error) {
       if (error instanceof BaseException) {
         throw error;

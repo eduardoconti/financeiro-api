@@ -45,6 +45,10 @@ import { WalletController } from './wallet.controller';
       provide: TYPES.GetWalletService,
       useClass: GetWalletService,
     },
+    {
+      provide: TYPES.WalletRepository,
+      useClass: WalletRepository,
+    },
   ],
 })
 export class WalletModule {}

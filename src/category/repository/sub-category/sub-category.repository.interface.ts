@@ -8,4 +8,5 @@ export interface ISubCategoryRepository {
   findById(id: number): Promise<SubCategory | null>;
   findByParams(params: FindSubCategoryByParams): Promise<SubCategory[] | null>;
   delete(category: SubCategory): Promise<SubCategoryDeleteResponseDTO>;
+  exists(props: Pick<SubCategory, 'id' | 'userId'>): Promise<boolean>;
 }

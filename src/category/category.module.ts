@@ -77,6 +77,14 @@ import { SubCategoryController } from './sub-category.controller';
       provide: TYPES.GetSubCategoryService,
       useClass: GetSubCategoryService,
     },
+    {
+      provide: TYPES.CategoryRepository,
+      useClass: CategoryRepository,
+    },
+    {
+      provide: TYPES.SubCategoryRepository,
+      useClass: SubCategoryRepository,
+    },
   ],
 })
 export class CategoryModule {}

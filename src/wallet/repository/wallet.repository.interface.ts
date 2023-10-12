@@ -7,4 +7,5 @@ export interface IWalletRepository {
   findById(id: number): Promise<Carteiras>;
   find(params: Partial<Carteiras>): Promise<Carteiras[]>;
   delete(id: number, userId: string): Promise<CarteirasDeleteResponseDTO>;
+  exists(props: Pick<Carteiras, 'userId' | 'id'>): Promise<boolean>;
 }

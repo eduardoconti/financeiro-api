@@ -1,14 +1,12 @@
 import { Inject } from '@nestjs/common';
 import { v4 as uuidv4 } from 'uuid';
 
-import { IGetCategoryService } from '@category/service';
-import { IGetSubCategoryService } from '@category/service/sub-category';
+import { ICategoryRepository } from '@category/repository';
+import { ISubCategoryRepository } from '@category/repository/sub-category';
 
-import { IGetWalletService } from '@wallet/service';
+import { IWalletRepository } from '@wallet/repository';
 
 import { TYPES } from '@config/dependency-injection';
-
-import { IDatabaseService } from '@db/services';
 
 import { EXPENSE_ERROR_MESSAGES } from '@expense/constants';
 import { DespesasDTO } from '@expense/dto';
@@ -25,29 +23,27 @@ export class InsertExpenseService implements IInsertExpenseService {
   constructor(
     @Inject(TYPES.ExpenseRepository)
     private readonly expenseRepository: IExpenseRepository,
-    @Inject(TYPES.DatabaseService)
-    private readonly databaseService: IDatabaseService,
-    @Inject(TYPES.GetWalletService)
-    private getWalletService: IGetWalletService,
-    @Inject(TYPES.GetCategoryService)
-    private getCategoryService: IGetCategoryService,
-    @Inject(TYPES.GetSubCategoryService)
-    private getSubCategoryService: IGetSubCategoryService,
+    @Inject(TYPES.WalletRepository)
+    private walletRepository: IWalletRepository,
+    @Inject(TYPES.CategoryRepository)
+    private categoryRepository: ICategoryRepository,
+    @Inject(TYPES.SubCategoryRepository)
+    private getSubCategoryService: ISubCategoryRepository,
   ) {}
 
   async insert(
     expense: DespesasDTO,
     userId: string,
   ): Promise<Despesas | Despesas[]> {
-    await this.getWalletService.findOne(expense.carteiraId, userId);
-    await this.getCategoryService.findCategoryUserById(
-      expense.categoriaId,
-      userId,
-    );
-    await this.getSubCategoryService.findSubCategoryUserById(
-      expense.subCategoryId,
-      userId,
-    );
+    await Promise.all([
+      this.walletRepository.exists({ id: expense.carteiraId, userId }),
+      this.categoryRepository.exists({ id: expense.categoriaId, userId }),
+      this.getSubCategoryService.exists({
+        id: expense.subCategoryId,
+        userId,
+      }),
+    ]);
+
     if (
       (expense.pagamento && !expense.pago) ||
       (!expense.pagamento && expense.pago)
@@ -75,27 +71,20 @@ export class InsertExpenseService implements IInsertExpenseService {
   ): Promise<Despesas[]> {
     const instalmentId = uuidv4();
     try {
-      await this.databaseService.connect();
-      await this.databaseService.startTransaction();
       const expenses = buildExpenseEntityInstalment(
         expense,
         userId,
         instalmentId,
       );
 
-      for (const entity of expenses) {
-        await this.databaseService.save(entity);
-      }
-      await this.databaseService.commitTransaction();
+      await this.expenseRepository.insertMany(expenses);
+
       const entitiesSaved = await this.expenseRepository.findByParams({
         instalmentId: instalmentId,
       });
       return entitiesSaved;
     } catch (e) {
-      await this.databaseService.rollbackTransaction();
       throw new InsertExpenseException(e);
-    } finally {
-      await this.databaseService.release();
     }
   }
 }

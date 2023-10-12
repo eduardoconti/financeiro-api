@@ -8,4 +8,5 @@ export interface ICategoryRepository {
   findById(id: number): Promise<Category | null>;
   findByParams(params: FindCategoryByParams): Promise<Category[] | null>;
   delete(category: Category): Promise<CategoryDeleteResponseDTO>;
+  exists(props: Pick<Category, 'id' | 'userId'>): Promise<boolean>;
 }

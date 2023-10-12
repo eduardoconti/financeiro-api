@@ -2,8 +2,6 @@ import { Inject } from '@nestjs/common';
 
 import { TYPES } from '@config/dependency-injection';
 
-import { IDatabaseService } from '@db/services';
-
 import { ExpenseDeleteResponseDTO } from '@expense/dto';
 import { Despesas } from '@expense/entity';
 import {
@@ -18,8 +16,6 @@ export class DeleteExpenseService implements IDeleteExpenseService {
   constructor(
     @Inject(TYPES.ExpenseRepository)
     private readonly expenseRepository: IExpenseRepository,
-    @Inject(TYPES.DatabaseService)
-    private readonly databaseService: IDatabaseService,
   ) {}
 
   async delete(id: number, userId: string): Promise<ExpenseDeleteResponseDTO> {
@@ -45,22 +41,19 @@ export class DeleteExpenseService implements IDeleteExpenseService {
     expense: Despesas,
   ): Promise<ExpenseDeleteResponseDTO> {
     const { instalmentId, id, userId } = expense;
+
     try {
-      await this.databaseService.connect();
-      await this.databaseService.startTransaction();
       const expenses = await this.expenseRepository.findByParams({
         instalmentId,
       });
-      expenses.forEach(async (element) => {
-        await this.databaseService.delete(element);
-      });
-      await this.databaseService.commitTransaction();
+
+      await this.expenseRepository.deleteMany(
+        expenses.map((e) => e.id as number),
+      );
+
       return new ExpenseDeleteResponseDTO();
     } catch (error) {
-      await this.databaseService.rollbackTransaction();
       throw new DeleteExpenseException(error, { id, userId });
-    } finally {
-      await this.databaseService.release();
     }
   }
 }
