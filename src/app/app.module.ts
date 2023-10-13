@@ -56,7 +56,7 @@ import { AppService } from './service';
         database: configService.get('POSTGRES_DB'),
         entities: [__dirname + '/../**/*.entity{.ts,.js}'],
         logging: true,
-        //ssl: { rejectUnauthorized: false },
+        ssl: { rejectUnauthorized: false },
       }),
     }),
   ],
