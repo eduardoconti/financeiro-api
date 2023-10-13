@@ -24,13 +24,13 @@ export class SubCategoryRepository implements ISubCategoryRepository {
   async insert(category: SubCategory): Promise<SubCategory> {
     const newSubCategory = this.repository.create(category);
 
-    return await this.repository.save(newSubCategory).catch((error) => {
+    return await this.repository.save(newSubCategory).catch(error => {
       throw new InsertSubCategoryException(error, category);
     });
   }
 
   async update(category: SubCategory): Promise<SubCategory> {
-    return await this.repository.save(category).catch((error) => {
+    return await this.repository.save(category).catch(error => {
       throw new UpdateSubCategoryException(error, category);
     });
   }
@@ -41,7 +41,7 @@ export class SubCategoryRepository implements ISubCategoryRepository {
         where: { id: id },
         relations: ['user', 'category'],
       })
-      .catch((error) => {
+      .catch(error => {
         throw new FindSubCategoryException(error);
       });
   }
@@ -55,13 +55,13 @@ export class SubCategoryRepository implements ISubCategoryRepository {
         where: params,
         order: { description: 'ASC' },
       })
-      .catch((error) => {
+      .catch(error => {
         throw new FindSubCategoryException(error, { params: params });
       });
   }
 
   async delete(category: SubCategory): Promise<SubCategoryDeleteResponseDTO> {
-    await this.repository.remove(category).catch((error) => {
+    await this.repository.remove(category).catch(error => {
       throw new DeleteSubCategoryException(error);
     });
     return new SubCategoryDeleteResponseDTO(true);
@@ -76,7 +76,7 @@ export class SubCategoryRepository implements ISubCategoryRepository {
         where: { id, userId },
         select: { id: true },
       })
-      .catch((error) => {
+      .catch(error => {
         throw new FindSubCategoryException(error);
       });
 

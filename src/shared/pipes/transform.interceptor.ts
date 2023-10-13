@@ -15,6 +15,6 @@ export class TransformInterceptor implements NestInterceptor {
   ): Observable<any> {
     return next
       .handle()
-      .pipe(map((data) => instanceToPlain(data, { exposeUnsetFields: false })));
+      .pipe(map(data => instanceToPlain(data, { exposeUnsetFields: false })));
   }
 }

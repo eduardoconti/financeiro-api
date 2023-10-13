@@ -1,17 +1,17 @@
 import { SelectQueryBuilder } from 'typeorm';
 
 import { ExpenseDeleteResponseDTO } from '@expense/dto';
-import { Despesas } from '@expense/entity';
+import { Despesa } from '@expense/entity';
 import { FindExpenseByParams } from '@expense/types';
 
 export interface IExpenseRepository {
-  queryBuilder(alias: string): SelectQueryBuilder<Despesas>;
-  findOneByParams(params: FindExpenseByParams): Promise<Despesas | null>;
-  findByParams(params: FindExpenseByParams): Promise<Despesas[]>;
+  queryBuilder(alias: string): SelectQueryBuilder<Despesa>;
+  findOneByParams(params: FindExpenseByParams): Promise<Despesa | null>;
+  findByParams(params: FindExpenseByParams): Promise<Despesa[]>;
   query<D>(query: string, parameters?: any[]): Promise<D[]>;
-  insert(expense: Despesas): Promise<Despesas>;
-  insertMany(expense: Despesas[]): Promise<Despesas[]>;
+  insert(expense: Despesa): Promise<Despesa>;
+  insertMany(expense: Despesa[]): Promise<Despesa[]>;
   delete(id: number): Promise<ExpenseDeleteResponseDTO>;
-  update(id: number, expense: Partial<Despesas>): Promise<Despesas>;
+  update(id: number, expense: Partial<Despesa>): Promise<Despesa>;
   deleteMany(id: number[]): Promise<ExpenseDeleteResponseDTO>;
 }

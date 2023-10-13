@@ -3,7 +3,7 @@ import { Inject } from '@nestjs/common';
 import { TYPES } from '@config/dependency-injection';
 
 import { ExpenseDeleteResponseDTO } from '@expense/dto';
-import { Despesas } from '@expense/entity';
+import { Despesa } from '@expense/entity';
 import {
   DeleteExpenseException,
   ExpenseNotFoundException,
@@ -21,7 +21,7 @@ export class DeleteExpenseService implements IDeleteExpenseService {
   async delete(id: number, userId: string): Promise<ExpenseDeleteResponseDTO> {
     const expense = await this.expenseRepository
       .findOneByParams({ id, userId })
-      .catch((e) => {
+      .catch(e => {
         throw new DeleteExpenseException(e, { id, userId });
       });
 
@@ -38,7 +38,7 @@ export class DeleteExpenseService implements IDeleteExpenseService {
   }
 
   private async deleteInstalment(
-    expense: Despesas,
+    expense: Despesa,
   ): Promise<ExpenseDeleteResponseDTO> {
     const { instalmentId, id, userId } = expense;
 
@@ -48,7 +48,7 @@ export class DeleteExpenseService implements IDeleteExpenseService {
       });
 
       await this.expenseRepository.deleteMany(
-        expenses.map((e) => e.id as number),
+        expenses.map(e => e.id as number),
       );
 
       return new ExpenseDeleteResponseDTO();

@@ -49,7 +49,7 @@ export class GetEarningService implements IGetEarningService {
 
     const monthEarnings: EarningGroupMonth = {};
 
-    receitas.forEach((element) => {
+    receitas.forEach(element => {
       const { ...atributes } = element.data;
       monthEarnings[element.month] = EarningsGroupMonthDTO.build({
         ...atributes,
@@ -74,7 +74,7 @@ export class GetEarningService implements IGetEarningService {
         sqlString,
         [userId, start, end, pago],
       );
-    return earnings.map((element) => {
+    return earnings.map(element => {
       return GetEarningAmountGroupByWalletResponse.build({ ...element });
     });
   }

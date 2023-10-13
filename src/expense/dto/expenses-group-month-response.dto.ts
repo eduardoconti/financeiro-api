@@ -1,8 +1,8 @@
-import { Despesas } from '@expense/entity';
+import { Despesa } from '@expense/entity';
 
 export class ExpensesGroupMonthDTO {
   month: number;
-  data: Despesas[];
+  data: Despesa[];
   total: number;
   totalPayed: number;
   totalOpen: number;
@@ -10,7 +10,7 @@ export class ExpensesGroupMonthDTO {
 
   constructor(
     month: number,
-    data: Despesas[],
+    data: Despesa[],
     total = 0,
     totalPayed = 0,
     totalOpen = 0,

@@ -1,7 +1,10 @@
 import { ValidationError } from 'class-validator';
 
 export class ValidationErrorDTO {
-  constructor(public readonly name: string, public readonly reason: string) {}
+  constructor(
+    public readonly name: string,
+    public readonly reason: string,
+  ) {}
 
   static build(validationErrors: ValidationError[] = []): ValidationErrorDTO[] {
     let errors: ValidationErrorDTO[] = [];

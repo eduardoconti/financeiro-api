@@ -23,28 +23,30 @@ export class CategoryRepository implements ICategoryRepository {
 
   async insert(category: Category): Promise<Category> {
     const newCategory = this.repository.create(category);
-    const { id } = await this.repository.save(newCategory).catch((error) => {
+    const { id } = await this.repository.save(newCategory).catch(error => {
       throw new InsertCategoryException(error, category);
     });
     return await this.findOneOrFail(id as number);
   }
 
   async update(category: Category): Promise<Category> {
-    const { id } = await this.repository.save(category).catch((error) => {
+    const { id } = await this.repository.save(category).catch(error => {
       throw new UpdateCategoryException(error, category);
     });
     return await this.findOneOrFail(id as number);
   }
 
   async findById(id: number): Promise<Category | null> {
-    return await this.repository
-      .findOne({
+    const result = await this.repository
+      .find({
         where: { id: id },
-        relations: ['user', 'subCategories'],
+        relations: ['subCategories'],
+        select: { userId: false },
       })
-      .catch((error) => {
+      .catch(error => {
         throw new FindCategoryException(error);
       });
+    return result[0];
   }
 
   async findByParams(params: FindCategoryByParams): Promise<Category[] | null> {
@@ -58,28 +60,36 @@ export class CategoryRepository implements ICategoryRepository {
             description: 'ASC',
           },
         },
+        select: { userId: false },
       })
-      .catch((error) => {
+      .catch(error => {
         throw new FindCategoryException(error, { params: params });
       });
   }
 
   async delete(category: Category): Promise<CategoryDeleteResponseDTO> {
-    await this.repository.remove(category).catch((error) => {
+    await this.repository.delete(category).catch(error => {
       throw new DeleteCategoryException(error);
     });
     return new CategoryDeleteResponseDTO(true);
   }
 
   async findOneOrFail(id: number): Promise<Category> {
-    return await this.repository
-      .findOneOrFail({
+    const result = await this.repository
+      .find({
         where: { id: id },
-        relations: ['user', 'subCategories'],
+        relations: ['subCategories'],
+        select: { userId: false },
       })
-      .catch((error) => {
+      .catch(error => {
         throw new FindCategoryException(error);
       });
+
+    if (!result || !result.length) {
+      throw new FindCategoryException();
+    }
+
+    return result[0];
   }
 
   async exists({
@@ -91,7 +101,7 @@ export class CategoryRepository implements ICategoryRepository {
         where: { id, userId },
         select: { id: true },
       })
-      .catch((error) => {
+      .catch(error => {
         throw new FindCategoryException(error);
       });
 

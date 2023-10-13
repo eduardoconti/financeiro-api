@@ -10,7 +10,7 @@ import { TYPES } from '@config/dependency-injection';
 
 import { EXPENSE_ERROR_MESSAGES } from '@expense/constants';
 import { DespesasDTO } from '@expense/dto';
-import { Despesas } from '@expense/entity';
+import { Despesa } from '@expense/entity';
 import { InsertExpenseException } from '@expense/exceptions';
 import { buildExpenseEntityInstalment } from '@expense/helpers';
 import { IExpenseRepository } from '@expense/repository';
@@ -34,7 +34,7 @@ export class InsertExpenseService implements IInsertExpenseService {
   async insert(
     expense: DespesasDTO,
     userId: string,
-  ): Promise<Despesas | Despesas[]> {
+  ): Promise<Despesa | Despesa[]> {
     await Promise.all([
       this.walletRepository.exists({ id: expense.carteiraId, userId }),
       this.categoryRepository.exists({ id: expense.categoriaId, userId }),
@@ -53,7 +53,7 @@ export class InsertExpenseService implements IInsertExpenseService {
       );
     }
     if (expense.instalment === 1) {
-      const entity = Despesas.build({
+      const entity = Despesa.build({
         ...expense,
         userId,
         createdAt: DateHelper.dateNow(),
@@ -68,7 +68,7 @@ export class InsertExpenseService implements IInsertExpenseService {
   private async insertInstalment(
     expense: DespesasDTO,
     userId: string,
-  ): Promise<Despesas[]> {
+  ): Promise<Despesa[]> {
     const instalmentId = uuidv4();
     try {
       const expenses = buildExpenseEntityInstalment(

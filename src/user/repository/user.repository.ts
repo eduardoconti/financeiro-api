@@ -21,7 +21,7 @@ export class UserRepository implements IUserRepository {
   async findByParams(params?: FindUserByParams): Promise<Users[] | undefined> {
     const result = await this.userRepository
       .find({ where: params })
-      .catch((error) => {
+      .catch(error => {
         throw new GetUserException(
           ERROR_MESSAGES.USER_FIND_ERROR,
           error,
@@ -32,7 +32,7 @@ export class UserRepository implements IUserRepository {
   }
 
   async delete(user: Users): Promise<UserDeleteResponseDTO> {
-    await this.userRepository.remove(user).catch((error) => {
+    await this.userRepository.remove(user).catch(error => {
       throw new DeleteUserException(ERROR_MESSAGES.USER_DELETE_ERROR, error);
     });
     return new UserDeleteResponseDTO(true);
@@ -41,7 +41,7 @@ export class UserRepository implements IUserRepository {
   async insert(userRequest: UserDTO): Promise<Users> {
     const newUser = await this.userRepository.create(userRequest);
 
-    return await this.userRepository.save(newUser).catch((error) => {
+    return await this.userRepository.save(newUser).catch(error => {
       throw new InsertUserException(ERROR_MESSAGES.USER_CREATE_ERROR, error);
     });
   }

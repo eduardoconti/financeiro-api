@@ -30,12 +30,11 @@ export class GraphicService implements IGraphicService {
     private getEarningService: IGetEarningService,
   ) {}
   async generalGraphic(userId: string): Promise<GeneralGraphicResponseDTO> {
-    const despesas = await this.getExpenseService.getExpensesGroupByMonth(
-      userId,
-    );
-    const receitas = await this.getEarningService.getEarningsGroupByMonth(
-      userId,
-    );
+    const [despesas, receitas] = await Promise.all([
+      this.getExpenseService.getExpensesGroupByMonth(userId),
+      this.getEarningService.getEarningsGroupByMonth(userId),
+    ]);
+
     const graphicData: GeneralGraphicResponseDTO =
       new GeneralGraphicResponseDTO();
 
@@ -47,7 +46,7 @@ export class GraphicService implements IGraphicService {
       ...new Set([...expensesProperties, ...receitasProperties]),
     ].sort((a, b) => (a > b ? 1 : b > a ? -1 : 0));
 
-    properties.forEach((key) => {
+    properties.forEach(key => {
       receitas[key] ??
         (receitas[key] = new EarningsGroupMonthDTO(despesas[key].month, []));
 
@@ -105,7 +104,7 @@ export class GraphicService implements IGraphicService {
       await this.getExpenseService.getUnplannedExpenses(userId, start, end);
     const generalUnplannedDTO = new GeneralUnplannedDTO();
     const response = new UnplannedExpensesResponseDTO();
-    Object.getOwnPropertyNames(data).forEach((key) => {
+    Object.getOwnPropertyNames(data).forEach(key => {
       const { total, totalOpen, totalPayed, quantity } = data[key];
       generalUnplannedDTO.sum({
         total,

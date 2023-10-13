@@ -11,7 +11,7 @@ import { IDatabaseService } from '@db/services';
 
 import { EXPENSE_ERROR_MESSAGES } from '@expense/constants';
 import { DespesasDTO, ExpensePatchFlagPayedDTO } from '@expense/dto';
-import { Despesas } from '@expense/entity';
+import { Despesa } from '@expense/entity';
 import {
   ExpenseNotFoundException,
   UpdateExpenseException,
@@ -40,7 +40,7 @@ export class UpdateExpenseService implements IUpdateExpenseService {
     id: number,
     userId: string,
     despesa: Partial<DespesasDTO>,
-  ): Promise<Despesas> {
+  ): Promise<Despesa> {
     const expense = await this.expenseRepository.findOneByParams({
       id,
       userId,
@@ -101,7 +101,7 @@ export class UpdateExpenseService implements IUpdateExpenseService {
     id: number,
     userId: string,
     patchData: ExpensePatchFlagPayedDTO,
-  ): Promise<Despesas> {
+  ): Promise<Despesa> {
     const expense = await this.expenseRepository.findOneByParams({
       id,
       userId,
@@ -147,7 +147,7 @@ export class UpdateExpenseService implements IUpdateExpenseService {
           descricao,
         } = entity;
         await this.databaseService.save(
-          Despesas.build({
+          Despesa.build({
             id,
             userId,
             pago,

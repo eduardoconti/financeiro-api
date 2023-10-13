@@ -53,11 +53,11 @@ export class Earning {
   })
   carteiraId!: number;
 
-  @ManyToOne(() => Carteiras, (carteiras) => carteiras.id, { nullable: false })
+  @ManyToOne(() => Carteiras, carteiras => carteiras.id, { nullable: false })
   @JoinColumn({ name: 'carteira_id', referencedColumnName: 'id' })
   carteira?: Carteiras;
 
-  @ManyToOne(() => Users, (users) => users.id, { nullable: false })
+  @ManyToOne(() => Users, users => users.id, { nullable: false })
   @JoinColumn({ name: 'user_id', referencedColumnName: 'id' })
   @Exclude()
   user?: Users;

@@ -9,7 +9,7 @@ import { SubCategory } from '@category/entity/sub-category.entity';
 
 import { Carteiras } from '@wallet/entity';
 
-import { Despesas } from '@expense/entity';
+import { Despesa } from '@expense/entity';
 
 import { Transferencias } from '@transference/entity';
 
@@ -38,22 +38,22 @@ export class Users {
   @Exclude()
   perfil!: number;
 
-  @OneToMany(() => Despesas, (despesas) => despesas.user)
-  userDespesa?: Despesas[];
+  @OneToMany(() => Despesa, despesas => despesas.user)
+  userDespesa?: Despesa[];
 
-  @OneToMany(() => Earning, (receitas) => receitas.user)
+  @OneToMany(() => Earning, receitas => receitas.user)
   userReceita?: Earning[];
 
-  @OneToMany(() => Transferencias, (transferencias) => transferencias.user)
+  @OneToMany(() => Transferencias, transferencias => transferencias.user)
   userTransferencia?: Transferencias[];
 
-  @OneToMany(() => Carteiras, (carteiras) => carteiras.user)
+  @OneToMany(() => Carteiras, carteiras => carteiras.user)
   userCarteiras?: Carteiras[];
 
-  @OneToMany(() => Category, (categorias) => categorias.user)
+  @OneToMany(() => Category, categorias => categorias.user)
   userCategorias?: Category[];
 
-  @OneToMany(() => SubCategory, (categorias) => categorias.user)
+  @OneToMany(() => SubCategory, categorias => categorias.user)
   userSubCategories?: SubCategory[];
 
   constructor(partial: Partial<Users>) {
