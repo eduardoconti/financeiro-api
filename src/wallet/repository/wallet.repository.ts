@@ -84,4 +84,22 @@ export class WalletRepository implements IWalletRepository {
       throw new DeleteWalletException(error);
     }
   }
+
+  async exists({
+    userId,
+    id,
+  }: Pick<Carteiras, 'userId' | 'id'>): Promise<boolean> {
+    const result = await this.repository
+      .find({
+        where: { userId, id },
+        select: { id: true },
+      })
+      .catch((error) => {
+        throw new FindWalletException(error);
+      });
+
+    if (!result || !result.length) return false;
+
+    return true;
+  }
 }

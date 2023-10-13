@@ -10,6 +10,8 @@ export interface IExpenseRepository {
   findByParams(params: FindExpenseByParams): Promise<Despesas[]>;
   query<D>(query: string, parameters?: any[]): Promise<D[]>;
   insert(expense: Despesas): Promise<Despesas>;
+  insertMany(expense: Despesas[]): Promise<Despesas[]>;
   delete(id: number): Promise<ExpenseDeleteResponseDTO>;
   update(id: number, expense: Partial<Despesas>): Promise<Despesas>;
+  deleteMany(id: number[]): Promise<ExpenseDeleteResponseDTO>;
 }

@@ -18,6 +18,7 @@ export class GetWalletService implements IGetWalletService {
   async getAllByUserId(userId: string): Promise<Carteiras[]> {
     return await this.carteiraRepository.find({ userId });
   }
+
   async getAllActives(userId: string): Promise<Carteiras[]> {
     return await this.carteiraRepository.find({ userId, active: true });
   }

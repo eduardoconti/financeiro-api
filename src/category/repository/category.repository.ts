@@ -81,4 +81,21 @@ export class CategoryRepository implements ICategoryRepository {
         throw new FindCategoryException(error);
       });
   }
+
+  async exists({
+    id,
+    userId,
+  }: Pick<Category, 'id' | 'userId'>): Promise<boolean> {
+    const result = await this.repository
+      .find({
+        where: { id, userId },
+        select: { id: true },
+      })
+      .catch((error) => {
+        throw new FindCategoryException(error);
+      });
+
+    if (!result || !result.length) return false;
+    return true;
+  }
 }

@@ -12,15 +12,11 @@ services:
     command: yarn start:dev
     env_file:
       - .env
-    networks:
-      - financeiro
     depends_on:
       - financeiro-db
   financeiro-db:
     container_name: financeiro-db
     image: postgres:13.0
-    networks:
-      - financeiro
     restart: always
     environment:
       - POSTGRES_DB=${POSTGRES_DB}

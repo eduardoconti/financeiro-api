@@ -1,15 +1,11 @@
 import { Test } from '@nestjs/testing';
 
-import { fakeCategoryEntity, fakeSubCategoryEntity } from '@category/mocks';
-import { IGetCategoryService } from '@category/service';
-import { IGetSubCategoryService } from '@category/service/sub-category';
+import { ICategoryRepository } from '@category/repository';
+import { ISubCategoryRepository } from '@category/repository/sub-category';
 
-import { mockWalletEntity } from '@wallet/mocks';
-import { IGetWalletService } from '@wallet/service';
+import { IWalletRepository } from '@wallet/repository';
 
 import { TYPES } from '@config/dependency-injection';
-
-import { IDatabaseService } from '@db/services';
 
 import { Despesas } from '@expense/entity';
 import { InsertExpenseException } from '@expense/exceptions';
@@ -40,10 +36,9 @@ jest.mock('@shared/helpers', () => ({
 describe('InsertExpenseService', () => {
   let insertExpenseService: IInsertExpenseService;
   let expenseRepository: IExpenseRepository;
-  let databaseService: IDatabaseService;
-  let getWalletService: IGetWalletService;
-  let getCategoryService: IGetCategoryService;
-  let getSubCategoryService: IGetSubCategoryService;
+  let walletRepository: IWalletRepository;
+  let categoryRepository: ICategoryRepository;
+  let subCategoryRepository: ISubCategoryRepository;
 
   beforeEach(async () => {
     const module = await Test.createTestingModule({
@@ -53,35 +48,25 @@ describe('InsertExpenseService', () => {
           useValue: {
             insert: jest.fn(),
             findByParams: jest.fn(),
+            insertMany: jest.fn(),
           },
         },
         {
-          provide: TYPES.GetCategoryService,
+          provide: TYPES.CategoryRepository,
           useValue: {
-            findCategoryUserById: jest.fn(),
+            exists: jest.fn(),
           },
         },
         {
-          provide: TYPES.GetSubCategoryService,
+          provide: TYPES.SubCategoryRepository,
           useValue: {
-            findSubCategoryUserById: jest.fn(),
+            exists: jest.fn(),
           },
         },
         {
-          provide: TYPES.GetWalletService,
+          provide: TYPES.WalletRepository,
           useValue: {
-            findOne: jest.fn(),
-          },
-        },
-        {
-          provide: TYPES.DatabaseService,
-          useValue: {
-            connect: jest.fn(),
-            startTransaction: jest.fn(),
-            commitTransaction: jest.fn(),
-            rollbackTransaction: jest.fn(),
-            release: jest.fn(),
-            save: jest.fn(),
+            exists: jest.fn(),
           },
         },
         {
@@ -95,13 +80,12 @@ describe('InsertExpenseService', () => {
       TYPES.InsertExpenseService,
     );
     expenseRepository = module.get<IExpenseRepository>(TYPES.ExpenseRepository);
-    databaseService = module.get<IDatabaseService>(TYPES.DatabaseService);
-    getWalletService = module.get<IGetWalletService>(TYPES.GetWalletService);
-    getCategoryService = module.get<IGetCategoryService>(
-      TYPES.GetCategoryService,
+    walletRepository = module.get<IWalletRepository>(TYPES.WalletRepository);
+    categoryRepository = module.get<ICategoryRepository>(
+      TYPES.CategoryRepository,
     );
-    getSubCategoryService = module.get<IGetSubCategoryService>(
-      TYPES.GetSubCategoryService,
+    subCategoryRepository = module.get<ISubCategoryRepository>(
+      TYPES.SubCategoryRepository,
     );
     jest.clearAllMocks();
   });
@@ -109,20 +93,15 @@ describe('InsertExpenseService', () => {
   it('should be defined', () => {
     expect(insertExpenseService).toBeDefined();
     expect(expenseRepository).toBeDefined();
-    expect(databaseService).toBeDefined();
-    expect(getWalletService).toBeDefined();
-    expect(getCategoryService).toBeDefined();
-    expect(getSubCategoryService).toBeDefined();
+    expect(walletRepository).toBeDefined();
+    expect(categoryRepository).toBeDefined();
+    expect(subCategoryRepository).toBeDefined();
   });
 
   it('should insert a new expense', async () => {
-    jest.spyOn(getWalletService, 'findOne').mockResolvedValue(mockWalletEntity);
-    jest
-      .spyOn(getCategoryService, 'findCategoryUserById')
-      .mockResolvedValue(fakeCategoryEntity);
-    jest
-      .spyOn(getSubCategoryService, 'findSubCategoryUserById')
-      .mockResolvedValue(fakeSubCategoryEntity);
+    jest.spyOn(walletRepository, 'exists').mockResolvedValue(true);
+    jest.spyOn(categoryRepository, 'exists').mockResolvedValue(true);
+    jest.spyOn(subCategoryRepository, 'exists').mockResolvedValue(true);
     jest
       .spyOn(expenseRepository, 'insert')
       .mockResolvedValue(mockExpenseEntity);
@@ -142,25 +121,14 @@ describe('InsertExpenseService', () => {
       fakeUserId,
       'fakeid',
     );
-    jest.spyOn(databaseService, 'connect').mockResolvedValue(undefined);
-    jest
-      .spyOn(databaseService, 'startTransaction')
-      .mockResolvedValue(undefined);
-    jest
-      .spyOn(databaseService, 'save')
-      .mockResolvedValueOnce(entity[0])
-      .mockResolvedValueOnce(entity[1]);
+    jest.spyOn(expenseRepository, 'insertMany').mockResolvedValue(entity);
+
     jest.spyOn(expenseRepository, 'findByParams').mockResolvedValue(entity);
     const data = await insertExpenseService.insert(
       fakeInsertExpenseRequestWithInstalment,
       fakeUserId,
     );
 
-    expect(databaseService.connect).toHaveBeenCalledTimes(1);
-    expect(databaseService.startTransaction).toHaveBeenCalledTimes(1);
-    expect(databaseService.save).toHaveBeenCalledTimes(
-      fakeInsertExpenseRequestWithInstalment.instalment,
-    );
     expect(data).toBeDefined();
     expect(data).toEqual(entity);
     expect(data).toHaveLength(
@@ -178,21 +146,13 @@ describe('InsertExpenseService', () => {
       fakeUserId,
       'fakeid',
     );
-    jest.spyOn(databaseService, 'connect').mockResolvedValue(undefined);
-    jest
-      .spyOn(databaseService, 'startTransaction')
-      .mockResolvedValue(undefined);
-    jest
-      .spyOn(databaseService, 'save')
-      .mockResolvedValueOnce(entities[0])
-      .mockResolvedValueOnce(entities[1]);
+
+    jest.spyOn(expenseRepository, 'insertMany').mockResolvedValueOnce(entities);
+
     jest.spyOn(expenseRepository, 'findByParams').mockResolvedValue(entities);
 
     const data = await insertExpenseService.insert(fakeRequest, fakeUserId);
 
-    expect(databaseService.connect).toHaveBeenCalledTimes(1);
-    expect(databaseService.startTransaction).toHaveBeenCalledTimes(1);
-    expect(databaseService.save).toHaveBeenCalledTimes(2);
     expect(data).toBeDefined();
     expect(data).toEqual(entities);
     expect(data).toHaveLength(fakeRequest.instalment);
@@ -209,22 +169,13 @@ describe('InsertExpenseService', () => {
       fakeUserId,
       'fakeid',
     );
-    jest.spyOn(databaseService, 'connect').mockResolvedValue(undefined);
-    jest
-      .spyOn(databaseService, 'startTransaction')
-      .mockResolvedValue(undefined);
-    jest
-      .spyOn(databaseService, 'save')
-      .mockResolvedValueOnce(entities[0])
-      .mockResolvedValueOnce(entities[1])
-      .mockResolvedValueOnce(entities[2])
-      .mockResolvedValueOnce(entities[3]);
+
+    jest.spyOn(expenseRepository, 'insertMany').mockResolvedValueOnce(entities);
+
     jest.spyOn(expenseRepository, 'findByParams').mockResolvedValue(entities);
 
     const data = await insertExpenseService.insert(fakeRequest, fakeUserId);
-    expect(databaseService.connect).toHaveBeenCalledTimes(1);
-    expect(databaseService.startTransaction).toHaveBeenCalledTimes(1);
-    expect(databaseService.save).toHaveBeenCalledTimes(fakeRequest.instalment);
+
     expect(data).toBeDefined();
     expect(data).toEqual(entities);
     expect(data).toHaveLength(fakeRequest.instalment);
@@ -243,23 +194,13 @@ describe('InsertExpenseService', () => {
       fakeUserId,
       'fakeid',
     );
-    jest.spyOn(databaseService, 'connect').mockResolvedValue(undefined);
-    jest
-      .spyOn(databaseService, 'startTransaction')
-      .mockResolvedValue(undefined);
-    jest
-      .spyOn(databaseService, 'save')
-      .mockResolvedValueOnce(entities[0])
-      .mockResolvedValueOnce(entities[1])
-      .mockResolvedValueOnce(entities[2])
-      .mockResolvedValueOnce(entities[3])
-      .mockResolvedValueOnce(entities[4]);
+
+    jest.spyOn(expenseRepository, 'insertMany').mockResolvedValueOnce(entities);
+
     jest.spyOn(expenseRepository, 'findByParams').mockResolvedValue(entities);
 
     const data = await insertExpenseService.insert(fakeRequest, fakeUserId);
-    expect(databaseService.connect).toHaveBeenCalledTimes(1);
-    expect(databaseService.startTransaction).toHaveBeenCalledTimes(1);
-    expect(databaseService.save).toHaveBeenCalledTimes(fakeRequest.instalment);
+
     expect(data).toBeDefined();
     expect(data).toEqual(entities);
     expect(data).toHaveLength(fakeRequest.instalment);
@@ -269,14 +210,9 @@ describe('InsertExpenseService', () => {
   });
 
   it('should throw InsertExpenseException and rollback transaction', async () => {
-    jest.spyOn(databaseService, 'connect').mockResolvedValue(undefined);
     jest
-      .spyOn(databaseService, 'startTransaction')
-      .mockResolvedValue(undefined);
-    jest
-      .spyOn(databaseService, 'rollbackTransaction')
-      .mockResolvedValue(undefined);
-    jest.spyOn(databaseService, 'save').mockRejectedValueOnce(new Error());
+      .spyOn(expenseRepository, 'insertMany')
+      .mockRejectedValueOnce(new Error());
     try {
       await insertExpenseService.insert(
         fakeInsertExpenseRequestWithInstalment,
@@ -285,22 +221,13 @@ describe('InsertExpenseService', () => {
     } catch (error) {
       expect(error).toBeDefined();
       expect(error).toBeInstanceOf(InsertExpenseException);
-      expect(databaseService.connect).toHaveBeenCalledTimes(1);
-      expect(databaseService.startTransaction).toHaveBeenCalledTimes(1);
-      expect(databaseService.rollbackTransaction).toHaveBeenCalledTimes(1);
-      expect(databaseService.release).toHaveBeenCalledTimes(1);
-      expect(databaseService.commitTransaction).not.toHaveBeenCalled();
     }
   });
 
   it('should throw InsertExpenseException when payment date and flag not payed', async () => {
-    jest.spyOn(getWalletService, 'findOne').mockResolvedValue(mockWalletEntity);
-    jest
-      .spyOn(getCategoryService, 'findCategoryUserById')
-      .mockResolvedValue(fakeCategoryEntity);
-    jest
-      .spyOn(getSubCategoryService, 'findSubCategoryUserById')
-      .mockResolvedValue(fakeSubCategoryEntity);
+    jest.spyOn(walletRepository, 'exists').mockResolvedValue(true);
+    jest.spyOn(categoryRepository, 'exists').mockResolvedValue(true);
+    jest.spyOn(subCategoryRepository, 'exists').mockResolvedValue(true);
     await expect(
       insertExpenseService.insert(
         {
@@ -314,13 +241,9 @@ describe('InsertExpenseService', () => {
   });
 
   it('should throw InsertExpenseException when not payment date and flag payed', async () => {
-    jest.spyOn(getWalletService, 'findOne').mockResolvedValue(mockWalletEntity);
-    jest
-      .spyOn(getCategoryService, 'findCategoryUserById')
-      .mockResolvedValue(fakeCategoryEntity);
-    jest
-      .spyOn(getSubCategoryService, 'findSubCategoryUserById')
-      .mockResolvedValue(fakeSubCategoryEntity);
+    jest.spyOn(walletRepository, 'exists').mockResolvedValue(true);
+    jest.spyOn(categoryRepository, 'exists').mockResolvedValue(true);
+    jest.spyOn(subCategoryRepository, 'exists').mockResolvedValue(true);
     await expect(
       insertExpenseService.insert(
         {
