@@ -1,8 +1,8 @@
-name: Tests e2e
+name: Tests
 on:
   push:
     branches:
-      - refactor
+      - main
 
 jobs:
   start-postgres:
@@ -29,7 +29,7 @@ jobs:
           name: pg-image
           path: /tmp/pg-image.tar
 
-  test-e2e:
+  test:
     needs: start-postgres
     runs-on: ubuntu-latest
 
@@ -53,6 +53,8 @@ jobs:
     
       - name: Install dependencies
         run: yarn install --ignore-engines
+      - name: Run teste unitario
+        run: yarn test
       - name: Run teste e2e
         run: yarn test:e2e
         env:

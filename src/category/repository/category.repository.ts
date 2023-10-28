@@ -22,8 +22,8 @@ export class CategoryRepository implements ICategoryRepository {
   ) {}
 
   async insert(category: Category): Promise<Category> {
-    const newCategory = this.repository.create(category);
-    const { id } = await this.repository.save(newCategory).catch(error => {
+
+    const { id } = await this.repository.save(category).catch(error => {
       throw new InsertCategoryException(error, category);
     });
     return await this.findOneOrFail(id as number);
