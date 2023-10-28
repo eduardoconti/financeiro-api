@@ -1,8 +1,7 @@
+import { AppModule } from '@app/app.module';
 import { INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
-import * as request from 'supertest';
-
-import { AppModule } from './../src/app/app.module';
+import request from 'supertest';
 
 describe('AppController (e2e)', () => {
   let app: INestApplication;
@@ -16,10 +15,17 @@ describe('AppController (e2e)', () => {
     await app.init();
   });
 
-  it('/ (GET)', () => {
-    return request(app.getHttpServer())
-      .get('/')
+  it('/ (GET)', async () => {
+    return await request(app.getHttpServer())
+      .get('/app')
       .expect(200)
-      .expect('Hello World!');
+      .expect(({ body }) => {
+        expect(body).toStrictEqual({
+          status: 200,
+          internalMessage: 'Success',
+          message: 'Resposta retornada com sucesso!',
+          data: { api: 'financeiro', status: 200, version: '1.0.0' },
+        });
+      });
   });
 });

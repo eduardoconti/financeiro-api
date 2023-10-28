@@ -46,7 +46,7 @@ async function bootstrap() {
       new Tracing.Integrations.Express(),
     ],
     attachStacktrace: true,
-    environment: process.env.ENVIRONMENT,
+    environment: process.env.NODE_ENV,
     beforeSend(event, hint) {
       const exception = hint?.originalException;
 
