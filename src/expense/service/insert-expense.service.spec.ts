@@ -7,7 +7,7 @@ import { IWalletRepository } from '@wallet/repository';
 
 import { TYPES } from '@config/dependency-injection';
 
-import { Despesas } from '@expense/entity';
+import { Despesa } from '@expense/entity';
 import { InsertExpenseException } from '@expense/exceptions';
 import { buildExpenseEntityInstalment } from '@expense/helpers';
 import {
@@ -112,7 +112,7 @@ describe('InsertExpenseService', () => {
 
     expect(data).toBeDefined();
     expect(data).toEqual(mockExpenseEntity);
-    expect((data as Despesas).valor).toBe(100);
+    expect((data as Despesa).valor).toBe(100);
   });
 
   it('should insert a new expense with instalments', async () => {
@@ -179,8 +179,8 @@ describe('InsertExpenseService', () => {
     expect(data).toBeDefined();
     expect(data).toEqual(entities);
     expect(data).toHaveLength(fakeRequest.instalment);
-    expect((data as Despesas[])[2].valor).toBeLessThan(
-      (data as Despesas[])[0].valor,
+    expect((data as Despesa[])[2].valor).toBeLessThan(
+      (data as Despesa[])[0].valor,
     );
   });
   it('should insert a new expense with instalments and aply residual 3 or more for 3 instalments', async () => {
@@ -204,8 +204,8 @@ describe('InsertExpenseService', () => {
     expect(data).toBeDefined();
     expect(data).toEqual(entities);
     expect(data).toHaveLength(fakeRequest.instalment);
-    expect((data as Despesas[])[3].valor).toBeLessThan(
-      (data as Despesas[])[0].valor,
+    expect((data as Despesa[])[3].valor).toBeLessThan(
+      (data as Despesa[])[0].valor,
     );
   });
 

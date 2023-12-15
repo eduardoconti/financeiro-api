@@ -1,5 +1,5 @@
 import { DespesasDTO, FindExpenseByQueryParamsDTO } from '@expense/dto';
-import { Despesas } from '@expense/entity';
+import { Despesa } from '@expense/entity';
 import { DateType } from '@expense/enums';
 import { FindExpenseByParams } from '@expense/types';
 
@@ -21,7 +21,7 @@ export function buildExpenseEntityInstalment(
   expense: DespesasDTO,
   userId: string,
   instalmentId: string,
-): Despesas[] {
+): Despesa[] {
   const { valor, instalment, ...rest } = expense;
   let instalmentValue = valor / instalment;
   let instalmentsToReceivResidual = 0;
@@ -34,14 +34,14 @@ export function buildExpenseEntityInstalment(
     residualPerInstalment = 1;
   }
 
-  const data: Despesas[] = [];
+  const data: Despesa[] = [];
   for (let instalment = 1; instalment <= expense.instalment; instalment++) {
     const newValue =
       instalment <= instalmentsToReceivResidual
         ? instalmentValue + residualPerInstalment
         : instalmentValue;
 
-    const entity = Despesas.build({
+    const entity = Despesa.build({
       ...rest,
       descricao: descriptionOfInstalment(
         instalment,

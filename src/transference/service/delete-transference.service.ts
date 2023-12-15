@@ -23,7 +23,7 @@ export class DeleteTransferenceService implements IDeleteTransferenceService {
   ): Promise<TransferenceDeleteResponseDTO> {
     const transference = await this.transferenceRepository
       .findOneByParams({ id, userId })
-      .catch((e) => {
+      .catch(e => {
         throw new DeleteTransferenceException(e, { id, userId });
       });
 

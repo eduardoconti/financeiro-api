@@ -31,7 +31,7 @@ export class TransferenceRepository implements ITransferenceRepository {
         where: params,
         order: { valor: 'DESC' },
       })
-      .catch((e) => {
+      .catch(e => {
         throw new FindTransferenceException(e);
       });
   }
@@ -45,12 +45,12 @@ export class TransferenceRepository implements ITransferenceRepository {
         where: params,
         order: { valor: 'DESC' },
       })
-      .catch((e) => {
+      .catch(e => {
         throw new FindTransferenceException(e);
       });
   }
   async query(query: string, parameters?: any[]): Promise<any> {
-    return await this.repository.query(query, parameters).catch((e) => {
+    return await this.repository.query(query, parameters).catch(e => {
       throw new GetByQueryException(e);
     });
   }
@@ -72,7 +72,7 @@ export class TransferenceRepository implements ITransferenceRepository {
   }
 
   async delete(id: number): Promise<TransferenceDeleteResponseDTO> {
-    await this.repository.delete({ id }).catch((e) => {
+    await this.repository.delete({ id }).catch(e => {
       throw new DeleteTransferenceException(e, id);
     });
 
@@ -83,7 +83,7 @@ export class TransferenceRepository implements ITransferenceRepository {
     id: number,
     expense: Partial<Transferencias>,
   ): Promise<Transferencias> {
-    await this.repository.update({ id }, expense).catch((e) => {
+    await this.repository.update({ id }, expense).catch(e => {
       throw new UpdateTransferenceException(e, expense);
     });
     const updated = this.repository
@@ -91,7 +91,7 @@ export class TransferenceRepository implements ITransferenceRepository {
         where: { id: id },
         relations: ['carteiraOrigem', 'carteiraDestino'],
       })
-      .catch((e) => {
+      .catch(e => {
         throw new UpdateTransferenceException(e, expense);
       });
     return updated;

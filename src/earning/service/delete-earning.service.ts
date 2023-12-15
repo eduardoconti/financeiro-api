@@ -20,7 +20,7 @@ export class DeleteEarningService implements IDeleteEarningService {
   async delete(id: number, userId: string): Promise<EarningDeleteResponseDTO> {
     const earning = await this.earningRepository
       .findOneByParams({ id, userId })
-      .catch((e) => {
+      .catch(e => {
         throw new DeleteEarningException(e, { id, userId });
       });
 

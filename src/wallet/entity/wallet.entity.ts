@@ -13,7 +13,7 @@ import { Earning } from '@earning/entity/earning.entity';
 
 import { Users } from '@users/entity/users.entity';
 
-import { Despesas } from '@expense/entity/expense.entity';
+import { Despesa } from '@expense/entity/expense.entity';
 
 import { Transferencias } from '@transference/entity';
 @Entity({ schema: 'public', name: 'carteiras' })
@@ -40,31 +40,31 @@ export class Carteiras {
   })
   active!: boolean;
 
-  @OneToMany(() => Despesas, (despesas) => despesas.carteira, {
+  @OneToMany(() => Despesa, despesas => despesas.carteira, {
     nullable: false,
   })
-  carteira?: Despesas[];
+  carteira?: Despesa[];
 
-  @OneToMany(() => Earning, (receitas) => receitas.carteira, {
+  @OneToMany(() => Earning, receitas => receitas.carteira, {
     nullable: false,
   })
   carteiraReceita?: Earning[];
 
   @OneToMany(
     () => Transferencias,
-    (transferencia) => transferencia.carteiraOrigem,
+    transferencia => transferencia.carteiraOrigem,
     { nullable: false },
   )
   transferenciaOrigem?: Transferencias[];
 
   @OneToMany(
     () => Transferencias,
-    (transferencia) => transferencia.carteiraDestino,
+    transferencia => transferencia.carteiraDestino,
     { nullable: false },
   )
   transferenciaDestino?: Transferencias[];
 
-  @ManyToOne(() => Users, (users) => users.id, { nullable: false })
+  @ManyToOne(() => Users, users => users.id, { nullable: false })
   @JoinColumn({ name: 'user_id', referencedColumnName: 'id' })
   @Exclude()
   user?: Users;

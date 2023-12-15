@@ -1,6 +1,6 @@
 import { Test } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { DeleteResult, Repository } from 'typeorm';
 
 import { CategoryDeleteResponseDTO } from '@category/dto';
 import { Category } from '@category/entity';
@@ -32,7 +32,13 @@ describe('CategoryRepository', () => {
         },
         {
           provide: getRepositoryToken(Category),
-          useClass: Repository,
+          useValue: {
+            find: jest.fn(),
+            create: jest.fn(),
+            save: jest.fn(),
+            findOneOrFail: jest.fn(),
+            delete: jest.fn()
+          },
         },
       ],
     }).compile();
@@ -49,28 +55,22 @@ describe('CategoryRepository', () => {
 
   it('should be insert a category', async () => {
     jest
-      .spyOn(ormRepository, 'create')
-      .mockImplementation(() => fakeCategoryEntity);
-    jest
       .spyOn(ormRepository, 'save')
-      .mockImplementation(() => Promise.resolve(fakeCategoryEntity));
+      .mockResolvedValue(fakeCategoryEntity);
 
     jest
-      .spyOn(ormRepository, 'findOneOrFail')
-      .mockImplementation(() => Promise.resolve(fakeCategoryEntity));
+      .spyOn(ormRepository, 'find')
+      .mockResolvedValue([fakeCategoryEntity]);
+
     const result = await categoryRepository.insert(fakeCategoryEntity);
 
     expect(result).toEqual(fakeCategoryEntity);
-    expect(ormRepository.create).toHaveBeenCalledWith(fakeCategoryEntity);
   });
 
   it('should throw InsertCategoryException', async () => {
     jest
-      .spyOn(ormRepository, 'create')
-      .mockImplementation(() => fakeCategoryEntity);
-    jest
       .spyOn(ormRepository, 'save')
-      .mockImplementation(() => Promise.reject(new Error()));
+      .mockRejectedValue(new Error());
 
     await expect(categoryRepository.insert(fakeCategoryEntity)).rejects.toThrow(
       new InsertCategoryException(),
@@ -80,11 +80,11 @@ describe('CategoryRepository', () => {
   it('should be update a category', async () => {
     jest
       .spyOn(ormRepository, 'save')
-      .mockImplementation(() => Promise.resolve(fakeCategoryEntity));
+      .mockResolvedValue(fakeCategoryEntity);
 
     jest
-      .spyOn(ormRepository, 'findOneOrFail')
-      .mockImplementation(() => Promise.resolve(fakeCategoryEntity));
+      .spyOn(ormRepository, 'find')
+      .mockResolvedValue([fakeCategoryEntity]);
 
     const result = await categoryRepository.update(fakeCategoryEntity);
 
@@ -95,7 +95,7 @@ describe('CategoryRepository', () => {
   it('should throw UpdateCategoryException', async () => {
     jest
       .spyOn(ormRepository, 'save')
-      .mockImplementation(() => Promise.reject(new Error()));
+      .mockRejectedValue(new Error());
 
     await expect(categoryRepository.update(fakeCategoryEntity)).rejects.toThrow(
       new UpdateCategoryException(),
@@ -104,19 +104,19 @@ describe('CategoryRepository', () => {
 
   it('should be find a category by id', async () => {
     jest
-      .spyOn(ormRepository, 'findOne')
-      .mockImplementation(() => Promise.resolve(fakeCategoryEntity));
+      .spyOn(ormRepository, 'find')
+      .mockResolvedValue([fakeCategoryEntity]);
 
     const result = await categoryRepository.findById(1);
 
     expect(result).toEqual(fakeCategoryEntity);
-    expect(ormRepository.findOne).toHaveBeenCalled();
+    expect(ormRepository.find).toBeCalled();
   });
 
   it('should throw FindCategoryException', async () => {
     jest
-      .spyOn(ormRepository, 'findOne')
-      .mockImplementation(() => Promise.reject(new Error()));
+      .spyOn(ormRepository, 'find')
+      .mockRejectedValue(new Error());
 
     await expect(categoryRepository.findById(1)).rejects.toThrow(
       new FindCategoryException(),
@@ -126,7 +126,7 @@ describe('CategoryRepository', () => {
   it('should be find a category by params', async () => {
     jest
       .spyOn(ormRepository, 'find')
-      .mockImplementation(() => Promise.resolve([fakeCategoryEntity]));
+      .mockResolvedValue([fakeCategoryEntity]);
 
     const result = await categoryRepository.findByParams({
       userId: fakeUserId,
@@ -147,13 +147,13 @@ describe('CategoryRepository', () => {
   });
 
   it('should be able delete', async () => {
-    jest.spyOn(ormRepository, 'remove').mockResolvedValue(fakeCategoryEntity);
+    jest.spyOn(ormRepository, 'delete').mockResolvedValue({} as DeleteResult);
     const result = await categoryRepository.delete(fakeCategoryEntity);
     expect(result).toEqual({ deleted: true } as CategoryDeleteResponseDTO);
   });
 
   it('should throw DeleteCategoryException', async () => {
-    jest.spyOn(ormRepository, 'remove').mockRejectedValue(new Error());
+    jest.spyOn(ormRepository, 'delete').mockRejectedValue(new Error());
     await expect(categoryRepository.delete(fakeCategoryEntity)).rejects.toThrow(
       new DeleteCategoryException(),
     );

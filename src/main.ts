@@ -9,6 +9,7 @@ import { BaseException } from '@config/exceptions';
 
 import { HttpExceptionFilter } from '@shared/exceptions';
 import { TransformInterceptor, ValidationPipe } from '@shared/pipes';
+import { ProfilingIntegration } from '@sentry/profiling-node';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, { cors: true });
@@ -41,12 +42,14 @@ async function bootstrap() {
   Sentry.init({
     dsn: process.env.SENTRY_DSN,
     tracesSampleRate: 1.0,
+    profilesSampleRate: 1.0, // Profiling sample rate is relative to tracesSampleRat
     integrations: [
       new Sentry.Integrations.Http({ tracing: true }),
       new Tracing.Integrations.Express(),
+      new ProfilingIntegration(), 
     ],
     attachStacktrace: true,
-    environment: process.env.ENVIRONMENT,
+    environment: process.env.NODE_ENV,
     beforeSend(event, hint) {
       const exception = hint?.originalException;
 

@@ -6,7 +6,7 @@ import {
   GetExpenseAmountGroupByWalletResponse,
   GetTotalExpenseResponseDTO,
 } from '@expense/dto';
-import { Despesas } from '@expense/entity';
+import { Despesa } from '@expense/entity';
 import { descriptionOfInstalment } from '@expense/helpers';
 
 import { DateHelper } from '@shared/helpers';
@@ -35,7 +35,7 @@ export const fakeInsertExpenseRequestWithInstalment: DespesasDTO = {
   instalment: 2,
 };
 
-export const mockExpenseEntity = Despesas.build({
+export const mockExpenseEntity = Despesa.build({
   ...fakeInsertExpenseRequest,
   id: 1,
   userId: fakeUserId,
@@ -43,13 +43,13 @@ export const mockExpenseEntity = Despesas.build({
   valor: 100,
 });
 
-export const mockExpenseEntityPayed = Despesas.build({
+export const mockExpenseEntityPayed = Despesa.build({
   ...mockExpenseEntity,
   ...fakeInsertExpenseRequestPayed,
   updatedAt: new Date('2022-05-26T00:00:00.000Z'),
 });
 
-export const mockExpenseInstalment = Despesas.build({
+export const mockExpenseInstalment = Despesa.build({
   ...fakeInsertExpenseRequestWithInstalment,
   createdAt,
   valor: 500,

@@ -34,7 +34,7 @@ import {
   GetExpenseAmountGroupByWalletResponse,
   GetTotalExpenseResponseDTO,
 } from './dto';
-import { Despesas } from './entity';
+import { Despesa } from './entity';
 import {
   IDeleteExpenseService,
   IGetExpenseService,
@@ -67,13 +67,13 @@ export class ExpenseController {
   async getAllExpenses(
     @User() user: UserPayloadInterface,
     @Query() params: FindExpenseByQueryParamsDTO,
-  ): Promise<SuccessResponseData<Despesas[]>> {
+  ): Promise<SuccessResponseData<Despesa[]>> {
     const data = await this.getExpenseService.getAllExpensesByUser(
       user.userId,
       params,
     );
 
-    return new SuccessResponseData<Despesas[]>(
+    return new SuccessResponseData<Despesa[]>(
       data,
       HttpStatus.OK,
       SUCCESS_MESSAGES.GET_SUCCESS,
@@ -182,12 +182,12 @@ export class ExpenseController {
   async getExpenseById(
     @User() userToken: UserPayloadInterface,
     @Param('id', ParseIntPipe) id: number,
-  ): Promise<SuccessResponseData<Despesas>> {
+  ): Promise<SuccessResponseData<Despesa>> {
     const res = await this.getExpenseService.findOne({
       id,
       userId: userToken.userId,
     });
-    return new SuccessResponseData<Despesas>(
+    return new SuccessResponseData<Despesa>(
       res,
       HttpStatus.OK,
       SUCCESS_MESSAGES.GET_SUCCESS,
@@ -202,13 +202,13 @@ export class ExpenseController {
     @User() userToken: UserPayloadInterface,
     @Param('id', ParseIntPipe) id: number,
     @Body() despesa: ExpensePatchFlagPayedDTO,
-  ): Promise<SuccessResponseData<Despesas>> {
+  ): Promise<SuccessResponseData<Despesa>> {
     const data = await this.updateExpenseService.updateFlagPayed(
       id,
       userToken.userId,
       despesa,
     );
-    return new SuccessResponseData<Despesas>(
+    return new SuccessResponseData<Despesa>(
       data,
       HttpStatus.OK,
       SUCCESS_MESSAGES.EXPENSE_UPDATE_SUCCESS,
@@ -223,13 +223,13 @@ export class ExpenseController {
     @User() userToken: UserPayloadInterface,
     @Param('id', ParseIntPipe) id: number,
     @Body() despesa: Partial<DespesasDTO>,
-  ): Promise<SuccessResponseData<Despesas>> {
+  ): Promise<SuccessResponseData<Despesa>> {
     const data = await this.updateExpenseService.update(
       id,
       userToken.userId,
       despesa,
     );
-    return new SuccessResponseData<Despesas>(
+    return new SuccessResponseData<Despesa>(
       data,
       HttpStatus.OK,
       SUCCESS_MESSAGES.EXPENSE_UPDATE_SUCCESS,
@@ -259,12 +259,12 @@ export class ExpenseController {
   async insertExpense(
     @Body() despesa: DespesasDTO,
     @User() userToken: UserPayloadInterface,
-  ): Promise<SuccessResponseData<Despesas | Despesas[]>> {
+  ): Promise<SuccessResponseData<Despesa | Despesa[]>> {
     const data = await this.insertExpenseService.insert(
       despesa,
       userToken.userId,
     );
-    return new SuccessResponseData<Despesas | Despesas[]>(
+    return new SuccessResponseData<Despesa | Despesa[]>(
       data,
       HttpStatus.CREATED,
       SUCCESS_MESSAGES.EXPENSE_CREATE_SUCCESS,

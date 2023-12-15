@@ -46,7 +46,7 @@ export class WalletRepository implements IWalletRepository {
         relations: ['user'],
         where: { id: id },
       })
-      .catch((error) => {
+      .catch(error => {
         throw new FindWalletException(error);
       });
 
@@ -64,7 +64,7 @@ export class WalletRepository implements IWalletRepository {
         relations: ['user'],
         where: { userId: userId, active: active },
       })
-      .catch((error) => {
+      .catch(error => {
         throw new FindWalletException(error);
       });
   }
@@ -94,7 +94,7 @@ export class WalletRepository implements IWalletRepository {
         where: { userId, id },
         select: { id: true },
       })
-      .catch((error) => {
+      .catch(error => {
         throw new FindWalletException(error);
       });
 

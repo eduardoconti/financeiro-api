@@ -1,7 +1,7 @@
 import { FindOptionsWhere } from 'typeorm';
 
-import { Despesas } from '@expense/entity';
+import { Despesa } from '@expense/entity';
 
 export type FindExpenseByParams =
-  | FindOptionsWhere<Despesas>
-  | FindOptionsWhere<Despesas>[];
+  | FindOptionsWhere<Despesa>
+  | FindOptionsWhere<Despesa>[];

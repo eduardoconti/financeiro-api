@@ -9,7 +9,7 @@ import {
   GetExpenseAmountGroupByWalletResponse,
   GetTotalExpenseResponseDTO,
 } from '@expense/dto';
-import { Despesas } from '@expense/entity';
+import { Despesa } from '@expense/entity';
 import { ExpenseNotFoundException } from '@expense/exceptions';
 import { buildParams } from '@expense/helpers';
 import { IExpenseRepository } from '@expense/repository';
@@ -27,7 +27,7 @@ export class GetExpenseService implements IGetExpenseService {
   async getAllExpensesByUser(
     userId: string,
     params: FindExpenseByQueryParamsDTO,
-  ): Promise<Despesas[]> {
+  ): Promise<Despesa[]> {
     return await this.expenseRepository.findByParams(
       buildParams(userId, params),
     );
@@ -50,7 +50,7 @@ export class GetExpenseService implements IGetExpenseService {
 
     const monthExpenses: ExpenseGroupMonth = {};
 
-    despesas.forEach((element) => {
+    despesas.forEach(element => {
       const { ...atributes }: ExpensesGroupMonthDTO = element.data;
       monthExpenses[element.month] = ExpensesGroupMonthDTO.build({
         ...atributes,
@@ -65,7 +65,7 @@ export class GetExpenseService implements IGetExpenseService {
     start?: string,
     end?: string,
     pago?: boolean,
-  ): Promise<any[]> {
+  ): Promise<GetExpenseAmountGroupByWalletResponse[]> {
     const sqlString = SqlFileManager.readFile(
       __dirname,
       'get-expense-value-group-by-wallet.sql',
@@ -75,7 +75,7 @@ export class GetExpenseService implements IGetExpenseService {
         sqlString,
         [userId, start, end, pago],
       );
-    return despesas.map((element) => {
+    return despesas.map(element => {
       return GetExpenseAmountGroupByWalletResponse.build(element);
     });
   }
@@ -96,7 +96,7 @@ export class GetExpenseService implements IGetExpenseService {
         sqlString,
         [userId, start, end, pago],
       );
-    return despesas.map((element) => {
+    return despesas.map(element => {
       return GetExpenseAmountGroupByCategoryResponse.build(element);
     });
   }
@@ -120,7 +120,7 @@ export class GetExpenseService implements IGetExpenseService {
     return GetTotalExpenseResponseDTO.build(data);
   }
 
-  async findOne(params: FindExpenseByParams): Promise<Despesas> {
+  async findOne(params: FindExpenseByParams): Promise<Despesa> {
     const expense = await this.expenseRepository.findOneByParams(params);
     if (!expense) {
       throw new ExpenseNotFoundException();

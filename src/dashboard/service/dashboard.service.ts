@@ -22,34 +22,32 @@ export class DashBoardService implements IDashBoardService {
     userId: string,
     params: GetDashBoardValuesParams,
   ): Promise<DashBoardValues> {
-    const { totalPayed: earningsPayed, totalOpen: earningsOpen } =
-      await this.getEarningService.getTotalEarnings(
-        userId,
-        params.start,
-        params.end,
-      );
+    const [
+      { totalPayed: earningsPayed, totalOpen: earningsOpen },
+      { totalPayed: expensesPayed, totalOpen: expensesOpen },
+      amount,
+    ] = await Promise.all([
+      this.getEarningService.getTotalEarnings(userId, params.start, params.end),
+      this.getExpenseService.getTotalExpenses(userId, params.start, params.end),
+      this.calculateAmount(userId),
+    ]);
 
-    const { totalOpen: expensesOpen, totalPayed: expensesPayed } =
-      await this.getExpenseService.getTotalExpenses(
-        userId,
-        params.start,
-        params.end,
-      );
     return DashBoardValues.build({
       expensesOpen,
       expensesPayed,
       earningsPayed,
       earningsOpen,
-      amount: await this.calculateAmount(userId),
+      amount: amount,
       ballance: earningsPayed + earningsOpen - (expensesPayed + expensesOpen),
     });
   }
 
   private async calculateAmount(userId: string): Promise<number> {
-    const { totalPayed: expenses } =
-      await this.getExpenseService.getTotalExpenses(userId);
-    const { totalPayed: earnings } =
-      await this.getEarningService.getTotalEarnings(userId);
+    const [{ totalPayed: expenses }, { totalPayed: earnings }] =
+      await Promise.all([
+        this.getExpenseService.getTotalExpenses(userId),
+        this.getEarningService.getTotalEarnings(userId),
+      ]);
 
     return earnings - expenses;
   }

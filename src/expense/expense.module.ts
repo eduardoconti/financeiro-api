@@ -9,7 +9,7 @@ import { TYPES } from '@config/dependency-injection';
 
 import { DatabaseModule } from '@db/database.module';
 
-import { Despesas } from './entity';
+import { Despesa } from './entity';
 import { ExpenseController } from './expense.controller';
 import { ExpenseRepository } from './repository';
 import {
@@ -21,7 +21,7 @@ import { UpdateExpenseService } from './service/update-expense.service';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Despesas]),
+    TypeOrmModule.forFeature([Despesa]),
     DatabaseModule,
     WalletModule,
     CategoryModule,

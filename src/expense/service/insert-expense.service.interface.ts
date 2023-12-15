@@ -1,9 +1,9 @@
 import { DespesasDTO } from '@expense/dto';
-import { Despesas } from '@expense/entity';
+import { Despesa } from '@expense/entity';
 
 export interface IInsertExpenseService {
   insert(
-    expense: DespesasDTO | Despesas,
+    expense: DespesasDTO | Despesa,
     userId: string,
-  ): Promise<Despesas | Despesas[]>;
+  ): Promise<Despesa | Despesa[]>;
 }

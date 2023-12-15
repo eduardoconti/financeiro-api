@@ -11,11 +11,11 @@ import {
   InsertUserService,
   PasswordManagerService,
 } from './service';
-import { UsersController } from './users.controller';
+import { UserController } from './user.controller';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Users])],
-  controllers: [UsersController],
+  controllers: [UserController],
   providers: [
     {
       provide: TYPES.UserRepository,
@@ -49,4 +49,4 @@ import { UsersController } from './users.controller';
     },
   ],
 })
-export class UsersModule {}
+export class UserModule {}

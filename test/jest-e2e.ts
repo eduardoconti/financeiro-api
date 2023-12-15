@@ -1,11 +1,12 @@
+
 import { pathsToModuleNameMapper } from 'ts-jest';
 
 export default {
   moduleFileExtensions: ['ts', 'js', 'json'],
   clearMocks: true,
-  rootDir: 'src',
+  rootDir: '.',
   modulePaths: ['<rootDir>'],
-  testRegex: '.*\\.spec\\.ts$',
+  testRegex: '.*\\.e2e.spec\\.ts$',
   transform: {
     '^.+\\.(t|j)s$': 'ts-jest',
   },

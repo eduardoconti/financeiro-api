@@ -3,7 +3,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 
-import { UsersModule } from '@users/users.module';
+import { UserModule } from '@users/user.module';
 
 import { TYPES } from '@config/dependency-injection';
 
@@ -14,7 +14,7 @@ import { JwtStrategy, LocalStrategy } from './strategy';
 @Module({
   imports: [
     ConfigModule,
-    UsersModule,
+    UserModule,
     PassportModule,
     JwtModule.registerAsync({
       imports: [ConfigModule],

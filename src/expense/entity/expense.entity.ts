@@ -14,7 +14,7 @@ import { Carteiras } from '@wallet/entity';
 import { Users } from '@users/entity';
 
 @Entity({ schema: 'public', name: 'despesas' })
-export class Despesas {
+export class Despesa {
   @PrimaryGeneratedColumn()
   id?: number;
 
@@ -90,32 +90,32 @@ export class Despesas {
   })
   instalment!: number;
 
-  @ManyToOne(() => Carteiras, (carteiras) => carteiras.id, { nullable: false })
+  @ManyToOne(() => Carteiras, carteiras => carteiras.id, { nullable: false })
   @JoinColumn({ name: 'carteira_id', referencedColumnName: 'id' })
   carteira?: Carteiras;
 
-  @ManyToOne(() => Category, (categorias) => categorias.id, {
+  @ManyToOne(() => Category, categorias => categorias.id, {
     nullable: false,
   })
   @JoinColumn({ name: 'categoria_id', referencedColumnName: 'id' })
   categoria?: Category;
 
-  @ManyToOne(() => SubCategory, (categorias) => categorias.id, {
+  @ManyToOne(() => SubCategory, categorias => categorias.id, {
     nullable: false,
   })
   @JoinColumn({ name: 'sub_category_id', referencedColumnName: 'id' })
   subCategory?: SubCategory;
 
-  @ManyToOne(() => Users, (users) => users.id, { nullable: false })
+  @ManyToOne(() => Users, users => users.id, { nullable: false })
   @Exclude()
   @JoinColumn({ name: 'user_id', referencedColumnName: 'id' })
   user?: Users;
 
-  constructor(expense: Despesas) {
+  constructor(expense: Despesa) {
     Object.assign(this, expense);
   }
 
-  static build = (dto: Despesas): Despesas => {
-    return new Despesas(dto);
+  static build = (dto: Despesa): Despesa => {
+    return new Despesa(dto);
   };
 }

@@ -11,7 +11,7 @@ import {
 
 import { Users } from '@users/entity';
 
-import { Despesas } from '@expense/entity';
+import { Despesa } from '@expense/entity';
 
 import { Category } from './categorias.entity';
 
@@ -35,24 +35,24 @@ export class SubCategory {
   @Column({ type: 'integer', name: 'category_id', nullable: false })
   categoryId!: number;
 
-  @ManyToOne(() => Category, (category) => category.subCategories, {
+  @ManyToOne(() => Category, category => category.subCategories, {
     nullable: false,
   })
   @JoinColumn({ name: 'category_id', referencedColumnName: 'id' })
   category?: Category;
 
-  @ManyToOne(() => Users, (users) => users.userSubCategories, {
+  @ManyToOne(() => Users, users => users.userSubCategories, {
     nullable: false,
   })
   @JoinColumn({ name: 'user_id', referencedColumnName: 'id' })
   @Exclude()
   user?: Users;
 
-  @OneToMany(() => Despesas, (despesas) => despesas.subCategory, {
+  @OneToMany(() => Despesa, despesas => despesas.subCategory, {
     nullable: false,
   })
   @Exclude()
-  expenses?: Despesas[];
+  expenses?: Despesa[];
 
   private constructor(category: SubCategory) {
     Object.assign(this, category);

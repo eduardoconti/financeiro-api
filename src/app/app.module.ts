@@ -10,7 +10,7 @@ import { CategoryModule } from '@category/category.module';
 
 import { WalletModule } from '@wallet/wallet.module';
 
-import { UsersModule } from '@users/users.module';
+import { UserModule } from '@users/user.module';
 
 import { TYPES } from '@config/dependency-injection';
 
@@ -34,7 +34,7 @@ import { AppService } from './service';
     CategoryModule,
     WalletModule,
     TransferenceModule,
-    UsersModule,
+    UserModule,
     AuthModule,
     GraphicModule,
     DatabaseModule,
@@ -48,15 +48,15 @@ import { AppService } from './service';
       useFactory: async (configService: ConfigService) => ({
         type: 'postgres',
         autoLoadEntities: true,
-        synchronize: false,
+        synchronize: configService.get('DATABASE_SYNCHRONIZE') ?? false,
         host: configService.get('POSTGRES_HOST'),
         port: configService.get('POSTGRES_PORT'),
         username: configService.get('POSTGRES_USER'),
         password: configService.get('POSTGRES_PASSWORD'),
         database: configService.get('POSTGRES_DB'),
         entities: [__dirname + '/../**/*.entity{.ts,.js}'],
-        logging: true,
-        ssl: { rejectUnauthorized: false },
+        logging:  configService.get('DATABASE_LOGGING') ?? false,
+        //ssl: { rejectUnauthorized: false },
       }),
     }),
   ],

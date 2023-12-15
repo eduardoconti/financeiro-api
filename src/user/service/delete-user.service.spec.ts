@@ -58,9 +58,8 @@ describe('DeleteUserService', () => {
       return Promise.resolve(fakeUserDeleteResponseDTO);
     });
 
-    const result: UserDeleteResponseDTO = await deleteUserService.delete(
-      fakeId,
-    );
+    const result: UserDeleteResponseDTO =
+      await deleteUserService.delete(fakeId);
     expect(result).toBeDefined();
     expect(result.deleted).toBe(true);
   });

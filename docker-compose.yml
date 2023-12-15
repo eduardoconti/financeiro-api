@@ -1,19 +1,19 @@
 version: '3.7'
 
 services:
-  financeiro:
-    container_name: financeiro
-    restart: on-failure
-    build: .
-    volumes:
-      - .:/app
-    ports:
-      - ${PORT}:${PORT}
-    command: yarn start:dev
-    env_file:
-      - .env
-    depends_on:
-      - financeiro-db
+  # financeiro:
+  #   container_name: financeiro
+  #   restart: on-failure
+  #   build: .
+  #   volumes:
+  #     - .:/app
+  #   ports:
+  #     - ${PORT}:${PORT}
+  #   command: yarn start:dev
+  #   env_file:
+  #     - .env
+  #   depends_on:
+  #     - financeiro-db
   financeiro-db:
     container_name: financeiro-db
     image: postgres:13.0

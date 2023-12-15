@@ -4,13 +4,13 @@ import {
   GetExpenseAmountGroupByWalletResponse,
   GetTotalExpenseResponseDTO,
 } from '@expense/dto';
-import { Despesas } from '@expense/entity';
+import { Despesa } from '@expense/entity';
 import { ExpenseGroupMonth, FindExpenseByParams } from '@expense/types';
 export interface IGetExpenseService {
   getAllExpensesByUser(
     userId: string,
     params?: FindExpenseByQueryParamsDTO,
-  ): Promise<Despesas[]>;
+  ): Promise<Despesa[]>;
 
   getExpensesGroupByMonth(
     userId: string,
@@ -32,7 +32,7 @@ export interface IGetExpenseService {
     pago?: boolean,
   ): Promise<GetExpenseAmountGroupByCategoryResponse[]>;
 
-  findOne(params: FindExpenseByParams): Promise<Despesas>;
+  findOne(params: FindExpenseByParams): Promise<Despesa>;
 
   getTotalExpenses(
     userId: string,

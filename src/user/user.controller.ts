@@ -23,11 +23,12 @@ import {
   IGetUserService,
   IInsertUserService,
 } from './service';
+import { JwtAuthGuard } from '@auth/guard';
 
 @ApiTags('Users')
 @Controller('users')
 @ApiBearerAuth()
-export class UsersController {
+export class UserController {
   constructor(
     @Inject(TYPES.GetUserService)
     private readonly getUserService: IGetUserService,
@@ -42,9 +43,8 @@ export class UsersController {
     description:
       'Return all users. This endpoint is authorized for admin user.',
   })
-  @UseGuards(MasterUserGuard)
   @Get()
-  @UseGuards(MasterUserGuard)
+  @UseGuards(JwtAuthGuard, MasterUserGuard)
   async getAllUsers(): Promise<SuccessResponseData<Users[]>> {
     const data = await this.getUserService.getAll();
     return new SuccessResponseData(data, HttpStatus.OK);
@@ -61,25 +61,11 @@ export class UsersController {
   }
 
   @ApiOperation({
-    summary: 'Get user by login.',
-    description:
-      'Return user by login. This endpoint is authorized for admin user.',
-  })
-  @UseGuards(MasterUserGuard)
-  @Get('login/:login')
-  async getUserByLogin(
-    @Param('login') login: string,
-  ): Promise<SuccessResponseData<Users>> {
-    const data = await this.getUserService.getUserByLogin(login);
-    return new SuccessResponseData(data, HttpStatus.OK);
-  }
-
-  @ApiOperation({
     summary: 'Delete user by id.',
     description:
       'Remove user by id. This endpoint is authorized for admin user.',
   })
-  @UseGuards(MasterUserGuard)
+  @UseGuards(JwtAuthGuard, MasterUserGuard)
   @Delete(':id')
   async deleteUser(
     @Param('id') id: string,

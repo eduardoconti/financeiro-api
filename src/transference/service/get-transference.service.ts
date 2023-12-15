@@ -53,7 +53,7 @@ export class GetTransferenceService implements IGetTransferenceService {
 
     const monthTransferences: TransferenceGroupMonth = {};
 
-    receitas.forEach((element) => {
+    receitas.forEach(element => {
       const { ...atributes } = element.data;
       monthTransferences[element.month] = TransferenceGroupMonthDTO.build({
         ...atributes,
@@ -79,7 +79,7 @@ export class GetTransferenceService implements IGetTransferenceService {
         sqlString,
         [userId, start, end, pago],
       );
-    return earnings.map((element) => {
+    return earnings.map(element => {
       return GetTransferenceAmountGroupByWalletResponse.build({ ...element });
     });
   }

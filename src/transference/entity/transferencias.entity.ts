@@ -51,19 +51,19 @@ export class Transferencias {
   @Exclude()
   carteiraDestinoId!: number;
 
-  @ManyToOne(() => Carteiras, (carteiras) => carteiras.transferenciaOrigem, {
+  @ManyToOne(() => Carteiras, carteiras => carteiras.transferenciaOrigem, {
     nullable: false,
   })
   @JoinColumn({ name: 'carteira_origem_id', referencedColumnName: 'id' })
   carteiraOrigem?: Carteiras;
 
-  @ManyToOne(() => Carteiras, (carteiras) => carteiras.transferenciaDestino, {
+  @ManyToOne(() => Carteiras, carteiras => carteiras.transferenciaDestino, {
     nullable: false,
   })
   @JoinColumn({ name: 'carteira_destino_id', referencedColumnName: 'id' })
   carteiraDestino?: Carteiras;
 
-  @ManyToOne(() => Users, (users) => users.userTransferencia, {
+  @ManyToOne(() => Users, users => users.userTransferencia, {
     nullable: false,
   })
   @Exclude()

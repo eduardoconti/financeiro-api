@@ -11,7 +11,7 @@ import {
 
 import { Users } from '@users/entity';
 
-import { Despesas } from '@expense/entity';
+import { Despesa } from '@expense/entity';
 
 import { SubCategory } from './sub-category.entity';
 
@@ -32,18 +32,18 @@ export class Category {
   @Column('text', { nullable: false })
   descricao!: string;
 
-  @OneToMany(() => Despesas, (despesas) => despesas.categoria, {
+  @OneToMany(() => Despesa, despesas => despesas.categoria, {
     nullable: false,
   })
   @Exclude()
-  categoria?: Despesas[];
+  categoria?: Despesa[];
 
-  @ManyToOne(() => Users, (users) => users.id, { nullable: false })
+  @ManyToOne(() => Users, users => users.id, { nullable: false })
   @JoinColumn({ name: 'user_id', referencedColumnName: 'id' })
   @Exclude()
   user?: Users;
 
-  @OneToMany(() => SubCategory, (despesas) => despesas.category, {
+  @OneToMany(() => SubCategory, despesas => despesas.category, {
     nullable: false,
   })
   subCategories?: SubCategory[];

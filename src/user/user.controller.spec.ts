@@ -12,17 +12,17 @@ import {
   IGetUserService,
   IInsertUserService,
 } from './service';
-import { UsersController } from './users.controller';
+import { UserController } from './user.controller';
 
 describe('UserController', () => {
-  let controller: UsersController;
+  let controller: UserController;
   let insertUserService: IInsertUserService;
   let deleteUserService: IDeleteUserService;
   let getUserService: IGetUserService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      controllers: [UsersController],
+      controllers: [UserController],
       providers: [
         {
           provide: TYPES.InsertUserService,
@@ -46,7 +46,7 @@ describe('UserController', () => {
       ],
     }).compile();
 
-    controller = module.get<UsersController>(UsersController);
+    controller = module.get<UserController>(UserController);
     insertUserService = module.get<IInsertUserService>(TYPES.InsertUserService);
     deleteUserService = module.get<IDeleteUserService>(TYPES.DeleteUserService);
     getUserService = module.get<IGetUserService>(TYPES.GetUserService);
