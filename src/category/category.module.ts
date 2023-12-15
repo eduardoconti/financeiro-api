@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
-import { UsersModule } from '@users/users.module';
+import { UserModule } from '@users/user.module';
 
 import { TYPES } from '@config/dependency-injection';
 
@@ -24,7 +24,7 @@ import {
 import { SubCategoryController } from './sub-category.controller';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Category, SubCategory]), UsersModule],
+  imports: [TypeOrmModule.forFeature([Category, SubCategory]), UserModule],
   controllers: [CategoryController, SubCategoryController],
   providers: [
     {

@@ -65,7 +65,7 @@ export class GetExpenseService implements IGetExpenseService {
     start?: string,
     end?: string,
     pago?: boolean,
-  ): Promise<any[]> {
+  ): Promise<GetExpenseAmountGroupByWalletResponse[]> {
     const sqlString = SqlFileManager.readFile(
       __dirname,
       'get-expense-value-group-by-wallet.sql',

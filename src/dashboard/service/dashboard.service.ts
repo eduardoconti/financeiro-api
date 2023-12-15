@@ -24,7 +24,7 @@ export class DashBoardService implements IDashBoardService {
   ): Promise<DashBoardValues> {
     const [
       { totalPayed: earningsPayed, totalOpen: earningsOpen },
-      { totalOpen: expensesOpen, totalPayed: expensesPayed },
+      { totalPayed: expensesPayed, totalOpen: expensesOpen },
       amount,
     ] = await Promise.all([
       this.getEarningService.getTotalEarnings(userId, params.start, params.end),

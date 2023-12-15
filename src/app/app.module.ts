@@ -10,7 +10,7 @@ import { CategoryModule } from '@category/category.module';
 
 import { WalletModule } from '@wallet/wallet.module';
 
-import { UsersModule } from '@users/users.module';
+import { UserModule } from '@users/user.module';
 
 import { TYPES } from '@config/dependency-injection';
 
@@ -34,7 +34,7 @@ import { AppService } from './service';
     CategoryModule,
     WalletModule,
     TransferenceModule,
-    UsersModule,
+    UserModule,
     AuthModule,
     GraphicModule,
     DatabaseModule,
@@ -56,7 +56,7 @@ import { AppService } from './service';
         database: configService.get('POSTGRES_DB'),
         entities: [__dirname + '/../**/*.entity{.ts,.js}'],
         logging:  configService.get('DATABASE_LOGGING') ?? false,
-        ssl: { rejectUnauthorized: false },
+        //ssl: { rejectUnauthorized: false },
       }),
     }),
   ],

@@ -28,7 +28,7 @@ export class InsertExpenseService implements IInsertExpenseService {
     @Inject(TYPES.CategoryRepository)
     private categoryRepository: ICategoryRepository,
     @Inject(TYPES.SubCategoryRepository)
-    private getSubCategoryService: ISubCategoryRepository,
+    private subCategoryService: ISubCategoryRepository,
   ) {}
 
   async insert(
@@ -38,7 +38,7 @@ export class InsertExpenseService implements IInsertExpenseService {
     await Promise.all([
       this.walletRepository.exists({ id: expense.carteiraId, userId }),
       this.categoryRepository.exists({ id: expense.categoriaId, userId }),
-      this.getSubCategoryService.exists({
+      this.subCategoryService.exists({
         id: expense.subCategoryId,
         userId,
       }),
