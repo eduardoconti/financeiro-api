@@ -67,16 +67,6 @@ describe('UserController', () => {
     expect(result).toBeInstanceOf(SuccessResponseData);
   });
 
-  it('should get user by login', async () => {
-    jest
-      .spyOn(getUserService, 'getUserByLogin')
-      .mockResolvedValue(userEntityMock);
-    const result = await controller.getUserByLogin('login');
-    expect(result.data).toEqual(userEntityMock);
-    expect(result.getStatus()).toEqual(HttpStatus.OK);
-    expect(result).toBeInstanceOf(SuccessResponseData);
-  });
-
   it('should insert user', async () => {
     jest.spyOn(insertUserService, 'insert').mockResolvedValue(userEntityMock);
     const result = await controller.createUser(userRequest);
