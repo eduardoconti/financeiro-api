@@ -2,7 +2,7 @@ name: Tests
 on:
   push:
     branches:
-      - main
+      - master
 
 jobs:
   start-postgres:
@@ -54,7 +54,7 @@ jobs:
       - name: Install dependencies
         run: yarn install --ignore-engines
       - name: Run teste unitario
-        run: yarn test
+        run: yarn test:cov
       - name: Run teste e2e
         run: yarn test:e2e
         env:
@@ -70,5 +70,9 @@ jobs:
           SECRET_JWT: JwtKey
           NODE_ENV: test
           VERSION: 1.0.0 
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v3
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
         
 
