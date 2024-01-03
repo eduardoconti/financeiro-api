@@ -25,6 +25,13 @@ export const fakeInsertExpenseRequest = DespesasDTO.build({
   pago: false,
 });
 
+export const fakeUpdateInstalment = DespesasDTO.build({
+  carteiraId: 1,
+  categoriaId: 1,
+  subCategoryId: 1,
+  instalment: 1,
+});
+
 export const fakeInsertExpenseRequestPayed = DespesasDTO.build({
   ...fakeInsertExpenseRequest,
   pago: true,

@@ -21,7 +21,7 @@ export class UpdateCategoryService implements IUpdateCategoryService {
     userId: string,
     categoryUpdateRequest: UpdateCategoryDTO,
   ): Promise<Category> {
-    await this.getCategoryService.findCategoryUserById(id, userId);
+    await this.getCategoryService.findOne(id, userId);
     const entity = Category.build({
       userId,
       id,

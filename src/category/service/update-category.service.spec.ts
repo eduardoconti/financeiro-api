@@ -25,7 +25,7 @@ describe('UpdateCategoryService', () => {
         {
           provide: TYPES.GetCategoryService,
           useValue: {
-            findCategoryUserById: jest.fn(),
+            findOne: jest.fn(),
           },
         },
         {
@@ -57,7 +57,7 @@ describe('UpdateCategoryService', () => {
       .mockResolvedValue(fakeCategoryEntity);
 
     jest
-      .spyOn(getCategoryService, 'findCategoryUserById')
+      .spyOn(getCategoryService, 'findOne')
       .mockResolvedValue(fakeCategoryEntity);
     const result = await service.update(
       fakeCategoryEntity.id as number,
@@ -65,6 +65,6 @@ describe('UpdateCategoryService', () => {
       fakeCategoryRequest,
     );
     expect(result).toEqual(fakeCategoryEntity);
-    expect(getCategoryService.findCategoryUserById).toBeCalled();
+    expect(getCategoryService.findOne).toBeCalled();
   });
 });

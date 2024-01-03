@@ -72,7 +72,7 @@ describe('GetCategoryService', () => {
     jest.spyOn(categoryRepository, 'findById').mockResolvedValue(null);
 
     await expect(() =>
-      categoryService.findCategoryUserById(1, fakeUserId),
+      categoryService.findOne(1, fakeUserId),
     ).rejects.toThrowError(CategoryNotFoundException);
     expect(categoryRepository.findById).toBeCalledWith(1);
   });
@@ -83,7 +83,7 @@ describe('GetCategoryService', () => {
       .mockResolvedValue({ ...fakeCategoryEntity, userId: '123' });
 
     await expect(() =>
-      categoryService.findCategoryUserById(1, fakeUserId),
+      categoryService.findOne(1, fakeUserId),
     ).rejects.toThrowError(ForbiddenCategoryException);
     expect(categoryRepository.findById).toBeCalledWith(1);
   });
@@ -93,7 +93,7 @@ describe('GetCategoryService', () => {
       .spyOn(categoryRepository, 'findById')
       .mockResolvedValue(fakeCategoryEntity);
 
-    const result = await categoryService.findCategoryUserById(1, fakeUserId);
+    const result = await categoryService.findOne(1, fakeUserId);
 
     expect(result).toEqual(fakeCategoryEntity);
   });

@@ -31,7 +31,7 @@ describe('CategoryController', () => {
           provide: TYPES.GetCategoryService,
           useValue: {
             getAll: jest.fn(),
-            findCategoryUserById: jest.fn(),
+            findOne: jest.fn(),
             getAllCategories: jest.fn(),
           },
         },
@@ -94,7 +94,7 @@ describe('CategoryController', () => {
 
   it('should call getOne', async () => {
     jest
-      .spyOn(getCategoryService, 'findCategoryUserById')
+      .spyOn(getCategoryService, 'findOne')
       .mockResolvedValue(fakeCategoryEntity);
 
     const result = await categoryController.getOne(

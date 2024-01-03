@@ -55,7 +55,7 @@ export class UpdateExpenseService implements IUpdateExpenseService {
     }
 
     if (despesa.categoriaId) {
-      await this.getCategoryService.findCategoryUserById(
+      await this.getCategoryService.findOne(
         expense.categoriaId,
         userId,
       );
@@ -78,8 +78,8 @@ export class UpdateExpenseService implements IUpdateExpenseService {
 
     if (expense.instalmentId) {
       if (
-        expense.valor !== despesa.valor ||
-        expense.descricao !== despesa.descricao
+        despesa.valor && expense.valor !== despesa.valor ||
+        despesa.descricao && expense.descricao !== despesa.descricao
       ) {
         throw new UpdateInstalmentException();
       }
@@ -125,56 +125,35 @@ export class UpdateExpenseService implements IUpdateExpenseService {
     despesa: Partial<DespesasDTO>,
   ) {
     try {
-      await this.databaseService.connect();
-      await this.databaseService.startTransaction();
+    
       const expenses = await this.expenseRepository.findByParams({
         userId: userId,
         instalmentId: instalmentId,
       });
 
-      for (const entity of expenses) {
-        const {
-          id,
-          userId,
-          pago,
-          pagamento,
-          categoriaId,
-          carteiraId,
-          subCategoryId,
-          valor,
-          instalment,
-          instalmentId,
-          descricao,
-        } = entity;
-        await this.databaseService.save(
-          Despesa.build({
-            id,
-            userId,
-            pago,
-            pagamento,
-            carteiraId,
-            valor,
-            instalment,
-            instalmentId,
-            categoriaId: despesa.categoriaId ?? categoriaId,
-            subCategoryId: despesa.subCategoryId ?? subCategoryId,
-            descricao,
-          }),
-        );
-      }
-      await this.databaseService.commitTransaction();
-      const entitiesSaved = await this.expenseRepository.findByParams({
-        instalmentId: instalmentId,
-      });
-      return entitiesSaved[0];
+      expenses.forEach(e => {
+        if(despesa.categoriaId){
+          e.categoriaId = despesa.categoriaId
+        }
+
+        if(despesa.subCategoryId){
+          e.subCategoryId = despesa.subCategoryId
+        }
+
+        if(despesa.carteiraId){
+          e.carteiraId = despesa.carteiraId
+        }
+
+      })
+
+      await this.databaseService.save(expenses);
+
+      return expenses[0];
     } catch (e: any) {
-      await this.databaseService.rollbackTransaction();
       if (e instanceof BaseException) {
         throw e;
       }
       throw new UpdateExpenseException(e.message);
-    } finally {
-      await this.databaseService.release();
     }
   }
 }

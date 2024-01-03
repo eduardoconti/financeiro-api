@@ -102,7 +102,7 @@ export class CategoryController {
     @Param('id', ParseIntPipe) id: number,
     @User() user: UserPayloadInterface,
   ): Promise<SuccessResponseData<Category>> {
-    const data = await this.getCategoryService.findCategoryUserById(
+    const data = await this.getCategoryService.findOne(
       id,
       user.userId,
     );

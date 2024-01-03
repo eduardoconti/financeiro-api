@@ -27,7 +27,7 @@ export class GetCategoryService implements IGetCategoryService {
     return category;
   }
 
-  async findCategoryUserById(id: number, userId: string): Promise<Category> {
+  async findOne(id: number, userId: string): Promise<Category> {
     const category = await this.categoriaRepository.findById(id);
 
     if (!category) {

@@ -28,7 +28,7 @@ describe('DeleteCategoryService', () => {
         {
           provide: TYPES.GetCategoryService,
           useValue: {
-            findCategoryUserById: jest.fn(),
+            findOne: jest.fn(),
           },
         },
         {
@@ -60,13 +60,13 @@ describe('DeleteCategoryService', () => {
       .mockResolvedValue(fakeDeletedCategoryResponse);
 
     jest
-      .spyOn(getCategoryService, 'findCategoryUserById')
+      .spyOn(getCategoryService, 'findOne')
       .mockResolvedValue(fakeCategoryEntity);
     const result = await service.deleteCategory(
       fakeCategoryEntity.id as number,
       fakeCategoryEntity.userId,
     );
     expect(result).toEqual(fakeDeletedCategoryResponse);
-    expect(getCategoryService.findCategoryUserById).toBeCalled();
+    expect(getCategoryService.findOne).toBeCalled();
   });
 });
