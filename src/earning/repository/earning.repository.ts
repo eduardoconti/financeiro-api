@@ -36,7 +36,7 @@ export class EarningRepository implements IEarningRepository {
           createdAt: false,
           updatedAt: false,
           carteiraId: false,
-          carteira: { id: true, active: false },
+          carteira: { id: true, active: false, descricao: true },
         },
       })
       .catch(e => {
