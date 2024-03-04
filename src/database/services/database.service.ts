@@ -16,16 +16,22 @@ import { IDatabaseService } from './database.service.interface';
 
 @Injectable()
 export class DatabaseService implements IDatabaseService {
-  queryRunner!: QueryRunner;
+  private _queryRunner!: QueryRunner;
 
   constructor(@InjectDataSource() private readonly dataSource: DataSource) {}
 
+  get queryRunner() {
+    if (this._queryRunner) return this._queryRunner;
+
+    this._queryRunner = this.dataSource.createQueryRunner();
+    return this._queryRunner;
+  }
+
   public connect = async (): Promise<any> => {
     try {
-      this.queryRunner = this.dataSource.createQueryRunner();
       await this.queryRunner.connect();
     } catch (err: any) {
-      throw new ConnectDatabaseException(err.message ?? '', err);
+      throw new ConnectDatabaseException(err.message ?? 'connect error', err);
     }
   };
 
@@ -33,7 +39,10 @@ export class DatabaseService implements IDatabaseService {
     try {
       await this.queryRunner.startTransaction();
     } catch (err: any) {
-      throw new StartTransactionDatabaseException(err.message ?? '', err);
+      throw new StartTransactionDatabaseException(
+        err.message ?? 'start transacion error',
+        err,
+      );
     }
   };
 
@@ -41,7 +50,10 @@ export class DatabaseService implements IDatabaseService {
     try {
       await this.queryRunner.commitTransaction();
     } catch (err: any) {
-      throw new CommitTransactionDatabaseException(err.message ?? '', err);
+      throw new CommitTransactionDatabaseException(
+        err.message ?? 'commit transaction error',
+        err,
+      );
     }
   };
 
@@ -49,16 +61,21 @@ export class DatabaseService implements IDatabaseService {
     try {
       await this.queryRunner.rollbackTransaction();
     } catch (err: any) {
-      throw new RollbackTransactionDatabaseException(err.message ?? '', err);
+      throw new RollbackTransactionDatabaseException(
+        err.message ?? 'rollback transaction error',
+        err,
+      );
     }
   };
 
   public release = async (): Promise<void> => {
     try {
       await this.queryRunner.release();
-      //this.queryRunner = undefined;
     } catch (err: any) {
-      throw new ReleaseTransactionDatabaseException(err.message ?? '', err);
+      throw new ReleaseTransactionDatabaseException(
+        err.message ?? 'release error',
+        err,
+      );
     }
   };
 
@@ -67,7 +84,7 @@ export class DatabaseService implements IDatabaseService {
       const result = await this.queryRunner.manager.save<E>(entity);
       return result as E;
     } catch (err: any) {
-      throw new SaveDatabaseException(err.message ?? '', err);
+      throw new SaveDatabaseException(err.message ?? 'save error', err);
     }
   };
 
@@ -76,7 +93,7 @@ export class DatabaseService implements IDatabaseService {
       await this.queryRunner.manager.remove<E>(entity);
       return entity as E;
     } catch (err: any) {
-      throw new RemoveDatabaseException(err.message ?? '', err);
+      throw new RemoveDatabaseException(err.message ?? 'delete error', err);
     }
   };
 }

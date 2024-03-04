@@ -55,10 +55,7 @@ export class UpdateExpenseService implements IUpdateExpenseService {
     }
 
     if (despesa.categoriaId) {
-      await this.getCategoryService.findOne(
-        expense.categoriaId,
-        userId,
-      );
+      await this.getCategoryService.findOne(expense.categoriaId, userId);
     }
 
     if (
@@ -78,13 +75,18 @@ export class UpdateExpenseService implements IUpdateExpenseService {
 
     if (expense.instalmentId) {
       if (
-        despesa.valor && expense.valor !== despesa.valor ||
-        despesa.descricao && expense.descricao !== despesa.descricao
+        (despesa.valor && expense.valor !== despesa.valor) ||
+        (despesa.descricao && expense.descricao !== despesa.descricao)
       ) {
         throw new UpdateInstalmentException();
       }
 
-      return await this.updateInstalment(userId, expense.instalmentId, despesa);
+      return await this.updateInstalment(
+        userId,
+        expense.instalmentId,
+        despesa,
+        id,
+      );
     }
 
     return await this.expenseRepository.update(id, {
@@ -123,32 +125,36 @@ export class UpdateExpenseService implements IUpdateExpenseService {
     userId: string,
     instalmentId: string,
     despesa: Partial<DespesasDTO>,
+    id: number,
   ) {
     try {
-    
       const expenses = await this.expenseRepository.findByParams({
         userId: userId,
         instalmentId: instalmentId,
       });
 
-      expenses.forEach(e => {
-        if(despesa.categoriaId){
-          e.categoriaId = despesa.categoriaId
+      expenses.forEach((e) => {
+        if (despesa.categoriaId) {
+          e.categoriaId = despesa.categoriaId;
+          e.categoria = undefined;
         }
 
-        if(despesa.subCategoryId){
-          e.subCategoryId = despesa.subCategoryId
+        if (despesa.subCategoryId) {
+          e.subCategoryId = despesa.subCategoryId;
+          e.subCategory = undefined;
         }
 
-        if(despesa.carteiraId){
-          e.carteiraId = despesa.carteiraId
+        if (despesa.carteiraId) {
+          if (!e.pago) {
+            e.carteiraId = despesa.carteiraId;
+            e.carteira = undefined;
+          }
         }
-
-      })
+      });
 
       await this.databaseService.save(expenses);
 
-      return expenses[0];
+      return (await this.expenseRepository.findOneByParams({ id })) as Despesa;
     } catch (e: any) {
       if (e instanceof BaseException) {
         throw e;

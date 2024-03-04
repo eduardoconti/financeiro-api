@@ -85,7 +85,7 @@ export class DespesasDTO {
   pagamento?: Date;
 
   @ApiPropertyOptional({ description: 'Flag Pago', default: false })
-  @ValidateIf(o => o.pago !== undefined)
+  @ValidateIf((o) => o.pago !== undefined)
   @IsBoolean({ message: CONSTRAINTS_MESSAGES.IS_BOOLEAN })
   pago?: boolean;
 

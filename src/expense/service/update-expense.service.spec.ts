@@ -100,8 +100,7 @@ describe('UpdateExpenseService', () => {
     expect(databaseService).toBeDefined();
   });
 
-  describe('instalment', ()=>{
-
+  describe('instalment', () => {
     it('should update an expense with instalment', async () => {
       jest
         .spyOn(expenseRepository, 'findOneByParams')
@@ -112,21 +111,28 @@ describe('UpdateExpenseService', () => {
       jest
         .spyOn(expenseRepository, 'findByParams')
         .mockResolvedValue([mockExpenseInstalment]);
-  
+
       const data = await updateExpenseService.update(
         mockExpenseEntity.id as number,
         mockExpenseEntity.userId,
-        {...fakeInsertExpenseRequest, valor: undefined, descricao: undefined, instalment: 2},
+        {
+          ...fakeInsertExpenseRequest,
+          valor: undefined,
+          descricao: undefined,
+          instalment: 2,
+        },
       );
-  
+
       expect(data).toBeDefined();
       expect(data).toEqual(mockExpenseInstalment);
+      expect(databaseService.save).toBeCalled();
+      expect(expenseRepository.findByParams).toBeCalled();
     });
     it('should throw UpdateInstalmentException when a expense instalment is updated with value and description', async () => {
       jest
         .spyOn(expenseRepository, 'findOneByParams')
         .mockResolvedValue(mockExpenseInstalment);
-  
+
       await expect(
         updateExpenseService.update(
           mockExpenseEntity.id as number,
@@ -135,7 +141,7 @@ describe('UpdateExpenseService', () => {
         ),
       ).rejects.toThrowError(UpdateInstalmentException);
     });
-  })
+  });
 
   it('should update an expense', async () => {
     jest
