@@ -13,4 +13,11 @@ export interface IUpdateExpenseService {
     userId: string,
     patchData: ExpensePatchFlagPayedDTO,
   ): Promise<Despesa>;
+
+  updateInstalment(
+    userId: string,
+    instalmentId: string,
+    despesa: Partial<DespesasDTO>,
+    id: number,
+  ): Promise<Despesa>;
 }

@@ -11,11 +11,9 @@ import { IDatabaseService } from '@db/services';
 import {
   ExpenseNotFoundException,
   UpdateExpenseException,
-  UpdateInstalmentException,
 } from '@expense/exceptions';
 import {
   fakeInsertExpenseRequest,
-  fakeInsertExpenseRequestWithInstalment,
   mockExpenseEntity,
   mockExpenseInstalment,
 } from '@expense/mocks';
@@ -112,8 +110,8 @@ describe('UpdateExpenseService', () => {
         .spyOn(expenseRepository, 'findByParams')
         .mockResolvedValue([mockExpenseInstalment]);
 
-      const data = await updateExpenseService.update(
-        mockExpenseEntity.id as number,
+      const data = await updateExpenseService.updateInstalment(
+        '1',
         mockExpenseEntity.userId,
         {
           ...fakeInsertExpenseRequest,
@@ -121,25 +119,13 @@ describe('UpdateExpenseService', () => {
           descricao: undefined,
           instalment: 2,
         },
+        mockExpenseEntity.id as number,
       );
 
       expect(data).toBeDefined();
       expect(data).toEqual(mockExpenseInstalment);
       expect(databaseService.save).toBeCalled();
       expect(expenseRepository.findByParams).toBeCalled();
-    });
-    it('should throw UpdateInstalmentException when a expense instalment is updated with value and description', async () => {
-      jest
-        .spyOn(expenseRepository, 'findOneByParams')
-        .mockResolvedValue(mockExpenseInstalment);
-
-      await expect(
-        updateExpenseService.update(
-          mockExpenseEntity.id as number,
-          mockExpenseEntity.userId,
-          fakeInsertExpenseRequestWithInstalment,
-        ),
-      ).rejects.toThrowError(UpdateInstalmentException);
     });
   });
 

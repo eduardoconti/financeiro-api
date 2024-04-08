@@ -15,7 +15,7 @@ import { Despesa } from '@expense/entity';
 import {
   ExpenseNotFoundException,
   UpdateExpenseException,
-  UpdateInstalmentException,
+  //UpdateInstalmentException,
 } from '@expense/exceptions';
 import { IExpenseRepository } from '@expense/repository';
 
@@ -73,22 +73,6 @@ export class UpdateExpenseService implements IUpdateExpenseService {
       );
     }
 
-    if (expense.instalmentId) {
-      if (
-        (despesa.valor && expense.valor !== despesa.valor) ||
-        (despesa.descricao && expense.descricao !== despesa.descricao)
-      ) {
-        throw new UpdateInstalmentException();
-      }
-
-      return await this.updateInstalment(
-        userId,
-        expense.instalmentId,
-        despesa,
-        id,
-      );
-    }
-
     return await this.expenseRepository.update(id, {
       ...despesa,
       updatedAt:
@@ -121,7 +105,7 @@ export class UpdateExpenseService implements IUpdateExpenseService {
     return expense;
   }
 
-  private async updateInstalment(
+  async updateInstalment(
     userId: string,
     instalmentId: string,
     despesa: Partial<DespesasDTO>,
